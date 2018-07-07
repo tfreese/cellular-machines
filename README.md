@@ -1,7 +1,7 @@
-cellular-machines
-===============
+cellular-machines / Zellulare Automaten
+=======================================
 
-Simulation-Demos for cellular machines.
+Simulation-Demos for cellular machines / Zellulare Automaten.
 
 - Langton Ant
 - Gamer of Life
