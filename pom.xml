@@ -59,7 +59,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>${version:org.apache.maven.plugins:maven-assembly-plugin}</version>
                 <executions>
                     <execution>
                         <id>assembly uberjar</id>
@@ -91,7 +90,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>${version:org.apache.maven.plugins:maven-shade-plugin}</version>
                 <dependencies>
                     <!-- Nur für Transformer, falls benötigt-->
                     <!--dependency>
