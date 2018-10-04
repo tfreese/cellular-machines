@@ -199,16 +199,30 @@ public class SimulationConsole
         }
         finally
         {
+            executorService.shutdown();
+
             try
             {
-                executorService.awaitTermination(120, TimeUnit.SECONDS);
-            }
-            catch (Exception ex2)
-            {
-                // Ignore
-            }
+                // Wait a while for existing tasks to terminate.
+                if (!executorService.awaitTermination(120, TimeUnit.SECONDS))
+                {
+                    executorService.shutdownNow(); // Cancel currently executing tasks
 
-            executorService.shutdown();
+                    // Wait a while for tasks to respond to being cancelled
+                    if (!executorService.awaitTermination(60, TimeUnit.SECONDS))
+                    {
+                        System.err.println("Pool did not terminate");
+                    }
+                }
+            }
+            catch (InterruptedException iex)
+            {
+                // (Re-)Cancel if current thread also interrupted
+                executorService.shutdownNow();
+
+                // Preserve interrupt status
+                Thread.currentThread().interrupt();
+            }
         }
 
         System.exit(0);
