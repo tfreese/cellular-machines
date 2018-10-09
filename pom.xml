@@ -22,12 +22,18 @@
         <name>Thomas Freese</name>
         <url>https://github.com/tfreese/cellular-machines</url>
     </organization>
-    
+
     <scm>
         <url>${project.url}</url>
         <connection>scm:git:git://github.com/tfreese/cellular-machines.git</connection>
         <developerConnection>scm:git:https://github.com/tfreese/cellular-machines.git</developerConnection>
     </scm>
+
+    <properties>
+        <version.java>11</version.java>
+        <maven.compiler.source>${version.java}</maven.compiler.source>
+        <maven.compiler.target>${version.java}</maven.compiler.target>
+    </properties>
 
     <build>
         <plugins>
