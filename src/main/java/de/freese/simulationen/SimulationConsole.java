@@ -39,7 +39,6 @@ import de.freese.simulationen.wator.WaTorWorld;
  */
 public class SimulationConsole
 {
-
     /**
      *
      */
