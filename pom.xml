@@ -94,7 +94,6 @@
                     <!--dependency>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
-                        <version>${version:org.springframework.boot:spring-boot-maven-plugin}</version>
                     </dependency-->
                 </dependencies>
                 <executions>
