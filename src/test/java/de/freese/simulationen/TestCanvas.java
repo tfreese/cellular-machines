@@ -26,7 +26,6 @@ import javax.swing.WindowConstants;
  */
 public class TestCanvas extends JComponent implements Runnable
 {
-
     /**
      *
      */
@@ -94,7 +93,7 @@ public class TestCanvas extends JComponent implements Runnable
     /**
      * Erstellt ein neues {@link TestCanvas} Object.
      *
-     * @param width  int
+     * @param width int
      * @param height int
      */
     public TestCanvas(final int width, final int height)
@@ -149,8 +148,7 @@ public class TestCanvas extends JComponent implements Runnable
     @Override
     public void run()
     {
-        IntUnaryOperator generator = i ->
-        {
+        IntUnaryOperator generator = i -> {
             if (this.random.nextBoolean())
             {
                 return Color.BLACK.getRGB();

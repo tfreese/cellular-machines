@@ -26,7 +26,6 @@ import javax.swing.SwingUtilities;
  */
 public class TestBallSimulation extends JComponent
 {
-
     /**
      * [ms]
      */
@@ -75,10 +74,9 @@ public class TestBallSimulation extends JComponent
         frame.setVisible(true);
         frame.toFront();
 
-        final ScheduledFuture<?> scheduledFuture
-            = scheduledExecutorService.scheduleWithFixedDelay(simulation::moveAndPaintBalls, 1, DELAY, TimeUnit.MILLISECONDS);
-        scheduledExecutorService.scheduleWithFixedDelay(() ->
-        {
+        final ScheduledFuture<?> scheduledFuture =
+                scheduledExecutorService.scheduleWithFixedDelay(simulation::moveAndPaintBalls, 1, DELAY, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(() -> {
             if (simulation.isFinished())
             {
                 scheduledFuture.cancel(true);
@@ -101,7 +99,7 @@ public class TestBallSimulation extends JComponent
     /**
      * Erzeugt eine neue Instanz von {@link TestBallSimulation}
      *
-     * @param width  int
+     * @param width int
      * @param height int
      */
     public TestBallSimulation(final int width, final int height)
@@ -123,10 +121,10 @@ public class TestBallSimulation extends JComponent
     /**
      * Hinzufügen eines neuen Balls.
      *
-     * @param x           Aktuelle X-Koordinate [m].
-     * @param y           Aktuelle Y-Koordinate [m].
-     * @param vx          Horizontale Geschwindigkeit [m/s].
-     * @param vy          Vertikale Geschwindigkeit [m/s].
+     * @param x Aktuelle X-Koordinate [m].
+     * @param y Aktuelle Y-Koordinate [m].
+     * @param vx Horizontale Geschwindigkeit [m/s].
+     * @param vy Vertikale Geschwindigkeit [m/s].
      * @param durchmesser [m]
      */
     public void addBall(final double x, final double y, final double vx, final double vy, final double durchmesser)
@@ -227,8 +225,8 @@ public class TestBallSimulation extends JComponent
     }
 
     /**
-     * @param g     {@link Graphics}
-     * @param ball  {@link Ball}
+     * @param g {@link Graphics}
+     * @param ball {@link Ball}
      * @param color {@link Color}
      */
     private void paint(final Graphics g, final Ball ball, final Color color)
