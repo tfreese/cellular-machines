@@ -32,7 +32,6 @@ import de.freese.simulationen.wator.WaTorView;
  */
 public class SimulationGUI extends JFrame
 {
-
     /**
      * new ForkJoinPool()
      */

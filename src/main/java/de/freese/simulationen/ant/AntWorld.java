@@ -74,18 +74,18 @@ public class AntWorld extends AbstractWorld
 
         this.numberOfAnts = numberOfAnts;
 
-        Supplier<EmptyCell<AntWorld>> create = () -> {
+        Supplier<EmptyCell<AntWorld>> creator = () -> {
             EmptyCell<AntWorld> cell = new EmptyCell<>();
             cell.setWorld(AntWorld.this);
 
             return cell;
         };
-        Consumer<EmptyCell<AntWorld>> activate = (cell) -> {
+        Consumer<EmptyCell<AntWorld>> activator = (cell) -> {
             cell.setXY(-1, -1);
             cell.setColor(null);
         };
 
-        this.objectPoolEmpty = createObjectPool(create, activate);
+        this.objectPoolEmpty = createObjectPool(creator, activator);
 
         this.orientations = new int[]
         {

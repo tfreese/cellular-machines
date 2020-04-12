@@ -52,18 +52,18 @@ public class HopAlongWorld extends AbstractWorld
 
         this.center = new Point(width / 2, height / 2);
 
-        Supplier<EmptyCell<HopAlongWorld>> create = () -> {
+        Supplier<EmptyCell<HopAlongWorld>> creator = () -> {
             EmptyCell<HopAlongWorld> cell = new EmptyCell<>();
             cell.setWorld(HopAlongWorld.this);
 
             return cell;
         };
-        Consumer<EmptyCell<HopAlongWorld>> activate = (cell) -> {
+        Consumer<EmptyCell<HopAlongWorld>> activator = (cell) -> {
             cell.setXY(-1, -1);
             cell.setColor(getNullCellColor());
         };
 
-        this.objectPool = createObjectPool(create, activate);
+        this.objectPool = createObjectPool(creator, activator);
 
         initialize();
     }

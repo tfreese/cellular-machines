@@ -82,31 +82,31 @@ public class WaTorWorld extends AbstractWorld
     {
         super(width, height);
 
-        Supplier<FishCell> fishCreate = () -> {
+        Supplier<FishCell> fishCreator = () -> {
             FishCell cell = new FishCell();
             cell.setWorld(WaTorWorld.this);
 
             return cell;
         };
-        Consumer<FishCell> fishActivate = (cell) -> {
+        Consumer<FishCell> fishActivator = (cell) -> {
             cell.setXY(-1, -1);
             cell.setEnergy(getFishStartEnergy());
         };
 
-        this.objectPoolFish = createObjectPool(fishCreate, fishActivate);
+        this.objectPoolFish = createObjectPool(fishCreator, fishActivator);
 
-        Supplier<SharkCell> sharkCreate = () -> {
+        Supplier<SharkCell> sharkCreator = () -> {
             SharkCell cell = new SharkCell();
             cell.setWorld(WaTorWorld.this);
 
             return cell;
         };
-        Consumer<SharkCell> sharkActivate = (cell) -> {
+        Consumer<SharkCell> sharkActivator = (cell) -> {
             cell.setXY(-1, -1);
             cell.setEnergy(getSharkStartEnergy());
         };
 
-        this.objectPoolShark = createObjectPool(sharkCreate, sharkActivate);
+        this.objectPoolShark = createObjectPool(sharkCreator, sharkActivator);
 
         initialize();
     }

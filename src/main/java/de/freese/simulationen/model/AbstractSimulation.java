@@ -74,16 +74,16 @@ public abstract class AbstractSimulation implements ISimulation
     }
 
     /**
-     * @param createFunction {@link Supplier}
-     * @param activateConsumer {@link Consumer}
+     * @param creator {@link Supplier}
+     * @param activator {@link Consumer}
      * @param <T> Konkreter Typ
      * @return {@link ObjectPool}
      */
-    protected <T> ObjectPool<T> createObjectPool(final Supplier<T> createFunction, final Consumer<T> activateConsumer)
+    protected <T> ObjectPool<T> createObjectPool(final Supplier<T> creator, final Consumer<T> activator)
     {
-        return new de.freese.simulationen.ObjectPool<>(createFunction, activateConsumer);
-        // FunctionalObjectFactory<T> objectFactory = new FunctionalObjectFactory<>(createFunction);
-        // objectFactory.setActivateConsumer(activateConsumer);
+        return new de.freese.simulationen.ObjectPool<>(creator, activator);
+        // FunctionalObjectFactory<T> objectFactory = new FunctionalObjectFactory<>(creator);
+        // objectFactory.setActivateConsumer(activator);
         //
         // return ObjectPoolBuilder.create().min(5000).max(getWidth() * getHeight()).registerShutdownHook(true).buildSimplePool(objectFactory);
     }

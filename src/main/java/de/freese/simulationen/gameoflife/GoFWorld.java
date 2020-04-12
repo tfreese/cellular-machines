@@ -36,18 +36,18 @@ public class GoFWorld extends AbstractWorld
     {
         super(width, height);
 
-        Supplier<GoFCell> create = () -> {
+        Supplier<GoFCell> creator = () -> {
             GoFCell cell = new GoFCell();
             cell.setWorld(GoFWorld.this);
 
             return cell;
         };
-        Consumer<GoFCell> activate = (cell) -> {
+        Consumer<GoFCell> activator = (cell) -> {
             cell.setXY(-1, -1);
             cell.setAlive(getRandom().nextBoolean());
         };
 
-        this.objectPool = createObjectPool(create, activate);
+        this.objectPool = createObjectPool(creator, activator);
 
         initialize();
     }

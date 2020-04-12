@@ -4,9 +4,11 @@
 
 package de.freese.simulationen;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
@@ -28,46 +30,44 @@ public class ObjectPool<T>
     /**
      *
      */
-    private final Queue<T> queue;
-
-    /**
-     *
-     */
-    private final Supplier<T> createFunction;
-
-    /**
-     *
-     */
-    private final Consumer<T> activateFunction;
+    private final Consumer<T> activator;
 
     /**
      *
      */
     private int counterActive = 0;
+
     /**
      *
      */
+    private final Supplier<T> creator;
 
-    private final String objectClassName;
+    /**
+    *
+    */
+    private final ReentrantLock lock = new ReentrantLock(true);
+
+    /**
+     *
+     */
+    private final Queue<T> queue;
 
     /**
      * Erstellt ein neues {@link ObjectPool} Object.
      *
-     * @param createFunction {@link Supplier}
-     * @param activateFunction {@link Consumer}
+     * @param creator {@link Supplier}
+     * @param activator {@link Consumer}
      */
-    public ObjectPool(final Supplier<T> createFunction, final Consumer<T> activateFunction)
+    public ObjectPool(final Supplier<T> creator, final Consumer<T> activator)
     {
         super();
 
         this.queue = new LinkedList<>();
 
-        this.createFunction = Objects.requireNonNull(createFunction, "createFunction required");
-        this.activateFunction = Objects.requireNonNull(activateFunction, "activateFunction required");
+        this.creator = Objects.requireNonNull(creator, "creator required");
+        this.activator = Objects.requireNonNull(activator, "activator required");
 
-        this.objectClassName = createFunction.get().getClass().getSimpleName();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "ObjectPool-" + this.objectClassName));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "ObjectPool-" + getClass().getSimpleName()));
     }
 
     /**
@@ -75,35 +75,52 @@ public class ObjectPool<T>
      *
      * @return Object
      */
-    public synchronized T borrowObject()
+    public T borrowObject()
     {
-        T object = getQueue().poll();
+        getLock().lock();
 
-        if (object == null)
+        try
         {
-            object = getCreateFunction().get();
+            T object = getQueue().poll();
+
+            if (object == null)
+            {
+                object = getCreator().get();
+            }
+
+            getActivator().accept(object);
+            this.counterActive++;
+
+            return object;
         }
-
-        getActivateFunction().accept(object);
-        this.counterActive++;
-
-        return object;
+        finally
+        {
+            getLock().unlock();
+        }
     }
 
     /**
      * @return {@link Consumer}
      */
-    protected Consumer<T> getActivateFunction()
+    protected Consumer<T> getActivator()
     {
-        return this.activateFunction;
+        return this.activator;
     }
 
     /**
      * @return {@link Supplier}
      */
-    protected Supplier<T> getCreateFunction()
+    protected Supplier<T> getCreator()
     {
-        return this.createFunction;
+        return this.creator;
+    }
+
+    /**
+     * @return {@link ReentrantLock}
+     */
+    protected ReentrantLock getLock()
+    {
+        return this.lock;
     }
 
     /**
@@ -135,6 +152,33 @@ public class ObjectPool<T>
     }
 
     /**
+     * @return Class<T>
+     */
+    @SuppressWarnings("unchecked")
+    protected Class<T> getObjectClazz()
+    {
+        Class<T> objectClazz = null;
+
+        try
+        {
+            objectClazz = tryDetermineObjectClazz();
+        }
+        catch (ClassCastException ccex)
+        {
+            T object = borrowObject();
+
+            if (object != null)
+            {
+                objectClazz = (Class<T>) object.getClass();
+
+                returnObject(object);
+            }
+        }
+
+        return objectClazz;
+    }
+
+    /**
      * @return {@link Queue}<T>
      */
     protected Queue<T> getQueue()
@@ -147,30 +191,60 @@ public class ObjectPool<T>
      *
      * @param object Object
      */
-    public synchronized void returnObject(final T object)
+    public void returnObject(final T object)
     {
-        getQueue().offer(object);
-        this.counterActive--;
+        if (object == null)
+        {
+            return;
+        }
+
+        getLock().lock();
+
+        try
+        {
+            getQueue().offer(object);
+            this.counterActive--;
+        }
+        finally
+        {
+            getLock().unlock();
+        }
     }
 
     /**
      * Herunterfahren des Pools, alternativ auch über ShutdownHook.
      */
-    private void shutdown()
+    protected void shutdown()
     {
-        getLogger().info("Close Pool<{}> with {} idle and {} aktive Objects", this.objectClassName, getNumIdle(), getNumActive());
+        getLock().lock();
 
-        getQueue().clear();
-        // while (getQueue().size() > 0)
-        // {
-        // T object = getQueue().poll();
-        //
-        // if (object == null)
-        // {
-        // continue;
-        // }
-        //
-        // // Object destroy
-        // }
+        try
+        {
+            String objectClazzName = getObjectClazz().getSimpleName();
+
+            getLogger().info("Close Pool<{}> with {} idle and {} aktive Objects", objectClazzName, getNumIdle(), getNumActive());
+
+            getQueue().clear();
+            this.counterActive = 0;
+        }
+        finally
+        {
+            getLock().unlock();
+        }
+    }
+
+    /**
+     * Das hier funktioniert nur, wenn die erbende Klasse nicht auch generisch ist !<br>
+     * Z.B.: public class MyObjectPool extends AbstractObjectPool<Integer><br>
+     *
+     * @return Class
+     * @throws ClassCastException Falls was schief geht.
+     */
+    @SuppressWarnings("unchecked")
+    protected Class<T> tryDetermineObjectClazz() throws ClassCastException
+    {
+        ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
+
+        return (Class<T>) parameterizedType.getActualTypeArguments()[0];
     }
 }
