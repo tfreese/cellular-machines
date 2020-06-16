@@ -42,7 +42,7 @@ public class GoFWorld extends AbstractWorld
 
             return cell;
         };
-        Consumer<GoFCell> activator = (cell) -> {
+        Consumer<GoFCell> activator = cell -> {
             cell.setXY(-1, -1);
             cell.setAlive(getRandom().nextBoolean());
         };

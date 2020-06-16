@@ -5,7 +5,6 @@
 package de.freese.simulationen.gameoflife;
 
 import java.awt.Color;
-
 import de.freese.simulationen.model.AbstractCell;
 
 /**
@@ -34,12 +33,65 @@ public class GoFCell extends AbstractCell<GoFWorld>
     }
 
     /**
+     * Ermittelt die Anzahl der lebenden Nachbarn.<br>
+     * Quadrat von 3x3 Zellen prüfen, mit dieser Zelle in der Mitte.
+     */
+    void ermittleLebendeBachbarn()
+    {
+        int anzahlLebendeNachbarn = 0;
+
+        // Startpunkt unten links.
+        int startX = getWorld().getXTorusKoord(getX(), -1);
+        int startY = getWorld().getYTorusKoord(getY(), -1);
+
+        for (int offsetX = 0; offsetX < 3; offsetX++)
+        {
+            int x = getWorld().getXTorusKoord(startX, offsetX);
+
+            for (int offsetY = 0; offsetY < 3; offsetY++)
+            {
+                // Diese Zelle (this) ausnehmen.
+                if ((offsetX == 1) && (offsetY == 1))
+                {
+                    continue;
+                }
+
+                int y = getWorld().getYTorusKoord(startY, offsetY);
+                GoFCell cell = getWorld().getCell(x, y);
+
+                if ((cell != null) && cell.isAlive())
+                {
+                    anzahlLebendeNachbarn++;
+                }
+            }
+        }
+
+        this.lebendeNachbarn = anzahlLebendeNachbarn;
+    }
+
+    /**
      * @see de.freese.simulationen.model.ICell#getColor()
      */
     @Override
     public Color getColor()
     {
         return isAlive() ? Color.BLACK : Color.WHITE;
+    }
+
+    /**
+     * @return int
+     */
+    protected int getLebendeNachbarn()
+    {
+        return this.lebendeNachbarn;
+    }
+
+    /**
+     * @return boolean
+     */
+    protected boolean isAlive()
+    {
+        return this.alive;
     }
 
     /**
@@ -53,7 +105,7 @@ public class GoFCell extends AbstractCell<GoFWorld>
      * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
      */
     @Override
-    public void nextGeneration(final Object... params)
+    public void nextGeneration(final Object...params)
     {
         if (!isAlive() && (getLebendeNachbarn() == 3))
         {
@@ -77,59 +129,6 @@ public class GoFCell extends AbstractCell<GoFWorld>
         }
 
         getWorld().cellColorChanged(getX(), getY(), this);
-    }
-
-    /**
-     * @return int
-     */
-    protected int getLebendeNachbarn()
-    {
-        return this.lebendeNachbarn;
-    }
-
-    /**
-     * @return boolean
-     */
-    protected boolean isAlive()
-    {
-        return this.alive;
-    }
-
-    /**
-     * Ermittelt die Anzahl der lebenden Nachbarn.<br>
-     * Quadrat von 3x3 Zellen prüfen, mit dieser Zelle in der Mitte.
-     */
-    void ermittleLebendeBachbarn()
-    {
-        int alive = 0;
-
-        // Startpunkt unten links.
-        int startX = getWorld().getXTorusKoord(getX(), -1);
-        int startY = getWorld().getYTorusKoord(getY(), -1);
-
-        for (int offsetX = 0; offsetX < 3; offsetX++)
-        {
-            int x = getWorld().getXTorusKoord(startX, offsetX);
-
-            for (int offsetY = 0; offsetY < 3; offsetY++)
-            {
-                // Diese Zelle (this) ausnehmen.
-                if ((offsetX == 1) && (offsetY == 1))
-                {
-                    continue;
-                }
-
-                int y = getWorld().getYTorusKoord(startY, offsetY);
-                GoFCell cell = getWorld().getCell(x, y);
-
-                if ((cell != null) && cell.isAlive())
-                {
-                    alive++;
-                }
-            }
-        }
-
-        this.lebendeNachbarn = alive;
     }
 
     /**

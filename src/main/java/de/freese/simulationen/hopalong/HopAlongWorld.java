@@ -58,7 +58,7 @@ public class HopAlongWorld extends AbstractWorld
 
             return cell;
         };
-        Consumer<EmptyCell<HopAlongWorld>> activator = (cell) -> {
+        Consumer<EmptyCell<HopAlongWorld>> activator = cell -> {
             cell.setXY(-1, -1);
             cell.setColor(getNullCellColor());
         };

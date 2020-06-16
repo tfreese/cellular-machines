@@ -10,10 +10,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
-
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
-
 import de.freese.simulationen.model.ISimulation;
 import de.freese.simulationen.model.ISimulationListener;
 
@@ -109,6 +107,23 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
     }
 
     /**
+     * BackBuffer, erzeugt lazy das {@link VolatileImage} wenn noetig.
+     *
+     * @return {@link VolatileImage}
+     */
+    private VolatileImage createVolatileImage()
+    {
+        VolatileImage vi = null;
+
+        // GraphicsConfiguration gc = getGraphicsConfiguration();
+        // vi = gc.createCompatibleVolatileImage(getWidth(), getHeight());
+
+        vi = createVolatileImage(getPreferredSize().width, getPreferredSize().height);
+
+        return vi;
+    }
+
+    /**
      * @see javax.swing.JComponent#paint(java.awt.Graphics)
      */
     @Override
@@ -145,6 +160,10 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
             {
                 this.volatileImage = null;
                 // createBackBuffer(); // recreate the hardware accelerated image.
+
+                g.drawImage(this.image, x, y, getWidth(), getHeight(), null);
+
+                return;
             }
 
             Graphics offscreenGraphics = this.volatileImage.getGraphics();
@@ -155,22 +174,5 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
             // g.dispose();
         }
         while (this.volatileImage.contentsLost()); // Test if content is lost
-    }
-
-    /**
-     * BackBuffer, erzeugt lazy das {@link VolatileImage} wenn noetig.
-     *
-     * @return {@link VolatileImage}
-     */
-    private VolatileImage createVolatileImage()
-    {
-        VolatileImage vi = null;
-
-        // GraphicsConfiguration gc = getGraphicsConfiguration();
-        // vi = gc.createCompatibleVolatileImage(getWidth(), getHeight());
-
-        vi = createVolatileImage(getPreferredSize().width, getPreferredSize().height);
-
-        return vi;
     }
 }

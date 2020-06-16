@@ -88,7 +88,7 @@ public class WaTorWorld extends AbstractWorld
 
             return cell;
         };
-        Consumer<FishCell> fishActivator = (cell) -> {
+        Consumer<FishCell> fishActivator = cell -> {
             cell.setXY(-1, -1);
             cell.setEnergy(getFishStartEnergy());
         };
@@ -101,7 +101,7 @@ public class WaTorWorld extends AbstractWorld
 
             return cell;
         };
-        Consumer<SharkCell> sharkActivator = (cell) -> {
+        Consumer<SharkCell> sharkActivator = cell -> {
             cell.setXY(-1, -1);
             cell.setEnergy(getSharkStartEnergy());
         };

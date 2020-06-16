@@ -80,7 +80,7 @@ public class AntWorld extends AbstractWorld
 
             return cell;
         };
-        Consumer<EmptyCell<AntWorld>> activator = (cell) -> {
+        Consumer<EmptyCell<AntWorld>> activator = cell -> {
             cell.setXY(-1, -1);
             cell.setColor(null);
         };

@@ -5,7 +5,6 @@
 package de.freese.simulationen.wator;
 
 import java.awt.Color;
-
 import de.freese.simulationen.model.ICell;
 
 /**
@@ -30,14 +29,14 @@ public class SharkCell extends AbstractWatorCell
      * <li>Findet ein Hai keinen Fisch auf einem angrenzenden Feld, so schwimmt er zufällig auf eines der vier Felder.
      * <li>Für jeden Zyklus, während dessen der Hai keinen Fisch findet, verliert er einen Energiepunkt.
      * <li>Findet der Hai einen Fisch, wird seine Energie um den Energiewert des Fisches erhöht.
-     * <li>Übersteigt die Energie den Wert für die Erzeugung eines Nachkommen ("Breed Energy"), so wird ein neuer Hai auf einem angrenzenden
-     * freien Feld geboren. Die vorhandene Energie wird gleichmässig zwischen Eltern- und Kind-Hai verteilt.
+     * <li>Übersteigt die Energie den Wert für die Erzeugung eines Nachkommen ("Breed Energy"), so wird ein neuer Hai auf einem angrenzenden freien Feld
+     * geboren. Die vorhandene Energie wird gleichmässig zwischen Eltern- und Kind-Hai verteilt.
      * </ol>
      *
      * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
      */
     @Override
-    public void nextGeneration(final Object... params)
+    public void nextGeneration(final Object...params)
     {
         if (isEdited())
         {
@@ -62,7 +61,7 @@ public class SharkCell extends AbstractWatorCell
 
                 ICell cell = getWorld().getCell(fischX, fischY);
 
-                if ((cell == null) || !(cell instanceof FishCell))
+                if (!(cell instanceof FishCell))
                 {
                     setEdited(true);
                     return;

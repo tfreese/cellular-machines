@@ -5,7 +5,6 @@
 package de.freese.simulationen.wator;
 
 import java.util.Arrays;
-
 import de.freese.simulationen.model.AbstractCell;
 import de.freese.simulationen.model.ICell;
 
@@ -37,26 +36,6 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     public AbstractWatorCell()
     {
         super();
-    }
-
-    /**
-     * Liefert die Koordinaten der Fisch Nachbar-Zellen.
-     *
-     * @return int[][]; Index 0=x, 1=y
-     */
-    protected int[][] getFischNachbarn()
-    {
-        return this.nachbarn[1];
-    }
-
-    /**
-     * Liefert die Koordinaten der freien Nachbar-Zellen.
-     *
-     * @return int[][]; Index 0=x, 1=y
-     */
-    protected int[][] getFreieNachbarn()
-    {
-        return this.nachbarn[0];
     }
 
     /**
@@ -105,12 +84,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
             int x = cell2[0];
             int y = cell2[1];
 
-            ICell cell = null;
-
-            // if ((x >= 0) && (y >= 0))
-            {
-                cell = getWorld().getCell(x, y);
-            }
+            ICell cell = getWorld().getCell(x, y);
 
             if (cell == null)
             {
@@ -148,6 +122,26 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     int getEnergy()
     {
         return this.energy;
+    }
+
+    /**
+     * Liefert die Koordinaten der Fisch Nachbar-Zellen.
+     *
+     * @return int[][]; Index 0=x, 1=y
+     */
+    protected int[][] getFischNachbarn()
+    {
+        return this.nachbarn[1];
+    }
+
+    /**
+     * Liefert die Koordinaten der freien Nachbar-Zellen.
+     *
+     * @return int[][]; Index 0=x, 1=y
+     */
+    protected int[][] getFreieNachbarn()
+    {
+        return this.nachbarn[0];
     }
 
     /**
