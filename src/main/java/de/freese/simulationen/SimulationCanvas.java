@@ -44,7 +44,7 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
     /**
      *
      */
-    private Image image = null;
+    private Image image;
 
     /**
      *
@@ -54,7 +54,7 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
     /**
      *
      */
-    private VolatileImage volatileImage = null;
+    private VolatileImage volatileImage;
 
     /**
      * Erstellt ein neues {@link SimulationCanvas} Object.

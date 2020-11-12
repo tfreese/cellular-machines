@@ -45,7 +45,7 @@ public class SimulationGUI extends JFrame
     /**
      *
      */
-    public static ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = null;
+    public static ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE;
 
     /**
      *

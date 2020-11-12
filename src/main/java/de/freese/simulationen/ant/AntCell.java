@@ -22,7 +22,7 @@ public class AntCell extends AbstractCell<AntWorld>
     /**
      * @author Thomas Freese
      */
-    private static enum Direction
+    private enum Direction
     {
         /**
          *

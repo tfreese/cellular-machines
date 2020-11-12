@@ -7,13 +7,11 @@ package de.freese.simulationen.wator;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
-
 import de.freese.simulationen.AbstractSimulationView;
 import de.freese.simulationen.SimulationCanvas;
 
@@ -50,114 +48,12 @@ public class WaTorView extends AbstractSimulationView<WaTorWorld>
     }
 
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#initialize(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
      */
     @Override
-    public void initialize(final int fieldWidth, final int fieldHeight)
+    protected WaTorWorld createModel(final int fieldWidth, final int fieldHeight)
     {
-        super.initialize(fieldWidth, fieldHeight);
-
-        SimulationCanvas canvas = new SimulationCanvas(getSimulation());
-        getMainPanel().add(canvas, BorderLayout.CENTER);
-
-        // Slider für Settings
-        JPanel sliderPanel = new JPanel();
-        sliderPanel.setLayout(new GridLayout(3, 1));
-
-        // Startenergie
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2));
-        panel.setBorder(new TitledBorder("Startenergie -> Reset"));
-
-        JSlider slider = createSlider("Fische", getSimulation().getFishStartEnergy(), Color.GREEN);
-        slider.addChangeListener(event ->
-        {
-            JSlider source = (JSlider) event.getSource();
-
-            if (!source.getValueIsAdjusting())
-            {
-                int value = source.getValue();
-
-                getSimulation().setFishStartEnergy(value);
-            }
-        });
-        panel.add(slider);
-
-        slider = createSlider("Haie", getSimulation().getSharkStartEnergy(), Color.BLUE);
-        slider.addChangeListener(event ->
-        {
-            JSlider source = (JSlider) event.getSource();
-
-            if (!source.getValueIsAdjusting())
-            {
-                int value = source.getValue();
-
-                getSimulation().setSharkStartEnergy(value);
-            }
-        });
-        panel.add(slider);
-
-        sliderPanel.add(panel);
-
-        // Brutenergie
-        panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2));
-        panel.setBorder(new TitledBorder("Brutenergie"));
-
-        slider = createSlider("Fische", getSimulation().getFishBreedEnergy(), Color.GREEN);
-        slider.addChangeListener(event ->
-        {
-            JSlider source = (JSlider) event.getSource();
-
-            if (!source.getValueIsAdjusting())
-            {
-                int value = source.getValue();
-
-                getSimulation().setFishBreedEnergy(value);
-            }
-        });
-        panel.add(slider);
-
-        slider = createSlider("Haie", getSimulation().getSharkBreedEnergy(), Color.BLUE);
-        slider.addChangeListener(event ->
-        {
-            JSlider source = (JSlider) event.getSource();
-
-            if (!source.getValueIsAdjusting())
-            {
-                int value = source.getValue();
-
-                getSimulation().setSharkBreedEnergy(value);
-            }
-        });
-        panel.add(slider);
-
-        sliderPanel.add(panel);
-
-        // Sterbenergie
-        panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2));
-        panel.setBorder(new TitledBorder("Sterbenergie"));
-
-        panel.add(Box.createGlue());
-
-        slider = createSlider("Haie", getSimulation().getSharkStarveEnergy(), Color.BLUE);
-        slider.addChangeListener(event ->
-        {
-            JSlider source = (JSlider) event.getSource();
-
-            if (!source.getValueIsAdjusting())
-            {
-                int value = source.getValue();
-
-                getSimulation().setSharkStarveEnergy(value);
-            }
-        });
-        panel.add(slider);
-
-        sliderPanel.add(panel);
-
-        getControlPanel().add(sliderPanel, BorderLayout.CENTER);
+        return new WaTorWorld(fieldWidth, fieldHeight);
     }
 
     /**
@@ -183,12 +79,109 @@ public class WaTorView extends AbstractSimulationView<WaTorWorld>
     }
 
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#initialize(int, int)
      */
     @Override
-    protected WaTorWorld createModel(final int fieldWidth, final int fieldHeight)
+    public void initialize(final int fieldWidth, final int fieldHeight)
     {
-        return new WaTorWorld(fieldWidth, fieldHeight);
+        super.initialize(fieldWidth, fieldHeight);
+
+        SimulationCanvas canvas = new SimulationCanvas(getSimulation());
+        getMainPanel().add(canvas, BorderLayout.CENTER);
+
+        // Slider für Settings
+        JPanel sliderPanel = new JPanel();
+        sliderPanel.setLayout(new GridLayout(3, 1));
+
+        // Startenergie
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2));
+        panel.setBorder(new TitledBorder("Startenergie -> Reset"));
+
+        JSlider slider = createSlider("Fische", getSimulation().getFishStartEnergy(), Color.GREEN);
+        slider.addChangeListener(event -> {
+            JSlider source = (JSlider) event.getSource();
+
+            if (!source.getValueIsAdjusting())
+            {
+                int value = source.getValue();
+
+                getSimulation().setFishStartEnergy(value);
+            }
+        });
+        panel.add(slider);
+
+        slider = createSlider("Haie", getSimulation().getSharkStartEnergy(), Color.BLUE);
+        slider.addChangeListener(event -> {
+            JSlider source = (JSlider) event.getSource();
+
+            if (!source.getValueIsAdjusting())
+            {
+                int value = source.getValue();
+
+                getSimulation().setSharkStartEnergy(value);
+            }
+        });
+        panel.add(slider);
+
+        sliderPanel.add(panel);
+
+        // Brutenergie
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2));
+        panel.setBorder(new TitledBorder("Brutenergie"));
+
+        slider = createSlider("Fische", getSimulation().getFishBreedEnergy(), Color.GREEN);
+        slider.addChangeListener(event -> {
+            JSlider source = (JSlider) event.getSource();
+
+            if (!source.getValueIsAdjusting())
+            {
+                int value = source.getValue();
+
+                getSimulation().setFishBreedEnergy(value);
+            }
+        });
+        panel.add(slider);
+
+        slider = createSlider("Haie", getSimulation().getSharkBreedEnergy(), Color.BLUE);
+        slider.addChangeListener(event -> {
+            JSlider source = (JSlider) event.getSource();
+
+            if (!source.getValueIsAdjusting())
+            {
+                int value = source.getValue();
+
+                getSimulation().setSharkBreedEnergy(value);
+            }
+        });
+        panel.add(slider);
+
+        sliderPanel.add(panel);
+
+        // Sterbenergie
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2));
+        panel.setBorder(new TitledBorder("Sterbenergie"));
+
+        panel.add(Box.createGlue());
+
+        slider = createSlider("Haie", getSimulation().getSharkStarveEnergy(), Color.BLUE);
+        slider.addChangeListener(event -> {
+            JSlider source = (JSlider) event.getSource();
+
+            if (!source.getValueIsAdjusting())
+            {
+                int value = source.getValue();
+
+                getSimulation().setSharkStarveEnergy(value);
+            }
+        });
+        panel.add(slider);
+
+        sliderPanel.add(panel);
+
+        getControlPanel().add(sliderPanel, BorderLayout.CENTER);
     }
 
     /**

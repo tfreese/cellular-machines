@@ -29,7 +29,7 @@ public class Ball
     /**
      *
      */
-    private boolean finished = false;
+    private boolean finished;
 
     /**
      * Horizontale Größe des Koordinatensystems [m].

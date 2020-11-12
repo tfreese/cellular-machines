@@ -33,12 +33,12 @@ public class HopAlongWorld extends AbstractWorld
     /**
      *
      */
-    private double x = 0.0d;
+    private double x = 0.0D;
 
     /**
      *
      */
-    private double y = 0.0d;
+    private double y = 0.0D;
 
     /**
      * Erstellt ein neues {@link HopAlongWorld} Object.
@@ -129,9 +129,9 @@ public class HopAlongWorld extends AbstractWorld
         // double a = 0.01d;
         // double b = -0.3d;
         // double c = 0.003d;
-        double a = -14d;
-        double b = 0.9f;
-        double c = 0.1d;
+        double a = -14D;
+        double b = 0.9F;
+        double c = 0.1D;
 
         double xx = this.y - (Math.signum(this.x) * Math.sqrt(Math.abs((b * this.x) - c)));
         // // double xx = y - (FastMath.signum(x) * FastMath.pow(Math.abs((b * x) - c), 0.5D));

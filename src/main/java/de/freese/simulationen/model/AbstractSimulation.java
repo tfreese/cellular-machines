@@ -28,7 +28,7 @@ public abstract class AbstractSimulation implements ISimulation
     /**
     *
     */
-    private Image image = null;
+    private Image image;
 
     /**
      *
@@ -81,7 +81,7 @@ public abstract class AbstractSimulation implements ISimulation
      */
     protected <T> ObjectPool<T> createObjectPool(final Supplier<T> creator, final Consumer<T> activator)
     {
-        return new de.freese.simulationen.ObjectPool<>(creator, activator);
+        return new ObjectPool<>(creator, activator);
         // FunctionalObjectFactory<T> objectFactory = new FunctionalObjectFactory<>(creator);
         // objectFactory.setActivateConsumer(activator);
         //

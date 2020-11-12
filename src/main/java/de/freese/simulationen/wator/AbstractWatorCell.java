@@ -18,7 +18,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     /**
      *
      */
-    private boolean edited = false;
+    private boolean edited;
 
     /**
      *
@@ -28,7 +28,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     /**
      *
      */
-    private int[][][] nachbarn = null;
+    private int[][][] nachbarn;
 
     /**
      * Erstellt ein neues {@link AbstractWatorCell} Object.

@@ -9,6 +9,7 @@ package de.freese.simulationen.model;
  *
  * @author Thomas Freese
  */
+@FunctionalInterface
 public interface ISimulationListener
 {
     // /**

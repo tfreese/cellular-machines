@@ -20,6 +20,7 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.freese.simulationen.ant.AntWorld;
+import de.freese.simulationen.ball.BallSimulation;
 import de.freese.simulationen.gameoflife.GoFWorld;
 import de.freese.simulationen.model.ISimulation;
 import de.freese.simulationen.wator.WaTorWorld;
@@ -55,7 +56,7 @@ public class SimulationConsole
         Options options = new Options();
 
         // Simulation
-        Option option = new Option("type", "Simulation: ants, gof, wator");
+        Option option = new Option("type", "Simulation: ants, gof, wator, ball");
         option.setRequired(true);
         option.setArgs(1);
         options.addOption(option);
@@ -137,23 +138,15 @@ public class SimulationConsole
                 directory = Paths.get(dir, type);
             }
 
-            ISimulation simulation = null;
-
-            switch (type)
+            ISimulation simulation = switch (type)
             {
-                case "ants":
-                    simulation = new AntWorld(fieldWidth, fieldHeight);
-                    break;
-                case "gof":
-                    simulation = new GoFWorld(fieldWidth, fieldHeight);
-                    break;
-                case "wator":
-                    simulation = new WaTorWorld(fieldWidth, fieldHeight);
-                    break;
+                case "ants" -> new AntWorld(fieldWidth, fieldHeight);
+                case "gof" -> new GoFWorld(fieldWidth, fieldHeight);
+                case "wator" -> new WaTorWorld(fieldWidth, fieldHeight);
+                case "ball" -> new BallSimulation(fieldWidth, fieldHeight, Integer.parseInt(SimulationGUI.PROPERTIES.getProperty("simulation.delay", "40")));
 
-                default:
-                    throw new IllegalStateException("invalid type: " + type);
-            }
+                default -> throw new IllegalStateException("invalid type: " + type);
+            };
 
             if (!Files.exists(directory))
             {

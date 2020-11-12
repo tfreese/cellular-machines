@@ -11,10 +11,8 @@ import java.awt.Font;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -27,7 +25,6 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-
 import de.freese.simulationen.SimulationGUI;
 import de.freese.simulationen.model.ISimulation;
 import de.freese.simulationen.model.ISimulationListener;
@@ -52,7 +49,7 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     /**
     *
     */
-    private ScheduledFuture<?> scheduledFuture = null;
+    private ScheduledFuture<?> scheduledFuture;
 
     /**
         *
@@ -129,6 +126,14 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     }
 
     /**
+     * @return {@link ScheduledExecutorService}
+     */
+    protected ScheduledExecutorService getScheduledExecutorService()
+    {
+        return SimulationGUI.SCHEDULED_EXECUTOR_SERVICE;
+    }
+
+    /**
      * @return {@link TimeSeries}
      */
     private TimeSeries getTimeSeriesFische()
@@ -145,14 +150,6 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     }
 
     /**
-     * @return {@link ScheduledExecutorService}
-     */
-    protected ScheduledExecutorService getScheduledExecutorService()
-    {
-        return SimulationGUI.SCHEDULED_EXECUTOR_SERVICE;
-    }
-
-    /**
      * Startet die Simulation.
      */
     protected void start()
@@ -165,8 +162,7 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
      */
     protected void step()
     {
-        Runnable runnable = () ->
-        {
+        Runnable runnable = () -> {
             RegularTimePeriod timePeriod = new FixedMillisecond();
 
             getTimeSeriesFische().addOrUpdate(timePeriod, this.fishes);

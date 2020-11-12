@@ -11,14 +11,11 @@ import java.io.StringWriter;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import de.freese.simulationen.model.ISimulation;
 
 /**
@@ -32,17 +29,17 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     /**
      *
      */
-    private JPanel buttonPanel = null;
+    private JPanel buttonPanel;
 
     /**
      *
      */
-    private JButton buttonStart = null;
+    private JButton buttonStart;
 
     /**
      *
      */
-    private JPanel controlPanel = null;
+    private JPanel controlPanel;
 
     /**
      * [ms]
@@ -57,17 +54,17 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     /**
      *
      */
-    private JPanel mainPanel = null;
+    private JPanel mainPanel;
 
     /**
      *
      */
-    private ScheduledFuture<?> scheduledFuture = null;
+    private ScheduledFuture<?> scheduledFuture;
 
     /**
      *
      */
-    private S simulation = null;
+    private S simulation;
 
     /**
      * Erstellt ein neues {@link AbstractSimulationView} Object.
@@ -80,30 +77,13 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     }
 
     /**
-     * @return {@link ISimulation}
-     */
-    public S getSimulation()
-    {
-        return this.simulation;
-    }
-
-    /**
-     * Aufbau der GUI.
+     * Erzeugt das Model.
      *
      * @param fieldWidth int
      * @param fieldHeight int
+     * @return {@link ISimulation}
      */
-    public void initialize(final int fieldWidth, final int fieldHeight)
-    {
-        this.simulation = createModel(fieldWidth, fieldHeight);
-
-        getControlPanel().setLayout(new BorderLayout());
-        getControlPanel().setPreferredSize(new Dimension(180, 10));
-        getControlPanel().add(getButtonPanel(), BorderLayout.NORTH);
-
-        getMainPanel().setLayout(new BorderLayout());
-        getMainPanel().add(getControlPanel(), BorderLayout.EAST);
-    }
+    protected abstract S createModel(final int fieldWidth, final int fieldHeight);
 
     /**
      * @return {@link JPanel}
@@ -134,15 +114,6 @@ public abstract class AbstractSimulationView<S extends ISimulation>
 
         return this.buttonPanel;
     }
-
-    /**
-     * Erzeugt das Model.
-     *
-     * @param fieldWidth int
-     * @param fieldHeight int
-     * @return {@link ISimulation}
-     */
-    protected abstract S createModel(final int fieldWidth, final int fieldHeight);
 
     /**
      * @return {@link JPanel}
@@ -195,6 +166,32 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     protected ScheduledExecutorService getScheduledExecutorService()
     {
         return SimulationGUI.SCHEDULED_EXECUTOR_SERVICE;
+    }
+
+    /**
+     * @return {@link ISimulation}
+     */
+    public S getSimulation()
+    {
+        return this.simulation;
+    }
+
+    /**
+     * Aufbau der GUI.
+     *
+     * @param fieldWidth int
+     * @param fieldHeight int
+     */
+    public void initialize(final int fieldWidth, final int fieldHeight)
+    {
+        this.simulation = createModel(fieldWidth, fieldHeight);
+
+        getControlPanel().setLayout(new BorderLayout());
+        getControlPanel().setPreferredSize(new Dimension(180, 10));
+        getControlPanel().add(getButtonPanel(), BorderLayout.NORTH);
+
+        getMainPanel().setLayout(new BorderLayout());
+        getMainPanel().add(getControlPanel(), BorderLayout.EAST);
     }
 
     /**
