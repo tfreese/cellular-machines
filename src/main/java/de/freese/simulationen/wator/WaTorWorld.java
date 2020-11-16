@@ -265,7 +265,6 @@ public class WaTorWorld extends AbstractWorld
         Stream.of(getCells())
             .parallel()
             .flatMap(Stream::of)
-            //.parallel()
             .filter(Objects::nonNull)
             .map(c -> (AbstractWatorCell) c)
             .forEach(c -> c.setEdited(false));
@@ -273,7 +272,6 @@ public class WaTorWorld extends AbstractWorld
         Stream.of(getCells())
             .parallel()
             .flatMap(Stream::of)
-            //.parallel()
             .filter(Objects::nonNull)
             .forEach(ICell::nextGeneration);
         // @formatter:on

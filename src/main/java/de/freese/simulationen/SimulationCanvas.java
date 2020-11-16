@@ -134,7 +134,7 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
 
         if (!this.useVolatileImage)
         {
-            g.drawImage(this.image, x, y, getWidth(), getHeight(), null);
+            g.drawImage(this.image, x, y, getWidth(), getHeight(), null); // this
 
             return;
         }
@@ -174,5 +174,7 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
             // g.dispose();
         }
         while (this.volatileImage.contentsLost()); // Test if content is lost
+
+        g.dispose();
     }
 }
