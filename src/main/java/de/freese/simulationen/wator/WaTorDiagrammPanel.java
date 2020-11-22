@@ -44,7 +44,7 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     /**
         *
         */
-    private int fishes = 0;
+    private int fishes;
 
     /**
     *
@@ -54,7 +54,7 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     /**
         *
         */
-    private int sharks = 0;
+    private int sharks;
 
     /**
      *

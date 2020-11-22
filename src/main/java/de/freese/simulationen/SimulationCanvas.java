@@ -175,6 +175,6 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
         }
         while (this.volatileImage.contentsLost()); // Test if content is lost
 
-        g.dispose();
+        // g.dispose(); // Dispose nur wenn man es selbst erzeugt hat.
     }
 }
