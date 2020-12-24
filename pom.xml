@@ -42,7 +42,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
+                            <skip>false</skip>
                             <outputDirectory>${project.build.directory}/libs</outputDirectory>
                             <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
                             <useRepositoryLayout>false</useRepositoryLayout>
@@ -68,7 +68,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                     <archive>
                         <manifest>
                             <mainClass>de.freese.simulationen.SimulationGUI</mainClass>
@@ -106,6 +106,7 @@
                         <configuration>
                             <skip>false</skip>
                             <finalName>${project.artifactId}-shaded-jar-with-dependencies</finalName>
+                            <!--outputFile>shade\${project.artifactId}.jar</outputFile-->
                             <!--shadedClassifierName>with-dependencies</shadedClassifierName-->
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <minimizeJar>false</minimizeJar> <!--Alle Klassen entfernen, die nicht verwendet werden.-->
@@ -114,6 +115,7 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
+                                        <exclude>META-INF/MANIFEST.MF</exclude> <!--Manifeste anderer Jars ignorieren.-->
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
@@ -121,6 +123,7 @@
                                         <exclude>**/LICENCE*</exclude>
                                         <exclude>**/LICENSE*</exclude>
                                         <exclude>**/*_lic.txt</exclude>
+                                        <exclude>module-info.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
