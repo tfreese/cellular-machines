@@ -42,7 +42,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <skip>false</skip>
+                            <skip>true</skip>
                             <outputDirectory>${project.build.directory}/libs</outputDirectory>
                             <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
                             <useRepositoryLayout>false</useRepositoryLayout>
@@ -68,7 +68,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <skip>false</skip>
+                    <skipAssembly>true</skipAssembly>
+                    <finalName>${project.artifactId}-assembly</finalName> 
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                     <archive>
                         <manifest>
                             <mainClass>de.freese.simulationen.SimulationGUI</mainClass>
@@ -80,10 +84,6 @@
                             <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
                         </manifestEntries>
                     </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>${project.artifactId}-assembly</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -104,13 +104,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <skip>false</skip>
-                            <finalName>${project.artifactId}-shaded-jar-with-dependencies</finalName>
-                            <!--outputFile>shade\${project.artifactId}.jar</outputFile-->
-                            <!--shadedClassifierName>with-dependencies</shadedClassifierName-->
+                            <!--shadedArtifactAttached>true</shadedArtifactAttached--> <!--Uber-jar als neue Datei, Original nicht ersetzen.-->
+                            <!--shadedClassifierName>shade-jar-with-dependencies</shadedClassifierName-->                            
+                            <finalName>${project.artifactId}-shade-jar-with-dependencies</finalName>
+                            <!--outputFile>shade/${project.artifactId}.jar</outputFile-->
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <minimizeJar>false</minimizeJar> <!--Alle Klassen entfernen, die nicht verwendet werden.-->
-                            <shadedArtifactAttached>true</shadedArtifactAttached> <!--Uber-jar als neue Datei, Original nicht ersetzen.-->
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
