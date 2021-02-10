@@ -40,7 +40,7 @@ public class SimulationListenerSaveImageTest implements ISimulationListener
     /**
      * @author Thomas Freese
      */
-    private class QueueWorker implements Runnable
+    private final class QueueWorker implements Runnable
     {
         /**
          *
@@ -141,7 +141,7 @@ public class SimulationListenerSaveImageTest implements ISimulationListener
         this.executor = Objects.requireNonNull(executor, "executor required");
         this.counter = new AtomicInteger(0);
 
-        for (int i = 0; i < Runtime.getRuntime().availableProcessors() - 1; i++)
+        for (int i = 0; i < (Runtime.getRuntime().availableProcessors() - 1); i++)
         {
             this.executor.execute(new QueueWorker(this.queue));
         }

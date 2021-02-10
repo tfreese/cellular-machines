@@ -51,7 +51,7 @@ public abstract class AbstractSimulation implements ISimulation
      * @param width int
      * @param height int
      */
-    public AbstractSimulation(final int width, final int height)
+    protected AbstractSimulation(final int width, final int height)
     {
         super();
 

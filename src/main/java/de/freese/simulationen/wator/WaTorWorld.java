@@ -25,7 +25,7 @@ public class WaTorWorld extends AbstractWorld
     /**
      * Richtung der Berechnung.
      */
-    private int direction = 0;
+    private int direction;
 
     /**
      * Brut-Energie der Fische.

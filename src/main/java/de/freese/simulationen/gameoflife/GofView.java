@@ -16,14 +16,6 @@ import de.freese.simulationen.SimulationCanvas;
 public class GofView extends AbstractSimulationView<GoFWorld>
 {
     /**
-     * Erstellt ein neues {@link GofView} Object.
-     */
-    public GofView()
-    {
-        super();
-    }
-
-    /**
      * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
      */
     @Override

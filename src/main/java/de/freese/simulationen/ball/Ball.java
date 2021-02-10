@@ -49,22 +49,22 @@ public class Ball
     /**
      * Horizontale Geschwindigkeit [m/s].
      */
-    private double vx = 0.0D;
+    private double vx;
 
     /**
      * Vertikale Geschwindigkeit [m/s].
      */
-    private double vy = 0.0D;
+    private double vy;
 
     /**
      * Aktuelle X-Koordinate [m].
      */
-    private double x = 0.0D;
+    private double x;
 
     /**
      * Aktuelle Y-Koordinate [m].
      */
-    private double y = 0.0D;
+    private double y;
 
     /**
      * Erzeugt eine neue Instanz von {@link Ball}

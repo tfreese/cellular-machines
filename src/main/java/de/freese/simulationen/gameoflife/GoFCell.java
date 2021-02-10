@@ -22,15 +22,7 @@ public class GoFCell extends AbstractCell<GoFWorld>
     /**
      *
      */
-    private int lebendeNachbarn = 0;
-
-    /**
-     * Erstellt ein neues {@link GoFCell} Object.
-     */
-    public GoFCell()
-    {
-        super();
-    }
+    private int lebendeNachbarn;
 
     /**
      * Ermittelt die Anzahl der lebenden Nachbarn.<br>

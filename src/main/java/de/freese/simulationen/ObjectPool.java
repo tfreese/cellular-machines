@@ -35,7 +35,7 @@ public class ObjectPool<T>
     /**
      *
      */
-    private int counterActive = 0;
+    private int counterActive;
 
     /**
      *

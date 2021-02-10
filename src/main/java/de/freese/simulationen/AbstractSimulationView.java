@@ -69,7 +69,7 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     /**
      * Erstellt ein neues {@link AbstractSimulationView} Object.
      */
-    public AbstractSimulationView()
+    protected AbstractSimulationView()
     {
         super();
 

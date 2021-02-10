@@ -30,7 +30,7 @@ public class SimulationListenerSaveImage implements ISimulationListener
     /**
      * @author Thomas Freese
      */
-    private class WriteImageTask implements Runnable
+    private final class WriteImageTask implements Runnable
     {
         /**
          *

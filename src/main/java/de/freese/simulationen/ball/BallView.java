@@ -20,14 +20,6 @@ import de.freese.simulationen.SimulationCanvas;
 public class BallView extends AbstractSimulationView<BallSimulation>
 {
     /**
-     * Erstellt ein neues {@link BallView} Object.
-     */
-    public BallView()
-    {
-        super();
-    }
-
-    /**
      * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
      */
     @Override

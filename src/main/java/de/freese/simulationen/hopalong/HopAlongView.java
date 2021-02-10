@@ -16,14 +16,6 @@ import de.freese.simulationen.SimulationCanvas;
 public class HopAlongView extends AbstractSimulationView<HopAlongWorld>
 {
     /**
-     * Erstellt ein neues {@link HopAlongView} Object.
-     */
-    public HopAlongView()
-    {
-        super();
-    }
-
-    /**
      * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
      */
     @Override

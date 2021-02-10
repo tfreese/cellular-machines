@@ -40,7 +40,7 @@ public abstract class AbstractWorld extends AbstractSimulation
      * @param width int
      * @param height int
      */
-    public AbstractWorld(final int width, final int height)
+    protected AbstractWorld(final int width, final int height)
     {
         super(width, height);
 

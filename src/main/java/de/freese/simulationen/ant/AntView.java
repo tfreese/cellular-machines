@@ -16,14 +16,6 @@ import de.freese.simulationen.SimulationCanvas;
 public class AntView extends AbstractSimulationView<AntWorld>
 {
     /**
-     * Erstellt ein neues {@link AntView} Object.
-     */
-    public AntView()
-    {
-        super();
-    }
-
-    /**
      * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
      */
     @Override

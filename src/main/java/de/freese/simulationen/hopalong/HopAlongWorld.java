@@ -33,12 +33,12 @@ public class HopAlongWorld extends AbstractWorld
     /**
      *
      */
-    private double x = 0.0D;
+    private double x;
 
     /**
      *
      */
-    private double y = 0.0D;
+    private double y;
 
     /**
      * Erstellt ein neues {@link HopAlongWorld} Object.

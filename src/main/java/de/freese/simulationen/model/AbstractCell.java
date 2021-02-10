@@ -35,14 +35,6 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
     private int y = -1;
 
     /**
-     * Erstellt ein neues {@link AbstractCell} Object.
-     */
-    public AbstractCell()
-    {
-        super();
-    }
-
-    /**
      * @see de.freese.simulationen.model.ICell#getColor()
      */
     @Override
@@ -111,7 +103,7 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
 
     /**
      * Setzt die Position ohne die Zelle zu verschieben.
-     * 
+     *
      * @param x int
      * @param y int
      */

@@ -23,7 +23,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     /**
      *
      */
-    private int energy = 0;
+    private int energy;
 
     /**
      *
@@ -33,7 +33,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     /**
      * Erstellt ein neues {@link AbstractWatorCell} Object.
      */
-    public AbstractWatorCell()
+    protected AbstractWatorCell()
     {
         super();
     }
