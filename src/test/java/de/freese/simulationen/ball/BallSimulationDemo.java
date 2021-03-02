@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
  *
  * @author Thomas Freese
  */
-public class TestBallSimulation extends JComponent
+public class BallSimulationDemo extends JComponent
 {
     /**
      * [ms]
@@ -45,7 +45,7 @@ public class TestBallSimulation extends JComponent
         int w = 400;
         int h = 240;
 
-        TestBallSimulation simulation = new TestBallSimulation(w, h);
+        BallSimulationDemo simulation = new BallSimulationDemo(w, h);
         simulation.addBall(w / 3, h / 3, 20, 188, 30.0D);
         simulation.addBall((2 * w) / 3, (2 * h) / 3, -30, -30, 30.0D);
 
@@ -97,12 +97,12 @@ public class TestBallSimulation extends JComponent
     private final BufferedImage image;
 
     /**
-     * Erzeugt eine neue Instanz von {@link TestBallSimulation}
+     * Erzeugt eine neue Instanz von {@link BallSimulationDemo}
      *
      * @param width int
      * @param height int
      */
-    public TestBallSimulation(final int width, final int height)
+    public BallSimulationDemo(final int width, final int height)
     {
         super();
 

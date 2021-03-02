@@ -57,7 +57,7 @@ public class SimulationGUI extends JFrame
      */
     static
     {
-        try (InputStream inputStream = ClassLoader.getSystemResourceAsStream("simulation.properties"))
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("simulation.properties"))
         {
             PROPERTIES.load(inputStream);
         }
@@ -72,6 +72,15 @@ public class SimulationGUI extends JFrame
      */
     public static void main(final String[] args)
     {
+        // try (InputStream inputStream = getDefaultClassLoader().getResourceAsStream("simulation.properties"))
+        // {
+        // PROPERTIES.load(inputStream);
+        // }
+        // catch (Exception ex)
+        // {
+        // ex.printStackTrace();
+        // }
+
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             if (throwable != null)
             {

@@ -24,7 +24,7 @@ import javax.swing.WindowConstants;
 /**
  * @author Thomas Freese
  */
-public class TestCanvas extends JComponent implements Runnable
+public class CanvasDemo extends JComponent implements Runnable
 {
     /**
      *
@@ -36,7 +36,7 @@ public class TestCanvas extends JComponent implements Runnable
      */
     public static void main(final String[] args)
     {
-        TestCanvas canvas = new TestCanvas(100, 100);
+        CanvasDemo canvas = new CanvasDemo(100, 100);
 
         JFrame frame = new JFrame();
         frame.setTitle("TestFrame");
@@ -91,12 +91,12 @@ public class TestCanvas extends JComponent implements Runnable
     private final Random random;
 
     /**
-     * Erstellt ein neues {@link TestCanvas} Object.
+     * Erstellt ein neues {@link CanvasDemo} Object.
      *
      * @param width int
      * @param height int
      */
-    public TestCanvas(final int width, final int height)
+    public CanvasDemo(final int width, final int height)
     {
         super();
 

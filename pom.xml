@@ -14,7 +14,7 @@
     <packaging>jar</packaging>
 
     <name>${project.groupId} - ${project.artifactId}</name>
-    <description>Beispiele für zellulare Automaten (cellular machines).</description>
+    <description>Beispiele für zellulare Automaten (cellular machines)</description>
     <url>https://github.com/tfreese/cellular-machines</url>
     <inceptionYear>2009</inceptionYear>
 
@@ -69,7 +69,7 @@
                 </executions>
                 <configuration>
                     <skipAssembly>true</skipAssembly>
-                    <finalName>${project.artifactId}-assembly</finalName> 
+                    <finalName>${project.artifactId}-assembled</finalName> 
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
@@ -104,9 +104,9 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!--shadedArtifactAttached>true</shadedArtifactAttached--> <!--Uber-jar als neue Datei, Original nicht ersetzen.-->
-                            <!--shadedClassifierName>shade-jar-with-dependencies</shadedClassifierName-->                            
-                            <finalName>${project.artifactId}-shade-jar-with-dependencies</finalName>
+                            <shadedArtifactAttached>true</shadedArtifactAttached> <!--Uber-jar als neue Datei, Original nicht ersetzen.-->
+                            <!--shadedClassifierName>shaded</shadedClassifierName-->                            
+                            <finalName>${project.artifactId}-shaded</finalName>
                             <!--outputFile>shade/${project.artifactId}.jar</outputFile-->
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <minimizeJar>false</minimizeJar> <!--Alle Klassen entfernen, die nicht verwendet werden.-->

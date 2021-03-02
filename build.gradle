@@ -1,0 +1,35 @@
+apply plugin: 'java'
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+//plugins {
+//    id "java"
+//    id "org.springframework.boot" version "$version_springBoot"
+//    id "io.spring.dependency-management" version "$version_springDependencyManagement"
+//}
+
+dependencyManagement {
+    //imports {
+    //    mavenBom "org.springframework.boot:spring-boot-dependencies:$version_springBoot"
+    //}
+
+    dependencies {
+		dependency("commons-cli:commons-cli:$version_commonsCli")
+		dependency("org.jfree:jfreechart:$version_jfreechart")
+    }
+} 
+
+// Start: gradle bootRun --args='--spring.profiles.active=dev'
+bootJar {
+    mainClass = "de.freese.simulationen.SimulationGUI"
+}
+
+dependencies {
+    implementation "commons-cli:commons-cli" 
+    implementation "org.jfree:jfreechart"
+    implementation("org.slf4j:slf4j-api")
+    
+    runtimeOnly("org.slf4j:slf4j-simple")
+    
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+}
