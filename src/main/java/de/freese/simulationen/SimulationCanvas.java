@@ -80,7 +80,7 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
 
         setPreferredSize(new Dimension(width, height));
 
-        this.useVolatileImage = Boolean.parseBoolean(SimulationGUI.PROPERTIES.getProperty("simulation.use.volatileImage", "false"));
+        this.useVolatileImage = SimulationEnvironment.getInstance().getAsBoolean("simulation.use.volatileImage", false);
 
         completed(simulation);
 

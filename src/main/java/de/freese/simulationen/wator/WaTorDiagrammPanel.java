@@ -25,7 +25,7 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import de.freese.simulationen.SimulationGUI;
+import de.freese.simulationen.SimulationEnvironment;
 import de.freese.simulationen.model.ISimulation;
 import de.freese.simulationen.model.ISimulationListener;
 
@@ -130,7 +130,7 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
      */
     protected ScheduledExecutorService getScheduledExecutorService()
     {
-        return SimulationGUI.SCHEDULED_EXECUTOR_SERVICE;
+        return SimulationEnvironment.getInstance().getScheduledExecutorService();
     }
 
     /**

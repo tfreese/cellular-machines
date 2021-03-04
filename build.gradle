@@ -14,18 +14,24 @@ dependencyManagement {
     //}
 
     dependencies {
-		dependency("commons-cli:commons-cli:$version_commonsCli")
 		dependency("org.jfree:jfreechart:$version_jfreechart")
     }
 } 
 
 // Start: gradle bootRun --args='--spring.profiles.active=dev'
 bootJar {
-    mainClass = "de.freese.simulationen.SimulationGUI"
+    mainClass = "de.freese.simulationen.SimulationLauncher"
+}
+
+// gradle bootRun --args="-console -type wator -cycles 1500 -size 3840 2160 -dir /tmp/simulationen"
+bootRun {
+    args = [
+    	  "-swing"
+    	  //"-console", "-type", "wator", "-cycles", "1500", "-size", "3840", "2160", "-dir", "/tmp/simulationen"
+    ]
 }
 
 dependencies {
-    implementation "commons-cli:commons-cli" 
     implementation "org.jfree:jfreechart"
     implementation("org.slf4j:slf4j-api")
     

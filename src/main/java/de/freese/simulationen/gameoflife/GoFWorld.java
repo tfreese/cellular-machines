@@ -107,7 +107,7 @@ public class GoFWorld extends AbstractWorld
             .flatMap(Stream::of)
             //.parallel()
             .filter(Objects::nonNull)
-            .map(c -> (GoFCell) c)
+            .map(GoFCell.class::cast)
             .forEach(GoFCell::ermittleLebendeBachbarn);
 
         Stream.of(getCells())
@@ -115,7 +115,7 @@ public class GoFWorld extends AbstractWorld
             .flatMap(Stream::of)
             //.parallel()
             .filter(Objects::nonNull)
-            .map(c -> (GoFCell) c)
+            .map(GoFCell.class::cast)
             .forEach(GoFCell::nextGeneration);
         // @formatter:on
 

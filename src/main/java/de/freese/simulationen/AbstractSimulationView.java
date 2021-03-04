@@ -73,7 +73,7 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     {
         super();
 
-        this.delay = Integer.parseInt(SimulationGUI.PROPERTIES.getProperty("simulation.delay", "40"));
+        this.delay = SimulationEnvironment.getInstance().getAsInt("simulation.delay", 40);
     }
 
     /**
@@ -165,7 +165,7 @@ public abstract class AbstractSimulationView<S extends ISimulation>
      */
     protected ScheduledExecutorService getScheduledExecutorService()
     {
-        return SimulationGUI.SCHEDULED_EXECUTOR_SERVICE;
+        return SimulationEnvironment.getInstance().getScheduledExecutorService();
     }
 
     /**

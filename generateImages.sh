@@ -9,7 +9,7 @@
 
 # 3840 2160
 # 1920 1080
-#java -cp target/cellular-machines-assembly-jar-with-dependencies.jar de.freese.simulationen.SimulationConsole -cycles 15000 -type ants -size 3840 2160 -dir /tmp/simulationen
+#java -cp target/cellular-machines-assembly-jar-with-dependencies.jar de.freese.simulationen.SimulationConsole -type ants -cycles 15000 -size 3840 2160 -dir /tmp/simulationen
 
 #java -jar target/cellular-machines-shaded-jar-with-dependencies.jar
-java -cp target/cellular-machines-shaded-jar-with-dependencies.jar de.freese.simulationen.SimulationConsole -cycles 1500 -type wator -size 3840 2160 -dir /tmp/simulationen
+java -cp target/cellular-machines-shaded-jar-with-dependencies.jar de.freese.simulationen.SimulationConsole -type wator -cycles 1500 -size 3840 2160 -dir /tmp/simulationen

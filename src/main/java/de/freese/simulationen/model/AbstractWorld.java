@@ -9,8 +9,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
 import java.util.Arrays;
-import java.util.concurrent.ForkJoinPool;
-import de.freese.simulationen.SimulationGUI;
+import java.util.stream.IntStream;
 
 /**
  * BasisModel für Simulationen mit Zellen als Pixeln.
@@ -112,13 +111,11 @@ public abstract class AbstractWorld extends AbstractSimulation
      */
     protected void initialize()
     {
-        ForkJoinPool forkJoinPool = SimulationGUI.FORK_JOIN_POOL;
-
-        ForkJoinInitWorldAction action = new ForkJoinInitWorldAction(this, 0, getHeight() - 1);
-        forkJoinPool.invoke(action);
-
-        // Warten bis fertich.
-        action.join();
+        // ForkJoinInitWorldAction action = new ForkJoinInitWorldAction(this, 0, getHeight() - 1);
+        // forkJoinPool.invoke(action);
+        //
+        // // Warten bis fertich.
+        // action.join();
 
         // for (int x = 0; x < getWidth(); x++)
         // {
@@ -127,6 +124,18 @@ public abstract class AbstractWorld extends AbstractSimulation
         // initialize(x, y);
         // }
         // }
+
+        // @formatter:off
+        IntStream.range(0, getHeight())
+            .parallel()
+            .forEach(y ->
+            {
+                for (int x = 0; x < getWidth(); x++)
+                {
+                    initialize(x, y);
+                }
+            });
+        // @formatter:on
     }
 
     /**
@@ -143,13 +152,11 @@ public abstract class AbstractWorld extends AbstractSimulation
     @Override
     public void reset()
     {
-        ForkJoinPool forkJoinPool = SimulationGUI.FORK_JOIN_POOL;
-
-        ForkJoinResetWorldAction action = new ForkJoinResetWorldAction(this, 0, getHeight() - 1);
-        forkJoinPool.invoke(action);
-
-        // Warten bis fertich.
-        action.join();
+        // ForkJoinResetWorldAction action = new ForkJoinResetWorldAction(this, 0, getHeight() - 1);
+        // forkJoinPool.invoke(action);
+        //
+        // // Warten bis fertich.
+        // action.join();
 
         // for (int x = 0; x < getWidth(); x++)
         // {
@@ -157,10 +164,21 @@ public abstract class AbstractWorld extends AbstractSimulation
         // {
         // reset(x, y);
         // setCell(null, x, y);
-        // // this.cells[x][y] = null;
-        // // initialize(x, y);
         // }
         // }
+
+        // @formatter:off
+        IntStream.range(0, getHeight())
+            .parallel()
+            .forEach(y ->
+            {
+                for (int x = 0; x < getWidth(); x++)
+                {
+                    reset(x, y);
+                    setCell(null, x, y);
+                }
+            });
+        // @formatter:on
 
         initialize();
         fireCompleted();

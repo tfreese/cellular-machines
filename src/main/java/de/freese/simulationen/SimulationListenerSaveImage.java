@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.freese.simulationen.model.ISimulation;
 import de.freese.simulationen.model.ISimulationListener;
+import de.freese.simulationen.model.SimulationType;
 
 /**
  * Speichert die Bilder der Simulation.
@@ -89,28 +90,28 @@ public class SimulationListenerSaveImage implements ISimulationListener
     /**
      *
      */
-    private final String filePrefix;
+    private final String format;
 
     /**
      *
      */
-    private final String format;
+    private final SimulationType type;
 
     /**
      * Erstellt ein neues {@link SimulationListenerSaveImage} Object.
      *
      * @param format String; JPEG, PNG, BMP, WBMP, GIF
      * @param directory {@link Path}
-     * @param filePrefix String
+     * @param type {@link SimulationType}
      * @param executor {@link Executor}
      */
-    public SimulationListenerSaveImage(final String format, final Path directory, final String filePrefix, final Executor executor)
+    public SimulationListenerSaveImage(final String format, final Path directory, final SimulationType type, final Executor executor)
     {
         super();
 
         this.format = Objects.requireNonNull(format, "format required");
         this.directory = Objects.requireNonNull(directory, "directory required");
-        this.filePrefix = Objects.requireNonNull(filePrefix, "filePrefix required");
+        this.type = Objects.requireNonNull(type, "type required");
         this.executor = Objects.requireNonNull(executor, "executor required");
         this.counter = new AtomicInteger(0);
     }
@@ -137,7 +138,7 @@ public class SimulationListenerSaveImage implements ISimulationListener
             g2d.dispose();
         }
 
-        Path file = this.directory.resolve(String.format("%s-%05d.%s", this.filePrefix, this.counter.incrementAndGet(), this.format));
+        Path file = this.directory.resolve(String.format("%s-%05d.%s", this.type.getNameShort(), this.counter.incrementAndGet(), this.format));
         // LOGGER.info("Write {}", file);
 
         Runnable task = new WriteImageTask(bufferedImage, file);

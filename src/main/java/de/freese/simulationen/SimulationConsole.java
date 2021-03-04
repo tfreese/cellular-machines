@@ -6,28 +6,22 @@ package de.freese.simulationen;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.freese.simulationen.ant.AntWorld;
 import de.freese.simulationen.ball.BallSimulation;
 import de.freese.simulationen.gameoflife.GoFWorld;
 import de.freese.simulationen.model.ISimulation;
+import de.freese.simulationen.model.SimulationType;
 import de.freese.simulationen.wator.WaTorWorld;
 
 /**
  * Consolenprogramm für Bilderstellung.<br>
- * -cycles 1500 -type wator -dir /mnt/sonstiges/simulationen<br>
+ * -type wator -cycles 1500 -dir /mnt/sonstiges/simulationen<br>
  * Umwandlung in Film:<br>
  *
  * <pre>
@@ -38,7 +32,7 @@ import de.freese.simulationen.wator.WaTorWorld;
  *
  * @author Thomas Freese
  */
-public class SimulationConsole
+class SimulationConsole
 {
     /**
      *
@@ -46,116 +40,38 @@ public class SimulationConsole
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulationConsole.class);
 
     /**
-     * Liefert die möglichen Optionen der Kommandozeile.<br>
-     * Dies sind die JRE Programm Argumente.
-     *
-     * @return {@link Options}
+     * @param type {@link SimulationType}
+     * @param cycles int
+     * @param width int
+     * @param height int
+     * @param path {@link Path}
      */
-    private static Options getCommandOptions()
+    public void start(final SimulationType type, final int cycles, final int width, final int height, final Path path)
     {
-        Options options = new Options();
+        // Nur 80% der CPU-Kerne verwenden, da die Simulation selbst auch noch Ressourcen braucht.
+        int cpus = Math.min(2, (int) (Runtime.getRuntime().availableProcessors() * 0.8D));
 
-        // Simulation
-        Option option = new Option("type", "Simulation: ants, gof, wator, ball");
-        option.setRequired(true);
-        option.setArgs(1);
-        options.addOption(option);
-
-        // Durchläufe
-        option = new Option("cycles", "Anzahl der Simulations-Durchgänge");
-        option.setRequired(true);
-        option.setArgs(1);
-        options.addOption(option);
-
-        // Durchläufe
-        option = new Option("size", "arg = Breite  Höhe");
-        option.setRequired(true);
-        option.setArgs(2);
-        options.addOption(option);
-
-        // Verzeichnis
-        option = new Option("dir", "Basisverzeichnis für die Bilder. Default: tmp");
-        option.setRequired(false);
-        option.setArgs(1);
-        options.addOption(option);
-
-        return options;
-    }
-
-    /**
-     * @param args String[]
-     */
-    public static void main(final String[] args)
-    {
-        // StartParameter auslesen.
-        Options options = getCommandOptions();
-        CommandLine line = null;
-
-        try
-        {
-            CommandLineParser parser = new DefaultParser();
-            line = parser.parse(options, args);
-        }
-        catch (Exception ex)
-        {
-            LOGGER.error(ex.getMessage());
-
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("Main", options, true);
-
-            System.exit(-1);
-            return;
-        }
-
-        int cpus = Runtime.getRuntime().availableProcessors();
-        // ExecutorService executorService = Executors.newCachedThreadPool();
-        // ExecutorService executorService =
-        // new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(true), new ThreadPoolExecutor.AbortPolicy());
+        // Jeder CPU-Kern soll ausgelastet werden, wenn die Queue voll ist wird die Grafik im Caller verarbeitet.
         ExecutorService executorService =
                 new ThreadPoolExecutor(cpus, cpus, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(cpus), new ThreadPoolExecutor.CallerRunsPolicy());
 
         try
         {
-            String type = line.getOptionValue("type");
-            int cycles = Integer.parseInt(line.getOptionValue("cycles")); // 25 Bilder/Sekunde = 1500/Minute
-            String dir = line.getOptionValue("dir");
-            String[] size = line.getOptionValues("size");
-
-            int fieldWidth = Integer.parseInt(size[0]);
-            int fieldHeight = Integer.parseInt(size[1]);
-
-            // int fieldWidth = Integer.parseInt(SimulationGUI.PROPERTIES.getProperty("simulation.field.width", "100"));
-            // int fieldHeight = Integer.parseInt(SimulationGUI.PROPERTIES.getProperty("simulation.field.height", "100"));
-
-            Path directory = null;
-
-            if ((dir == null) || (dir.trim().length() == 0))
-            {
-                directory = Paths.get(System.getProperty("java.io.tmpdir"), type);
-            }
-            else
-            {
-                directory = Paths.get(dir, type);
-            }
-
             ISimulation simulation = switch (type)
             {
-                case "ants" -> new AntWorld(fieldWidth, fieldHeight);
-                case "gof" -> new GoFWorld(fieldWidth, fieldHeight);
-                case "wator" -> new WaTorWorld(fieldWidth, fieldHeight);
-                case "ball" -> new BallSimulation(fieldWidth, fieldHeight, Integer.parseInt(SimulationGUI.PROPERTIES.getProperty("simulation.delay", "40")));
+                case ANTS -> new AntWorld(width, height);
+                case GAME_OF_LIFE -> new GoFWorld(width, height);
+                case WATER_TORUS -> new WaTorWorld(width, height);
+                case BOUNCING_BALLS -> new BallSimulation(width, height, SimulationEnvironment.getInstance().getAsInt("simulation.delay", 40));
 
                 default -> throw new IllegalStateException("invalid type: " + type);
             };
 
+            Path directory = path.resolve(type.getNameShort());
+
             if (!Files.exists(directory))
             {
                 Files.createDirectories(directory);
-            }
-
-            if (!Files.isWritable(directory))
-            {
-                throw new IllegalArgumentException("directory not writeable: " + directory);
             }
 
             if (Files.exists(directory))
@@ -186,35 +102,13 @@ public class SimulationConsole
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            LOGGER.error(null, ex);
+
             System.exit(-1);
         }
         finally
         {
-            executorService.shutdown();
-
-            try
-            {
-                // Wait a while for existing tasks to terminate.
-                if (!executorService.awaitTermination(120, TimeUnit.SECONDS))
-                {
-                    executorService.shutdownNow(); // Cancel currently executing tasks
-
-                    // Wait a while for tasks to respond to being cancelled
-                    if (!executorService.awaitTermination(60, TimeUnit.SECONDS))
-                    {
-                        System.err.println("Pool did not terminate");
-                    }
-                }
-            }
-            catch (InterruptedException iex)
-            {
-                // (Re-)Cancel if current thread also interrupted
-                executorService.shutdownNow();
-
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
-            }
+            SimulationEnvironment.shutdown(executorService, LOGGER);
         }
 
         System.exit(0);
