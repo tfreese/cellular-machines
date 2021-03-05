@@ -135,7 +135,7 @@ public abstract class AbstractSimulation implements ISimulation
      * @param offSet int, Positionsänderung
      * @return int
      */
-    protected int getTorusKoord(final int size, final int pos, final int offSet)
+    private int getTorusKoord(final int size, final int pos, final int offSet)
     {
         if ((pos == 0) && (offSet < 0))
         {

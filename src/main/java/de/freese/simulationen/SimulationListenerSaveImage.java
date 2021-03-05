@@ -123,34 +123,35 @@ public class SimulationListenerSaveImage implements ISimulationListener
     public void completed(final ISimulation simulation)
     {
         Image image = simulation.getImage();
+
         BufferedImage bufferedImage = null;
 
-        // if (image instanceof ToolkitImage)
-        // {
-        // bufferedImage = ((ToolkitImage) image).getBufferedImage();
-        // }
-
-        if (bufferedImage == null)
+        if (image instanceof BufferedImage)
         {
-            bufferedImage = new BufferedImage(simulation.getWidth(), simulation.getHeight(), BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = bufferedImage.createGraphics();
-            g2d.drawImage(image, 0, 0, null);
-            g2d.dispose();
-        }
-
-        Path file = this.directory.resolve(String.format("%s-%05d.%s", this.type.getNameShort(), this.counter.incrementAndGet(), this.format));
-        // LOGGER.info("Write {}", file);
-
-        Runnable task = new WriteImageTask(bufferedImage, file);
-
-        if (this.executor != null)
-        {
-            this.executor.execute(task);
+            bufferedImage = (BufferedImage) image;
         }
         else
         {
-            task.run();
+            bufferedImage = new BufferedImage(simulation.getWidth(), simulation.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+            // Geht recht fix.
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.drawImage(image, 0, 0, null);
+            g2d.dispose();
+
+            // Dauer recht lange.
+            // bufferedImage.setRGB(0, 0, simulation.getWidth(), simulation.getHeight(), simulation.getPixelsRGB(), 0, simulation.getWidth());
+
+            // Liefert die gleiche Array-Referenz.
+            // pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+
+            // Erzeugt ein neues Array.
+            // pixels = bufferedImage.getRaster().getPixels(0, 0, width, height, (int[]) null);
         }
+
+        Path file = this.directory.resolve(String.format("%s-%05d.%s", this.type.getNameShort(), this.counter.incrementAndGet(), this.format));
+
+        this.executor.execute(new WriteImageTask(bufferedImage, file));
     }
 
     /**
@@ -161,12 +162,12 @@ public class SimulationListenerSaveImage implements ISimulationListener
     {
         LOGGER.info("Write {}", file);
 
-        try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(file)))
+        try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(file)))
         {
             // JPEG, PNG, BMP, WBMP, GIF
-            ImageIO.write(bufferedImage, this.format, os);
+            ImageIO.write(bufferedImage, this.format, outputStream);
 
-            os.flush();
+            outputStream.flush();
         }
         catch (IOException ex)
         {

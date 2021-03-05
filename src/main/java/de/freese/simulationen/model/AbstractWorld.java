@@ -5,7 +5,6 @@
 package de.freese.simulationen.model;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
 import java.util.Arrays;
@@ -96,11 +95,9 @@ public abstract class AbstractWorld extends AbstractSimulation
     protected abstract Color getNullCellColor();
 
     /**
-     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
-     *
-     * @see #getImage()
-     * @return int[]
+     * @see de.freese.simulationen.model.ISimulation#getPixelsRGB()
      */
+    @Override
     public int[] getPixelsRGB()
     {
         return this.pixelsRGB;

@@ -48,8 +48,7 @@ class SimulationConsole
      */
     public void start(final SimulationType type, final int cycles, final int width, final int height, final Path path)
     {
-        // Nur 80% der CPU-Kerne verwenden, da die Simulation selbst auch noch Ressourcen braucht.
-        int cpus = Math.min(2, (int) (Runtime.getRuntime().availableProcessors() * 0.8D));
+        int cpus = Runtime.getRuntime().availableProcessors();
 
         // Jeder CPU-Kern soll ausgelastet werden, wenn die Queue voll ist wird die Grafik im Caller verarbeitet.
         ExecutorService executorService =
@@ -93,7 +92,6 @@ class SimulationConsole
             LOGGER.info("Create {} Pictures in {}", cycles, directory);
 
             simulation.addWorldListener(new SimulationListenerSaveImage("png", directory, type, executorService));
-            // simulation.addWorldListener(new SimulationListenerSaveImageTest("png", directory, type, executorService));
 
             for (int cycle = 0; cycle < cycles; cycle++)
             {

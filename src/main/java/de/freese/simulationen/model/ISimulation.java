@@ -5,6 +5,7 @@
 package de.freese.simulationen.model;
 
 import java.awt.Image;
+import java.awt.image.MemoryImageSource;
 
 /**
  * Interface für eine Simulationsumgebung.
@@ -33,6 +34,14 @@ public interface ISimulation
      * @return {@link Image}
      */
     public Image getImage();
+
+    /**
+     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
+     *
+     * @see #getImage()
+     * @return int[]
+     */
+    public int[] getPixelsRGB();
 
     /**
      * Breite in Pixeln.
