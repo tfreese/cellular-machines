@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import de.freese.simulationen.ant.AntView;
-import de.freese.simulationen.ball.BallView;
+import de.freese.simulationen.balls.BallView;
 import de.freese.simulationen.gameoflife.GofView;
 import de.freese.simulationen.wator.WaTorDiagrammPanel;
 import de.freese.simulationen.wator.WaTorView;

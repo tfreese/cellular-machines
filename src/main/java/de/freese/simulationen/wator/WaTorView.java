@@ -29,14 +29,6 @@ public class WaTorView extends AbstractSimulationView<WaTorWorld>
 
     /**
      * Erstellt ein neues {@link WaTorView} Object.
-     */
-    public WaTorView()
-    {
-        this(null);
-    }
-
-    /**
-     * Erstellt ein neues {@link WaTorView} Object.
      *
      * @param diagrammPanel {@link WaTorDiagrammPanel}
      */
@@ -48,10 +40,10 @@ public class WaTorView extends AbstractSimulationView<WaTorWorld>
     }
 
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
      */
     @Override
-    protected WaTorWorld createModel(final int fieldWidth, final int fieldHeight)
+    protected WaTorWorld createSimulation(final int fieldWidth, final int fieldHeight)
     {
         return new WaTorWorld(fieldWidth, fieldHeight);
     }

@@ -4,9 +4,10 @@
  */
 package de.freese.simulationen.wator;
 
+import java.awt.Color;
 import java.util.Arrays;
 import de.freese.simulationen.model.AbstractCell;
-import de.freese.simulationen.model.ICell;
+import de.freese.simulationen.model.Cell;
 
 /**
  * Zelle der WaTor-Simulation.
@@ -32,10 +33,13 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
 
     /**
      * Erstellt ein neues {@link AbstractWatorCell} Object.
+     *
+     * @param world {@link WaTorWorld}
+     * @param color {@link Color}
      */
-    protected AbstractWatorCell()
+    protected AbstractWatorCell(final WaTorWorld world, final Color color)
     {
-        super();
+        super(world, color);
     }
 
     /**
@@ -84,7 +88,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
             int x = cell2[0];
             int y = cell2[1];
 
-            ICell cell = getWorld().getCell(x, y);
+            Cell cell = getWorld().getCell(x, y);
 
             if (cell == null)
             {

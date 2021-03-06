@@ -16,10 +16,10 @@ import de.freese.simulationen.SimulationCanvas;
 public class AntView extends AbstractSimulationView<AntWorld>
 {
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
      */
     @Override
-    protected AntWorld createModel(final int fieldWidth, final int fieldHeight)
+    protected AntWorld createSimulation(final int fieldWidth, final int fieldHeight)
     {
         return new AntWorld(fieldWidth, fieldHeight);
     }

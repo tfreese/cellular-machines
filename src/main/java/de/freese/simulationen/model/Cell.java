@@ -11,7 +11,7 @@ import java.awt.Color;
  *
  * @author Thomas Freese
  */
-public interface ICell
+public interface Cell
 {
     /**
      * @return {@link Color}

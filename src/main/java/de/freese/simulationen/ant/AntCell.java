@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingConstants;
 import de.freese.simulationen.model.AbstractCell;
+import de.freese.simulationen.model.Cell;
 import de.freese.simulationen.model.EmptyCell;
-import de.freese.simulationen.model.ICell;
 
 /**
  * Zelle der Langton-Ameisen Simulation.
@@ -124,12 +124,12 @@ public class AntCell extends AbstractCell<AntWorld>
 
     /**
      * Erstellt ein neues {@link AntCell} Object.
+     *
+     * @param world {@link AntWorld}
      */
-    public AntCell()
+    public AntCell(final AntWorld world)
     {
-        super();
-
-        setColor(Color.RED);
+        super(world, Color.RED);
     }
 
     /**
@@ -138,7 +138,7 @@ public class AntCell extends AbstractCell<AntWorld>
      * <li>Ist das Feld vor ihr schwarz, so stellt sie sich drauf, färbt es weiss und dreht sich um 90 Grad nach links.
      * </ol>
      *
-     * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -149,7 +149,7 @@ public class AntCell extends AbstractCell<AntWorld>
         int newY = getWorld().getYTorusKoord(getY(), frontOffsets[1]);
         int oldX = getX();
         int oldY = getY();
-        ICell frontCell = getWorld().getCell(newX, newY);
+        Cell frontCell = getWorld().getCell(newX, newY);
 
         if (frontCell instanceof AntCell)
         {

@@ -61,27 +61,27 @@ public class ScheduledFutureAwareRunnable implements Runnable
     /**
      * Erstellt ein neues {@link ScheduledFutureAwareRunnable} Object.
      *
-     * @param task {@link Runnable}
      * @param exitCondition {@link BooleanSupplier}
+     * @param task {@link Runnable}
      */
-    public ScheduledFutureAwareRunnable(final Runnable task, final BooleanSupplier exitCondition)
+    public ScheduledFutureAwareRunnable(final BooleanSupplier exitCondition, final Runnable task)
     {
-        this(task, exitCondition, null);
+        this(exitCondition, task, null);
     }
 
     /**
      * Erstellt ein neues {@link ScheduledFutureAwareRunnable} Object.
      *
-     * @param task {@link Runnable}
      * @param exitCondition {@link BooleanSupplier}
+     * @param task {@link Runnable}
      * @param name String; Optional
      */
-    public ScheduledFutureAwareRunnable(final Runnable task, final BooleanSupplier exitCondition, final String name)
+    public ScheduledFutureAwareRunnable(final BooleanSupplier exitCondition, final Runnable task, final String name)
     {
         super();
 
-        this.task = Objects.requireNonNull(task, "task required");
         this.exitCondition = Objects.requireNonNull(exitCondition, "exitCondition required");
+        this.task = Objects.requireNonNull(task, "task required");
         this.name = name;
     }
 
@@ -91,13 +91,11 @@ public class ScheduledFutureAwareRunnable implements Runnable
     @Override
     public void run()
     {
-        // System.out.println("BallView.ScheduledFutureAwareRunnable.run(): " + new Date());
-
-        this.task.run();
-
         if (this.exitCondition.getAsBoolean())
         {
             LOGGER.info("{}: exit", Objects.toString(this.name, toString()));
+
+            this.task.run();
 
             if (this.scheduledFuture != null)
             {
@@ -116,7 +114,5 @@ public class ScheduledFutureAwareRunnable implements Runnable
     public void setScheduledFuture(final ScheduledFuture<?> scheduledFuture)
     {
         this.scheduledFuture = scheduledFuture;
-
-        // notify();
     }
 }

@@ -6,8 +6,6 @@ package de.freese.simulationen.gameoflife;
 
 import java.awt.Color;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import de.freese.simulationen.ObjectPool;
 import de.freese.simulationen.model.AbstractWorld;
@@ -36,18 +34,29 @@ public class GoFWorld extends AbstractWorld
     {
         super(width, height);
 
-        Supplier<GoFCell> creator = () -> {
-            GoFCell cell = new GoFCell();
-            cell.setWorld(GoFWorld.this);
+        this.objectPool = new ObjectPool<>()
+        {
+            /**
+             * @see de.freese.simulationen.ObjectPool#activate(java.lang.Object)
+             */
+            @Override
+            protected void activate(final GoFCell object)
+            {
+                object.setXY(-1, -1);
+                object.setAlive(getRandom().nextBoolean());
+            }
 
-            return cell;
-        };
-        Consumer<GoFCell> activator = cell -> {
-            cell.setXY(-1, -1);
-            cell.setAlive(getRandom().nextBoolean());
-        };
+            /**
+             * @see de.freese.simulationen.ObjectPool#create()
+             */
+            @Override
+            protected GoFCell create()
+            {
+                GoFCell cell = new GoFCell(GoFWorld.this);
 
-        this.objectPool = createObjectPool(creator, activator);
+                return cell;
+            }
+        };
 
         initialize();
     }
@@ -96,7 +105,7 @@ public class GoFWorld extends AbstractWorld
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#nextGeneration()
+     * @see de.freese.simulationen.model.Simulation#nextGeneration()
      */
     @Override
     public void nextGeneration()

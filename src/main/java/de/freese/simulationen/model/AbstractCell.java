@@ -12,12 +12,12 @@ import java.awt.Color;
  * @author Thomas Freese
  * @param <T> Konkreter Typ der Welt
  */
-public abstract class AbstractCell<T extends AbstractWorld> implements ICell
+public abstract class AbstractCell<T extends AbstractWorld> implements Cell
 {
     /**
      *
      */
-    private Color color = Color.MAGENTA;
+    private Color color;
 
     /**
      *
@@ -35,7 +35,31 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
     private int y = -1;
 
     /**
-     * @see de.freese.simulationen.model.ICell#getColor()
+     * Erstellt ein neues {@link AbstractCell} Object.
+     *
+     * @param world {@link AbstractWorld}
+     */
+    protected AbstractCell(final T world)
+    {
+        this(world, null);
+    }
+
+    /**
+     * Erstellt ein neues {@link AbstractCell} Object.
+     *
+     * @param world {@link AbstractWorld}
+     * @param color {@link Color}
+     */
+    protected AbstractCell(final T world, final Color color)
+    {
+        super();
+
+        this.world = world;
+        this.color = color;
+    }
+
+    /**
+     * @see de.freese.simulationen.model.Cell#getColor()
      */
     @Override
     public Color getColor()
@@ -52,7 +76,7 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
     }
 
     /**
-     * @see de.freese.simulationen.model.ICell#getX()
+     * @see de.freese.simulationen.model.Cell#getX()
      */
     @Override
     public int getX()
@@ -61,7 +85,7 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
     }
 
     /**
-     * @see de.freese.simulationen.model.ICell#getY()
+     * @see de.freese.simulationen.model.Cell#getY()
      */
     @Override
     public int getY()
@@ -70,7 +94,7 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
     }
 
     /**
-     * @see de.freese.simulationen.model.ICell#moveTo(int, int)
+     * @see de.freese.simulationen.model.Cell#moveTo(int, int)
      */
     @Override
     public void moveTo(final int x, final int y)
@@ -86,19 +110,11 @@ public abstract class AbstractCell<T extends AbstractWorld> implements ICell
     }
 
     /**
-     * @param color {@link Color}
+     * @param color Color
      */
-    protected void setColor(final Color color)
+    public void setColor(final Color color)
     {
         this.color = color;
-    }
-
-    /**
-     * @param world {@link AbstractWorld}
-     */
-    public void setWorld(final T world)
-    {
-        this.world = world;
     }
 
     /**

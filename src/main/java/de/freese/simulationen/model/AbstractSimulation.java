@@ -4,31 +4,22 @@
  */
 package de.freese.simulationen.model;
 
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import de.freese.simulationen.ObjectPool;
 
 /**
  * BasisModel für die Simulationen.
  *
  * @author Thomas Freese
  */
-public abstract class AbstractSimulation implements ISimulation
+public abstract class AbstractSimulation implements Simulation
 {
     /**
      *
      */
     private final int height;
-
-    /**
-    *
-    */
-    private Image image;
 
     /**
      *
@@ -38,7 +29,7 @@ public abstract class AbstractSimulation implements ISimulation
     /**
      *
      */
-    private final List<ISimulationListener> simulationListeners;
+    private final List<SimulationListener> simulationListeners;
 
     /**
      *
@@ -62,30 +53,15 @@ public abstract class AbstractSimulation implements ISimulation
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#addWorldListener(de.freese.simulationen.model.ISimulationListener)
+     * @see de.freese.simulationen.model.Simulation#addWorldListener(de.freese.simulationen.model.SimulationListener)
      */
     @Override
-    public void addWorldListener(final ISimulationListener simulationListener)
+    public void addWorldListener(final SimulationListener simulationListener)
     {
         if (!this.simulationListeners.contains(simulationListener))
         {
             this.simulationListeners.add(simulationListener);
         }
-    }
-
-    /**
-     * @param creator {@link Supplier}
-     * @param activator {@link Consumer}
-     * @param <T> Konkreter Typ
-     * @return {@link ObjectPool}
-     */
-    protected <T> ObjectPool<T> createObjectPool(final Supplier<T> creator, final Consumer<T> activator)
-    {
-        return new ObjectPool<>(creator, activator);
-        // FunctionalObjectFactory<T> objectFactory = new FunctionalObjectFactory<>(creator);
-        // objectFactory.setActivateConsumer(activator);
-        //
-        // return ObjectPoolBuilder.create().min(5000).max(getWidth() * getHeight()).registerShutdownHook(true).buildSimplePool(objectFactory);
     }
 
     /**
@@ -95,28 +71,19 @@ public abstract class AbstractSimulation implements ISimulation
     {
         updateImage();
 
-        for (ISimulationListener listener : this.simulationListeners)
+        for (SimulationListener listener : this.simulationListeners)
         {
             listener.completed(this);
         }
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#getHeight()
+     * @see de.freese.simulationen.model.Simulation#getHeight()
      */
     @Override
     public int getHeight()
     {
         return this.height;
-    }
-
-    /**
-     * @see de.freese.simulationen.model.ISimulation#getImage()
-     */
-    @Override
-    public Image getImage()
-    {
-        return this.image;
     }
 
     /**
@@ -146,7 +113,7 @@ public abstract class AbstractSimulation implements ISimulation
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#getWidth()
+     * @see de.freese.simulationen.model.Simulation#getWidth()
      */
     @Override
     public int getWidth()
@@ -176,14 +143,6 @@ public abstract class AbstractSimulation implements ISimulation
     public int getYTorusKoord(final int pos, final int offSet)
     {
         return getTorusKoord(getHeight(), pos, offSet);
-    }
-
-    /**
-     * @param image {@link Image}
-     */
-    protected void setImage(final Image image)
-    {
-        this.image = image;
     }
 
     /**

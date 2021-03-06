@@ -16,10 +16,10 @@ import de.freese.simulationen.SimulationCanvas;
 public class HopAlongView extends AbstractSimulationView<HopAlongWorld>
 {
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
      */
     @Override
-    protected HopAlongWorld createModel(final int fieldWidth, final int fieldHeight)
+    protected HopAlongWorld createSimulation(final int fieldWidth, final int fieldHeight)
     {
         return new HopAlongWorld(fieldWidth, fieldHeight);
     }

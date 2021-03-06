@@ -13,21 +13,22 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.freese.simulationen.ant.AntWorld;
-import de.freese.simulationen.ball.BallSimulation;
+import de.freese.simulationen.balls.BallSimulation;
 import de.freese.simulationen.gameoflife.GoFWorld;
-import de.freese.simulationen.model.ISimulation;
+import de.freese.simulationen.model.Simulation;
 import de.freese.simulationen.model.SimulationType;
 import de.freese.simulationen.wator.WaTorWorld;
 
 /**
  * Consolenprogramm für Bilderstellung.<br>
  * -type wator -cycles 1500 -dir /mnt/sonstiges/simulationen<br>
- * Umwandlung in Film:<br>
+ * Umwandlung in Video:<br>
  *
  * <pre>
- * ffmpeg -f image2 -r 25  -i gof-%05d.png   -c:v png -r 25 -an             gof.avi
- * ffmpeg -f image2 -r 25  -i wator-%05d.png -c:v png -r 25 -an -f matroska wator.mkv
- * ffmpeg -f image2 -r 250 -i ants-%05d.png  -c:v png -r 25 -an -f matroska ants.mkv
+ * ffmpeg -y -f image2 -r 25  -i gof-%05d.png    -c:v png -r 25 -an             gof.avi      // 25  Bilder/Sekunde
+ * ffmpeg -y -f image2 -r 25  -i wator-%05d.png  -c:v png -r 25 -an -f matroska wator.mkv    // 25  Bilder/Sekunde
+ * ffmpeg -y -f image2 -r 250 -i ants-%05d.png   -c:v png -r 25 -an -f matroska ants.mkv     // 250 Bilder/Sekunde
+ * ffmpeg -y -f image2 -r 250 -i balls-%05d.png  -c:v png -r 25 -an -f matroska balls.mkv    // 250 Bilder/Sekunde
  * </pre>
  *
  * @author Thomas Freese
@@ -56,7 +57,7 @@ class SimulationConsole
 
         try
         {
-            ISimulation simulation = switch (type)
+            Simulation simulation = switch (type)
             {
                 case ANTS -> new AntWorld(width, height);
                 case GAME_OF_LIFE -> new GoFWorld(width, height);
@@ -93,9 +94,19 @@ class SimulationConsole
 
             simulation.addWorldListener(new SimulationListenerSaveImage("png", directory, type, executorService));
 
+            // # 40ms = 25 Bilder/Sekunde
+            // int delay = SimulationEnvironment.getInstance().getAsInt("simulation.delay", 40);
+
             for (int cycle = 0; cycle < cycles; cycle++)
             {
                 simulation.nextGeneration();
+
+                if ((simulation instanceof BallSimulation) && ((BallSimulation) simulation).isFinished())
+                {
+                    break;
+                }
+
+                // TimeUnit.MILLISECONDS.sleep(delay);
             }
         }
         catch (Exception ex)

@@ -7,13 +7,11 @@ package de.freese.simulationen.ant;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import javax.swing.SwingConstants;
 import de.freese.simulationen.ObjectPool;
 import de.freese.simulationen.model.AbstractWorld;
+import de.freese.simulationen.model.Cell;
 import de.freese.simulationen.model.EmptyCell;
-import de.freese.simulationen.model.ICell;
 
 /**
  * Model der Langton-Ameisen Simulation.<br>
@@ -74,18 +72,29 @@ public class AntWorld extends AbstractWorld
 
         this.numberOfAnts = numberOfAnts;
 
-        Supplier<EmptyCell<AntWorld>> creator = () -> {
-            EmptyCell<AntWorld> cell = new EmptyCell<>();
-            cell.setWorld(AntWorld.this);
+        this.objectPoolEmpty = new ObjectPool<>()
+        {
+            /**
+             * @see de.freese.simulationen.ObjectPool#activate(java.lang.Object)
+             */
+            @Override
+            protected void activate(final EmptyCell<AntWorld> object)
+            {
+                object.setXY(-1, -1);
+                object.setColor(null);
+            }
 
-            return cell;
-        };
-        Consumer<EmptyCell<AntWorld>> activator = cell -> {
-            cell.setXY(-1, -1);
-            cell.setColor(null);
-        };
+            /**
+             * @see de.freese.simulationen.ObjectPool#create()
+             */
+            @Override
+            protected EmptyCell<AntWorld> create()
+            {
+                EmptyCell<AntWorld> cell = new EmptyCell<>(AntWorld.this);
 
-        this.objectPoolEmpty = createObjectPool(creator, activator);
+                return cell;
+            }
+        };
 
         this.orientations = new int[]
         {
@@ -151,8 +160,7 @@ public class AntWorld extends AbstractWorld
     @Override
     protected void initialize(final int x, final int y)
     {
-        AntCell cell = new AntCell();
-        cell.setWorld(this);
+        AntCell cell = new AntCell(this);
         cell.setOrientation(getRandomOrientation());
         cell.moveTo(x, y);
 
@@ -160,7 +168,7 @@ public class AntWorld extends AbstractWorld
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#nextGeneration()
+     * @see de.freese.simulationen.model.Simulation#nextGeneration()
      */
     @Override
     public void nextGeneration()
@@ -177,7 +185,7 @@ public class AntWorld extends AbstractWorld
     @Override
     protected void reset(final int x, final int y)
     {
-        ICell cell = getCell(x, y);
+        Cell cell = getCell(x, y);
 
         if (cell instanceof EmptyCell)
         {

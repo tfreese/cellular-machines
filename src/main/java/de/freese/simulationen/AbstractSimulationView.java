@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.freese.simulationen.model.ISimulation;
+import de.freese.simulationen.model.Simulation;
 
 /**
  * BasisView fuer die Simulationen.
@@ -24,7 +24,7 @@ import de.freese.simulationen.model.ISimulation;
  * @author Thomas Freese
  * @param <S> Konkreter Typ der Welt
  */
-public abstract class AbstractSimulationView<S extends ISimulation>
+public abstract class AbstractSimulationView<S extends Simulation>
 {
     /**
      *
@@ -77,13 +77,13 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     }
 
     /**
-     * Erzeugt das Model.
+     * Erzeugt die Simulation.
      *
      * @param fieldWidth int
      * @param fieldHeight int
-     * @return {@link ISimulation}
+     * @return {@link Simulation}
      */
-    protected abstract S createModel(final int fieldWidth, final int fieldHeight);
+    protected abstract S createSimulation(final int fieldWidth, final int fieldHeight);
 
     /**
      * @return {@link JPanel}
@@ -169,7 +169,7 @@ public abstract class AbstractSimulationView<S extends ISimulation>
     }
 
     /**
-     * @return {@link ISimulation}
+     * @return {@link Simulation}
      */
     public S getSimulation()
     {
@@ -184,7 +184,7 @@ public abstract class AbstractSimulationView<S extends ISimulation>
      */
     public void initialize(final int fieldWidth, final int fieldHeight)
     {
-        this.simulation = createModel(fieldWidth, fieldHeight);
+        this.simulation = createSimulation(fieldWidth, fieldHeight);
 
         getControlPanel().setLayout(new BorderLayout());
         getControlPanel().setPreferredSize(new Dimension(180, 10));

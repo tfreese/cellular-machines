@@ -25,6 +25,16 @@ public class GoFCell extends AbstractCell<GoFWorld>
     private int lebendeNachbarn;
 
     /**
+     * Erstellt ein neues {@link GoFCell} Object.
+     *
+     * @param world {@link GoFWorld}
+     */
+    public GoFCell(final GoFWorld world)
+    {
+        super(world);
+    }
+
+    /**
      * Ermittelt die Anzahl der lebenden Nachbarn.<br>
      * Quadrat von 3x3 Zellen prüfen, mit dieser Zelle in der Mitte.
      */
@@ -62,7 +72,7 @@ public class GoFCell extends AbstractCell<GoFWorld>
     }
 
     /**
-     * @see de.freese.simulationen.model.ICell#getColor()
+     * @see de.freese.simulationen.model.Cell#getColor()
      */
     @Override
     public Color getColor()
@@ -94,7 +104,7 @@ public class GoFCell extends AbstractCell<GoFWorld>
      * <li>Lebende Zellen mit mehr als drei lebenden Nachbarn sterben in der nächsten Generation an Überbevölkerung.
      * </ol>
      *
-     * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
      */
     @Override
     public void nextGeneration(final Object...params)

@@ -1,5 +1,5 @@
 // Created: 26.09.2016
-package de.freese.simulationen.ball;
+package de.freese.simulationen.balls;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntSupplier;

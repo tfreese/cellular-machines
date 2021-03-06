@@ -8,61 +8,53 @@ import java.awt.Color;
 
 /**
  * Dummy-Zelle für leere Flächen.
- * 
+ *
  * @author Thomas Freese
  * @param <T> Konkreter Typ der Welt
  */
 public class EmptyCell<T extends AbstractWorld> extends AbstractCell<T>
 {
-	/**
-	 * Erstellt ein neues {@link EmptyCell} Object.
-	 */
-	public EmptyCell()
-	{
-		super();
-	}
+    /**
+     * Erstellt ein neues {@link EmptyCell} Object.
+     *
+     * @param world {@link AbstractWorld}
+     */
+    public EmptyCell(final T world)
+    {
+        super(world);
+    }
 
-	/**
-	 * Erstellt ein neues {@link EmptyCell} Object.
-	 * 
-	 * @param color {@link Color}
-	 */
-	public EmptyCell(final Color color)
-	{
-		super();
+    /**
+     * Erstellt ein neues {@link EmptyCell} Object.
+     *
+     * @param world {@link AbstractWorld}
+     * @param color {@link Color}
+     */
+    public EmptyCell(final T world, final Color color)
+    {
+        super(world, color);
+    }
 
-		setColor(color);
-	}
+    /**
+     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
+     */
+    @Override
+    public void nextGeneration(final Object...params)
+    {
+        // Empty
+    }
 
-	/**
-	 * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
-	 */
-	@Override
-	public void nextGeneration(final Object...params)
-	{
-		// Empty
-	}
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append(": ");
+        sb.append("Color[r=").append(getColor().getRed()).append(",g=").append(getColor().getGreen()).append(",b=").append(getColor().getBlue()).append("]");
 
-	/**
-	 * @see de.freese.simulationen.model.AbstractCell#setColor(java.awt.Color)
-	 */
-	@Override
-	public void setColor(final Color color)
-	{
-		super.setColor(color);
-	}
-
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append(": ");
-		sb.append("Color[r=").append(getColor().getRed()).append(",g=").append(getColor().getGreen()).append(",b=").append(getColor().getBlue()).append("]");
-
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

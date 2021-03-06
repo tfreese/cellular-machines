@@ -1,12 +1,11 @@
 // Created: 12.10.2016
-package de.freese.simulationen.ball;
+package de.freese.simulationen.balls;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
 import de.freese.simulationen.model.AbstractSimulation;
@@ -32,6 +31,11 @@ public class BallSimulation extends AbstractSimulation
     *
     */
     private final List<Ball> balls = new ArrayList<>();
+
+    /**
+    *
+    */
+    private final BufferedImage bufferedImage;
 
     /**
      * [ms]
@@ -76,7 +80,7 @@ public class BallSimulation extends AbstractSimulation
 
         this.numberOfBalls = numberOfBalls;
 
-        setImage(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB));
+        this.bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         reset();
     }
@@ -100,41 +104,12 @@ public class BallSimulation extends AbstractSimulation
     }
 
     /**
-     * @see de.freese.simulationen.model.AbstractSimulation#getImage()
+     * @see de.freese.simulationen.model.Simulation#getImage()
      */
     @Override
     public BufferedImage getImage()
     {
-        return (BufferedImage) super.getImage();
-    }
-
-    /**
-     * @see de.freese.simulationen.model.ISimulation#getPixelsRGB()
-     */
-    @Override
-    public int[] getPixelsRGB()
-    {
-        // PixelGrabber pgb = new PixelGrabber(getImage(), 0, 0, getWidth(), getHeight(), this.pixelsRGB, 0, getWidth());
-        //
-        // try
-        // {
-        // pgb.grabPixels();
-        // }
-        // catch (RuntimeException ex)
-        // {
-        // throw ex;
-        // }
-        // catch (InterruptedException ex)
-        // {
-        // throw new RuntimeException(ex);
-        // }
-        //
-        // return this.pixelsRGB;
-
-        // int[] pixels = ((BufferedImage) getImage()).getRaster().getPixels(0, 0, getWidth(), getHeight(), (int[]) null);
-        int[] pixels = ((DataBufferInt) getImage().getRaster().getDataBuffer()).getData();
-
-        return pixels;
+        return this.bufferedImage;
     }
 
     /**
@@ -159,7 +134,7 @@ public class BallSimulation extends AbstractSimulation
     }
 
     /**
-     * Liefert true, wenn alle Bälle zum stillstand gekommen sind.
+     * Liefert true, wenn alle Bälle zum Stillstand gekommen sind.
      *
      * @return boolean
      */
@@ -169,7 +144,7 @@ public class BallSimulation extends AbstractSimulation
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#nextGeneration()
+     * @see de.freese.simulationen.model.Simulation#nextGeneration()
      */
     @Override
     public void nextGeneration()
@@ -202,7 +177,7 @@ public class BallSimulation extends AbstractSimulation
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#reset()
+     * @see de.freese.simulationen.model.Simulation#reset()
      */
     @Override
     public void reset()

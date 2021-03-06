@@ -2,7 +2,7 @@
 /**
  * 18.09.2009
  */
-package de.freese.simulationen.ball;
+package de.freese.simulationen.balls;
 
 import java.awt.BorderLayout;
 import java.util.concurrent.ScheduledFuture;
@@ -20,10 +20,10 @@ import de.freese.simulationen.SimulationCanvas;
 public class BallView extends AbstractSimulationView<BallSimulation>
 {
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
      */
     @Override
-    protected BallSimulation createModel(final int fieldWidth, final int fieldHeight)
+    protected BallSimulation createSimulation(final int fieldWidth, final int fieldHeight)
     {
         return new BallSimulation(fieldWidth, fieldHeight, super.getDelay() * 5);
     }
@@ -48,45 +48,13 @@ public class BallView extends AbstractSimulationView<BallSimulation>
     {
         super.start();
 
-        // Die Bälle würden ewig am Boden weiter rollen, wenn die Simulation nicht gestoppt wird.
+        // Die Simulation würde ewig weitergehen, auch wenn die Bälle schon aml Boden liegen.
         BooleanSupplier exitCondition = getSimulation()::isFinished;
-        Runnable task = () -> {
-            if (exitCondition.getAsBoolean())
-            {
-                stop();
-            }
-        };
+        Runnable task = this::stop;
 
-        ScheduledFutureAwareRunnable futureAwareRunnable = new ScheduledFutureAwareRunnable(task, exitCondition, "Ball-Simulation");
+        ScheduledFutureAwareRunnable futureAwareRunnable = new ScheduledFutureAwareRunnable(exitCondition, task, "Ball-Simulation");
 
         ScheduledFuture<?> scheduledFuture = getScheduledExecutorService().scheduleWithFixedDelay(futureAwareRunnable, 3, 3, TimeUnit.SECONDS);
         futureAwareRunnable.setScheduledFuture(scheduledFuture);
     }
-
-    // /**
-    // * @see de.freese.simulationen.AbstractSimulationView#step()
-    // */
-    // @Override
-    // protected void step()
-    // {
-    // super.step();
-    //
-    // if (getSimulation().isFinished())
-    // {
-    // stop();
-    // }
-    // }
-
-    // /**
-    // * Die Bälle mögen es etwas schneller.
-    // *
-    // * @see de.freese.simulationen.AbstractSimulationView#getDelay()
-    // */
-    // @Override
-    // protected int getDelay()
-    // {
-    // int delay = super.getDelay() / 5;
-    //
-    // return Math.max(delay, 1);
-    // }
 }

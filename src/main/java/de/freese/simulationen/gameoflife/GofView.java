@@ -16,10 +16,10 @@ import de.freese.simulationen.SimulationCanvas;
 public class GofView extends AbstractSimulationView<GoFWorld>
 {
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#createModel(int, int)
+     * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
      */
     @Override
-    protected GoFWorld createModel(final int fieldWidth, final int fieldHeight)
+    protected GoFWorld createSimulation(final int fieldWidth, final int fieldHeight)
     {
         return new GoFWorld(fieldWidth, fieldHeight);
     }

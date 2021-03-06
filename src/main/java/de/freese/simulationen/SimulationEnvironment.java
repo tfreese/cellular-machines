@@ -164,7 +164,7 @@ public class SimulationEnvironment
             this.properties.load(inputStream);
         }
 
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(8);
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     /**

@@ -5,6 +5,7 @@
 package de.freese.simulationen.model;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
 import java.util.Arrays;
@@ -20,7 +21,12 @@ public abstract class AbstractWorld extends AbstractSimulation
     /**
      *
      */
-    private final ICell[][] cells;
+    private final Cell[][] cells;
+
+    /**
+    *
+    */
+    private final Image image;
 
     /**
     *
@@ -42,15 +48,17 @@ public abstract class AbstractWorld extends AbstractSimulation
     {
         super(width, height);
 
-        this.cells = new ICell[width][height];
+        this.cells = new Cell[width][height];
         this.pixelsRGB = new int[width * height];
+
         // Arrays.fill(this.pixels, getNullCellColor().getRGB());
         Arrays.parallelSetAll(this.pixelsRGB, i -> getNullCellColor().getRGB());
 
         this.imageSource = new MemoryImageSource(width, height, this.pixelsRGB, 0, width);
         this.imageSource.setAnimated(true);
         this.imageSource.setFullBufferUpdates(false);
-        setImage(Toolkit.getDefaultToolkit().createImage(this.imageSource));
+
+        this.image = Toolkit.getDefaultToolkit().createImage(this.imageSource);
         // java.awt.Component.createImage(this.imageSource);
     }
 
@@ -59,9 +67,9 @@ public abstract class AbstractWorld extends AbstractSimulation
      *
      * @param x int
      * @param y int
-     * @param cell {@link ICell}
+     * @param cell {@link Cell}
      */
-    public void cellColorChanged(final int x, final int y, final ICell cell)
+    public void cellColorChanged(final int x, final int y, final Cell cell)
     {
         Color color = cell != null ? cell.getColor() : getNullCellColor();
         getPixelsRGB()[x + (y * getWidth())] = color.getRGB();
@@ -72,19 +80,28 @@ public abstract class AbstractWorld extends AbstractSimulation
      *
      * @param x int
      * @param y int
-     * @return {@link ICell}
+     * @return {@link Cell}
      */
-    public ICell getCell(final int x, final int y)
+    public Cell getCell(final int x, final int y)
     {
         return getCells()[x][y];
     }
 
     /**
-     * @return {@link ICell}[][]
+     * @return {@link Cell}[][]
      */
-    protected ICell[][] getCells()
+    protected Cell[][] getCells()
     {
         return this.cells;
+    }
+
+    /**
+     * @see de.freese.simulationen.model.Simulation#getImage()
+     */
+    @Override
+    public Image getImage()
+    {
+        return this.image;
     }
 
     /**
@@ -95,9 +112,10 @@ public abstract class AbstractWorld extends AbstractSimulation
     protected abstract Color getNullCellColor();
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#getPixelsRGB()
+     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
+     *
+     * @return int[]
      */
-    @Override
     public int[] getPixelsRGB()
     {
         return this.pixelsRGB;
@@ -108,20 +126,6 @@ public abstract class AbstractWorld extends AbstractSimulation
      */
     protected void initialize()
     {
-        // ForkJoinInitWorldAction action = new ForkJoinInitWorldAction(this, 0, getHeight() - 1);
-        // forkJoinPool.invoke(action);
-        //
-        // // Warten bis fertich.
-        // action.join();
-
-        // for (int x = 0; x < getWidth(); x++)
-        // {
-        // for (int y = 0; y < getHeight(); y++)
-        // {
-        // initialize(x, y);
-        // }
-        // }
-
         // @formatter:off
         IntStream.range(0, getHeight())
             .parallel()
@@ -144,26 +148,11 @@ public abstract class AbstractWorld extends AbstractSimulation
     protected abstract void initialize(int x, int y);
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#reset()
+     * @see de.freese.simulationen.model.Simulation#reset()
      */
     @Override
     public void reset()
     {
-        // ForkJoinResetWorldAction action = new ForkJoinResetWorldAction(this, 0, getHeight() - 1);
-        // forkJoinPool.invoke(action);
-        //
-        // // Warten bis fertich.
-        // action.join();
-
-        // for (int x = 0; x < getWidth(); x++)
-        // {
-        // for (int y = 0; y < getHeight(); y++)
-        // {
-        // reset(x, y);
-        // setCell(null, x, y);
-        // }
-        // }
-
         // @formatter:off
         IntStream.range(0, getHeight())
             .parallel()
@@ -190,11 +179,11 @@ public abstract class AbstractWorld extends AbstractSimulation
     protected abstract void reset(int x, int y);
 
     /**
-     * @param cell {@link ICell}
+     * @param cell {@link Cell}
      * @param x int
      * @param y int
      */
-    public void setCell(final ICell cell, final int x, final int y)
+    public void setCell(final Cell cell, final int x, final int y)
     {
         getCells()[x][y] = cell;
 

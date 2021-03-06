@@ -6,8 +6,6 @@ package de.freese.simulationen.hopalong;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import de.freese.simulationen.ObjectPool;
 import de.freese.simulationen.model.AbstractWorld;
 import de.freese.simulationen.model.EmptyCell;
@@ -52,18 +50,28 @@ public class HopAlongWorld extends AbstractWorld
 
         this.center = new Point(width / 2, height / 2);
 
-        Supplier<EmptyCell<HopAlongWorld>> creator = () -> {
-            EmptyCell<HopAlongWorld> cell = new EmptyCell<>();
-            cell.setWorld(HopAlongWorld.this);
+        this.objectPool = new ObjectPool<>()
+        {
+            /**
+             * @see de.freese.simulationen.ObjectPool#activate(java.lang.Object)
+             */
+            @Override
+            protected void activate(final EmptyCell<HopAlongWorld> object)
+            {
+                object.setXY(-1, -1);
+            }
 
-            return cell;
-        };
-        Consumer<EmptyCell<HopAlongWorld>> activator = cell -> {
-            cell.setXY(-1, -1);
-            cell.setColor(getNullCellColor());
-        };
+            /**
+             * @see de.freese.simulationen.ObjectPool#create()
+             */
+            @Override
+            protected EmptyCell<HopAlongWorld> create()
+            {
+                EmptyCell<HopAlongWorld> cell = new EmptyCell<>(HopAlongWorld.this, Color.BLACK);
 
-        this.objectPool = createObjectPool(creator, activator);
+                return cell;
+            }
+        };
 
         initialize();
     }
@@ -88,14 +96,6 @@ public class HopAlongWorld extends AbstractWorld
     }
 
     /**
-     * @return {@link ObjectPool}<GoFCell>
-     */
-    ObjectPool<EmptyCell<HopAlongWorld>> getObjectPool()
-    {
-        return this.objectPool;
-    }
-
-    /**
      * @see de.freese.simulationen.model.AbstractWorld#initialize(int, int)
      */
     @Override
@@ -110,7 +110,7 @@ public class HopAlongWorld extends AbstractWorld
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#nextGeneration()
+     * @see de.freese.simulationen.model.Simulation#nextGeneration()
      */
     @Override
     public void nextGeneration()
@@ -195,8 +195,7 @@ public class HopAlongWorld extends AbstractWorld
             // return;
         }
 
-        EmptyCell<HopAlongWorld> cell = getObjectPool().borrowObject();
-        cell.setColor(Color.BLACK);
+        EmptyCell<HopAlongWorld> cell = this.objectPool.borrowObject();
 
         reset(newX, newY);
         cell.moveTo(newX, newY);
@@ -214,7 +213,7 @@ public class HopAlongWorld extends AbstractWorld
 
         if (cell != null)
         {
-            getObjectPool().returnObject(cell);
+            this.objectPool.returnObject(cell);
         }
     }
 }

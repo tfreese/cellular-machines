@@ -12,15 +12,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
-import de.freese.simulationen.model.ISimulation;
-import de.freese.simulationen.model.ISimulationListener;
+import de.freese.simulationen.model.Simulation;
+import de.freese.simulationen.model.SimulationListener;
 
 /**
  * Zeichenfläche für die Simulationen.
  *
  * @author Thomas Freese
  */
-public class SimulationCanvas extends JComponent implements ISimulationListener
+public class SimulationCanvas extends JComponent implements SimulationListener
 {
     /**
      *
@@ -59,9 +59,9 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
     /**
      * Erstellt ein neues {@link SimulationCanvas} Object.
      *
-     * @param simulation {@link ISimulation}
+     * @param simulation {@link Simulation}
      */
-    public SimulationCanvas(final ISimulation simulation)
+    public SimulationCanvas(final Simulation simulation)
     {
         // Die Größe der Simulation auf die Angzeigegröße skalieren.
         this(simulation, (int) (800 * (double) simulation.getWidth()) / simulation.getHeight(), 800);
@@ -70,11 +70,11 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
     /**
      * Erstellt ein neues {@link SimulationCanvas} Object.
      *
-     * @param simulation {@link ISimulation}
+     * @param simulation {@link Simulation}
      * @param width int
      * @param height int
      */
-    public SimulationCanvas(final ISimulation simulation, final int width, final int height)
+    public SimulationCanvas(final Simulation simulation, final int width, final int height)
     {
         super();
 
@@ -89,10 +89,10 @@ public class SimulationCanvas extends JComponent implements ISimulationListener
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulationListener#completed(de.freese.simulationen.model.ISimulation)
+     * @see de.freese.simulationen.model.SimulationListener#completed(de.freese.simulationen.model.Simulation)
      */
     @Override
-    public void completed(final ISimulation simulation)
+    public void completed(final Simulation simulation)
     {
         this.image = simulation.getImage();
 

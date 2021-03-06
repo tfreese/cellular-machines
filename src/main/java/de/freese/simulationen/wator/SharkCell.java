@@ -5,7 +5,7 @@
 package de.freese.simulationen.wator;
 
 import java.awt.Color;
-import de.freese.simulationen.model.ICell;
+import de.freese.simulationen.model.Cell;
 
 /**
  * HaiZelle der WaTor-Simulation.
@@ -16,12 +16,12 @@ public class SharkCell extends AbstractWatorCell
 {
     /**
      * Erstellt ein neues {@link FishCell} Object.
+     *
+     * @param world {@link WaTorWorld}
      */
-    SharkCell()
+    SharkCell(final WaTorWorld world)
     {
-        super();
-
-        setColor(Color.BLUE);
+        super(world, Color.BLUE);
     }
 
     /**
@@ -33,7 +33,7 @@ public class SharkCell extends AbstractWatorCell
      * geboren. Die vorhandene Energie wird gleichmässig zwischen Eltern- und Kind-Hai verteilt.
      * </ol>
      *
-     * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
      */
     @Override
     public void nextGeneration(final Object...params)
@@ -59,7 +59,7 @@ public class SharkCell extends AbstractWatorCell
                 int fischX = fisch[0];
                 int fischY = fisch[1];
 
-                ICell cell = getWorld().getCell(fischX, fischY);
+                Cell cell = getWorld().getCell(fischX, fischY);
 
                 if (!(cell instanceof FishCell))
                 {

@@ -26,15 +26,15 @@ import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import de.freese.simulationen.SimulationEnvironment;
-import de.freese.simulationen.model.ISimulation;
-import de.freese.simulationen.model.ISimulationListener;
+import de.freese.simulationen.model.Simulation;
+import de.freese.simulationen.model.SimulationListener;
 
 /**
  * DiagrammPanel der WaTor-Simulation.
  *
  * @author Thomas Freese
  */
-public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
+public class WaTorDiagrammPanel extends JPanel implements SimulationListener
 {
     /**
      *
@@ -42,18 +42,18 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     private static final long serialVersionUID = -7891438395009637657L;
 
     /**
-        *
-        */
+     *
+     */
     private int fishes;
 
     /**
-    *
-    */
+     *
+     */
     private ScheduledFuture<?> scheduledFuture;
 
     /**
-        *
-        */
+     *
+     */
     private int sharks;
 
     /**
@@ -62,8 +62,8 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     private TimeSeries timeSeriesFische = new TimeSeries("Fische");
 
     /**
-    *
-    */
+     *
+     */
     private TimeSeries timeSeriesHaie = new TimeSeries("Haie");
 
     /**
@@ -114,10 +114,10 @@ public class WaTorDiagrammPanel extends JPanel implements ISimulationListener
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulationListener#completed(de.freese.simulationen.model.ISimulation)
+     * @see de.freese.simulationen.model.SimulationListener#completed(de.freese.simulationen.model.Simulation)
      */
     @Override
-    public void completed(final ISimulation simulation)
+    public void completed(final Simulation simulation)
     {
         WaTorWorld waTorWorld = (WaTorWorld) simulation;
 

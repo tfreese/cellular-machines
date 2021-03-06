@@ -5,12 +5,8 @@
 package de.freese.simulationen;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Queue;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas Freese
  * @param <T> Konkreter Typ
  */
-public class ObjectPool<T>
+public abstract class ObjectPool<T>
 {
     /**
     *
@@ -30,22 +26,12 @@ public class ObjectPool<T>
     /**
      *
      */
-    private final Consumer<T> activator;
-
-    /**
-     *
-     */
     private int counterActive;
 
-    /**
-     *
-     */
-    private final Supplier<T> creator;
-
-    /**
-    *
-    */
-    private final ReentrantLock lock = new ReentrantLock(true);
+    // /**
+    // *
+    // */
+    // private final ReentrantLock lock = new ReentrantLock(true);
 
     /**
      *
@@ -54,21 +40,21 @@ public class ObjectPool<T>
 
     /**
      * Erstellt ein neues {@link ObjectPool} Object.
-     *
-     * @param creator {@link Supplier}
-     * @param activator {@link Consumer}
      */
-    public ObjectPool(final Supplier<T> creator, final Consumer<T> activator)
+    protected ObjectPool()
     {
         super();
 
-        this.queue = new LinkedList<>();
-
-        this.creator = Objects.requireNonNull(creator, "creator required");
-        this.activator = Objects.requireNonNull(activator, "activator required");
+        // this.queue = new LinkedList<>();
+        this.queue = new LinkedBlockingDeque<>(Integer.MAX_VALUE);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "ObjectPool-" + getClass().getSimpleName()));
     }
+
+    /**
+     * @param object Object
+     */
+    protected abstract void activate(final T object);
 
     /**
      * Liefert ein Objekt aus dem Pool.
@@ -77,51 +63,40 @@ public class ObjectPool<T>
      */
     public T borrowObject()
     {
-        getLock().lock();
+        // getLock().lock();
 
-        try
+        // try
+        // {
+        T object = getQueue().poll();
+
+        if (object == null)
         {
-            T object = getQueue().poll();
-
-            if (object == null)
-            {
-                object = getCreator().get();
-            }
-
-            getActivator().accept(object);
-            this.counterActive++;
-
-            return object;
+            object = create();
         }
-        finally
-        {
-            getLock().unlock();
-        }
+
+        activate(object);
+        this.counterActive++;
+
+        return object;
+        // }
+        // finally
+        // {
+        // getLock().unlock();
+        // }
     }
 
     /**
-     * @return {@link Consumer}
+     * @return Object
      */
-    protected Consumer<T> getActivator()
-    {
-        return this.activator;
-    }
+    protected abstract T create();
 
-    /**
-     * @return {@link Supplier}
-     */
-    protected Supplier<T> getCreator()
-    {
-        return this.creator;
-    }
-
-    /**
-     * @return {@link ReentrantLock}
-     */
-    protected ReentrantLock getLock()
-    {
-        return this.lock;
-    }
+    // /**
+    // * @return {@link ReentrantLock}
+    // */
+    // protected ReentrantLock getLock()
+    // {
+    // return this.lock;
+    // }
 
     /**
      * @return {@link Logger}
@@ -198,17 +173,17 @@ public class ObjectPool<T>
             return;
         }
 
-        getLock().lock();
-
-        try
-        {
-            getQueue().offer(object);
-            this.counterActive--;
-        }
-        finally
-        {
-            getLock().unlock();
-        }
+        // getLock().lock();
+        //
+        // try
+        // {
+        getQueue().offer(object);
+        this.counterActive--;
+        // }
+        // finally
+        // {
+        // getLock().unlock();
+        // }
     }
 
     /**
@@ -216,21 +191,21 @@ public class ObjectPool<T>
      */
     protected void shutdown()
     {
-        getLock().lock();
+        // getLock().lock();
+        //
+        // try
+        // {
+        String objectClazzName = getObjectClazz().getSimpleName();
 
-        try
-        {
-            String objectClazzName = getObjectClazz().getSimpleName();
+        getLogger().info("Close Pool<{}> with {} idle and {} aktive Objects", objectClazzName, getNumIdle(), getNumActive());
 
-            getLogger().info("Close Pool<{}> with {} idle and {} aktive Objects", objectClazzName, getNumIdle(), getNumActive());
-
-            getQueue().clear();
-            this.counterActive = 0;
-        }
-        finally
-        {
-            getLock().unlock();
-        }
+        getQueue().clear();
+        this.counterActive = 0;
+        // }
+        // finally
+        // {
+        // getLock().unlock();
+        // }
     }
 
     /**

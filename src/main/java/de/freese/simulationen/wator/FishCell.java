@@ -15,26 +15,26 @@ public class FishCell extends AbstractWatorCell
 {
     /**
      * Erstellt ein neues {@link FishCell} Object.
+     *
+     * @param world {@link WaTorWorld}
      */
-    FishCell()
+    FishCell(final WaTorWorld world)
     {
-        super();
-
-        setColor(Color.GREEN);
+        super(world, Color.GREEN);
     }
 
     /**
      * <ol>
      * <li>Jeder Fisch schwimmt zufällig auf eines der vier angrenzenden Felder, sofern es leer ist.
      * <li>Mit jedem Durchgang gewinnt der Fisch einen Energiepunkt.
-     * <li>Übersteigt die Energie den Wert für die Erzeugung eines Nachkommen ("Breed Energy"), so wird ein neuer Fisch auf einem
-     * angrenzenden freien Feld geboren. Die vorhandene Energie wird gleichmässig zwischen Eltern- und Kind-Fisch verteilt.
+     * <li>Übersteigt die Energie den Wert für die Erzeugung eines Nachkommen ("Breed Energy"), so wird ein neuer Fisch auf einem angrenzenden freien Feld
+     * geboren. Die vorhandene Energie wird gleichmässig zwischen Eltern- und Kind-Fisch verteilt.
      * </ol>
      *
-     * @see de.freese.simulationen.model.ICell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
      */
     @Override
-    public void nextGeneration(final Object... params)
+    public void nextGeneration(final Object...params)
     {
         if (isEdited())
         {

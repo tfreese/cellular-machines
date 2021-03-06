@@ -17,8 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.freese.simulationen.model.ISimulation;
-import de.freese.simulationen.model.ISimulationListener;
+import de.freese.simulationen.model.Simulation;
+import de.freese.simulationen.model.SimulationListener;
 import de.freese.simulationen.model.SimulationType;
 
 /**
@@ -26,7 +26,7 @@ import de.freese.simulationen.model.SimulationType;
  *
  * @author Thomas Freese
  */
-public class SimulationListenerSaveImage implements ISimulationListener
+public class SimulationListenerSaveImage implements SimulationListener
 {
     /**
      * @author Thomas Freese
@@ -117,37 +117,28 @@ public class SimulationListenerSaveImage implements ISimulationListener
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulationListener#completed(de.freese.simulationen.model.ISimulation)
+     * @see de.freese.simulationen.model.SimulationListener#completed(de.freese.simulationen.model.Simulation)
      */
     @Override
-    public void completed(final ISimulation simulation)
+    public void completed(final Simulation simulation)
     {
         Image image = simulation.getImage();
 
-        BufferedImage bufferedImage = null;
+        BufferedImage bufferedImage = new BufferedImage(simulation.getWidth(), simulation.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-        if (image instanceof BufferedImage)
-        {
-            bufferedImage = (BufferedImage) image;
-        }
-        else
-        {
-            bufferedImage = new BufferedImage(simulation.getWidth(), simulation.getHeight(), BufferedImage.TYPE_INT_RGB);
+        // Geht recht fix.
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
 
-            // Geht recht fix.
-            Graphics2D g2d = bufferedImage.createGraphics();
-            g2d.drawImage(image, 0, 0, null);
-            g2d.dispose();
+        // Dauer recht lange.
+        // bufferedImage.setRGB(0, 0, simulation.getWidth(), simulation.getHeight(), simulation.getPixelsRGB(), 0, simulation.getWidth());
 
-            // Dauer recht lange.
-            // bufferedImage.setRGB(0, 0, simulation.getWidth(), simulation.getHeight(), simulation.getPixelsRGB(), 0, simulation.getWidth());
+        // Liefert die gleiche Array-Referenz.
+        // pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
 
-            // Liefert die gleiche Array-Referenz.
-            // pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
-
-            // Erzeugt ein neues Array.
-            // pixels = bufferedImage.getRaster().getPixels(0, 0, width, height, (int[]) null);
-        }
+        // Erzeugt ein neues Array.
+        // pixels = bufferedImage.getRaster().getPixels(0, 0, width, height, (int[]) null);
 
         Path file = this.directory.resolve(String.format("%s-%05d.%s", this.type.getNameShort(), this.counter.incrementAndGet(), this.format));
 

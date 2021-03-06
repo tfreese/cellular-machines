@@ -5,21 +5,20 @@
 package de.freese.simulationen.model;
 
 import java.awt.Image;
-import java.awt.image.MemoryImageSource;
 
 /**
  * Interface für eine Simulationsumgebung.
  *
  * @author Thomas Freese
  */
-public interface ISimulation
+public interface Simulation
 {
     /**
      * Fügt einen neuen Listener hinzu.
      *
-     * @param simulationListener {@link ISimulationListener}
+     * @param simulationListener {@link SimulationListener}
      */
-    public void addWorldListener(final ISimulationListener simulationListener);
+    public void addWorldListener(final SimulationListener simulationListener);
 
     /**
      * Höhe in Pixeln.
@@ -34,14 +33,6 @@ public interface ISimulation
      * @return {@link Image}
      */
     public Image getImage();
-
-    /**
-     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
-     *
-     * @see #getImage()
-     * @return int[]
-     */
-    public int[] getPixelsRGB();
 
     /**
      * Breite in Pixeln.

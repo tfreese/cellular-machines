@@ -6,13 +6,11 @@ package de.freese.simulationen.wator;
 
 import java.awt.Color;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import de.freese.simulationen.ObjectPool;
 import de.freese.simulationen.model.AbstractWorld;
-import de.freese.simulationen.model.ICell;
+import de.freese.simulationen.model.Cell;
 
 /**
  * Model der WaTor-Simulation.<br>
@@ -82,31 +80,53 @@ public class WaTorWorld extends AbstractWorld
     {
         super(width, height);
 
-        Supplier<FishCell> fishCreator = () -> {
-            FishCell cell = new FishCell();
-            cell.setWorld(WaTorWorld.this);
+        this.objectPoolFish = new ObjectPool<>()
+        {
+            /**
+             * @see de.freese.simulationen.ObjectPool#activate(java.lang.Object)
+             */
+            @Override
+            protected void activate(final FishCell object)
+            {
+                object.setXY(-1, -1);
+                object.setEnergy(getFishStartEnergy());
+            }
 
-            return cell;
+            /**
+             * @see de.freese.simulationen.ObjectPool#create()
+             */
+            @Override
+            protected FishCell create()
+            {
+                FishCell cell = new FishCell(WaTorWorld.this);
+
+                return cell;
+            }
         };
-        Consumer<FishCell> fishActivator = cell -> {
-            cell.setXY(-1, -1);
-            cell.setEnergy(getFishStartEnergy());
+
+        this.objectPoolShark = new ObjectPool<>()
+        {
+            /**
+             * @see de.freese.simulationen.ObjectPool#activate(java.lang.Object)
+             */
+            @Override
+            protected void activate(final SharkCell object)
+            {
+                object.setXY(-1, -1);
+                object.setEnergy(getSharkStartEnergy());
+            }
+
+            /**
+             * @see de.freese.simulationen.ObjectPool#create()
+             */
+            @Override
+            protected SharkCell create()
+            {
+                SharkCell cell = new SharkCell(WaTorWorld.this);
+
+                return cell;
+            }
         };
-
-        this.objectPoolFish = createObjectPool(fishCreator, fishActivator);
-
-        Supplier<SharkCell> sharkCreator = () -> {
-            SharkCell cell = new SharkCell();
-            cell.setWorld(WaTorWorld.this);
-
-            return cell;
-        };
-        Consumer<SharkCell> sharkActivator = cell -> {
-            cell.setXY(-1, -1);
-            cell.setEnergy(getSharkStartEnergy());
-        };
-
-        this.objectPoolShark = createObjectPool(sharkCreator, sharkActivator);
 
         initialize();
     }
@@ -229,7 +249,7 @@ public class WaTorWorld extends AbstractWorld
         // Zufällige Platzierung.
         int type = getRandom().nextInt(10);
 
-        ICell cell = null;
+        Cell cell = null;
 
         switch (type)
         {
@@ -256,7 +276,7 @@ public class WaTorWorld extends AbstractWorld
     }
 
     /**
-     * @see de.freese.simulationen.model.ISimulation#nextGeneration()
+     * @see de.freese.simulationen.model.Simulation#nextGeneration()
      */
     @Override
     public void nextGeneration()
@@ -273,7 +293,7 @@ public class WaTorWorld extends AbstractWorld
             .parallel()
             .flatMap(Stream::of)
             .filter(Objects::nonNull)
-            .forEach(ICell::nextGeneration);
+            .forEach(Cell::nextGeneration);
         // @formatter:on
 
         // this.xKoords.parallelStream().forEach(x ->
@@ -310,7 +330,7 @@ public class WaTorWorld extends AbstractWorld
             {
                 for (int y = 0; y < getHeight(); y++)
                 {
-                    ICell cell = getCell(x, y);
+                    Cell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -325,7 +345,7 @@ public class WaTorWorld extends AbstractWorld
             {
                 for (int y = 0; y < getHeight(); y++)
                 {
-                    ICell cell = getCell(x, y);
+                    Cell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -340,7 +360,7 @@ public class WaTorWorld extends AbstractWorld
             {
                 for (int y = getHeight() - 1; y >= 0; y--)
                 {
-                    ICell cell = getCell(x, y);
+                    Cell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -355,7 +375,7 @@ public class WaTorWorld extends AbstractWorld
             {
                 for (int y = getHeight() - 1; y >= 0; y--)
                 {
-                    ICell cell = getCell(x, y);
+                    Cell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -389,7 +409,7 @@ public class WaTorWorld extends AbstractWorld
                 {
                     for (int y = 0; y < getHeight(); y++)
                     {
-                        ICell cell = getCell(x, y);
+                        Cell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -408,7 +428,7 @@ public class WaTorWorld extends AbstractWorld
                 {
                     for (int y = 0; y < getHeight(); y++)
                     {
-                        ICell cell = getCell(x, y);
+                        Cell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -427,7 +447,7 @@ public class WaTorWorld extends AbstractWorld
                 {
                     for (int y = getHeight() - 1; y >= 0; y--)
                     {
-                        ICell cell = getCell(x, y);
+                        Cell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -446,7 +466,7 @@ public class WaTorWorld extends AbstractWorld
                 {
                     for (int y = getHeight() - 1; y >= 0; y--)
                     {
-                        ICell cell = getCell(x, y);
+                        Cell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -471,7 +491,7 @@ public class WaTorWorld extends AbstractWorld
     @Override
     protected void reset(final int x, final int y)
     {
-        ICell cell = getCell(x, y);
+        Cell cell = getCell(x, y);
 
         if (cell instanceof FishCell)
         {
