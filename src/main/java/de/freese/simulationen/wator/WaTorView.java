@@ -23,23 +23,6 @@ import de.freese.simulationen.SimulationCanvas;
 public class WaTorView extends AbstractSimulationView<WaTorWorld>
 {
     /**
-     *
-     */
-    private final WaTorDiagrammPanel diagrammPanel;
-
-    /**
-     * Erstellt ein neues {@link WaTorView} Object.
-     *
-     * @param diagrammPanel {@link WaTorDiagrammPanel}
-     */
-    public WaTorView(final WaTorDiagrammPanel diagrammPanel)
-    {
-        super();
-
-        this.diagrammPanel = diagrammPanel;
-    }
-
-    /**
      * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
      */
     @Override
@@ -174,47 +157,5 @@ public class WaTorView extends AbstractSimulationView<WaTorWorld>
         sliderPanel.add(panel);
 
         getControlPanel().add(sliderPanel, BorderLayout.CENTER);
-    }
-
-    /**
-     * @see de.freese.simulationen.AbstractSimulationView#start()
-     */
-    @Override
-    protected void start()
-    {
-        super.start();
-
-        if (this.diagrammPanel != null)
-        {
-            this.diagrammPanel.start();
-        }
-    }
-
-    /**
-     * @see de.freese.simulationen.AbstractSimulationView#step()
-     */
-    @Override
-    protected void step()
-    {
-        super.step();
-
-        if (this.diagrammPanel != null)
-        {
-            this.diagrammPanel.step();
-        }
-    }
-
-    /**
-     * @see de.freese.simulationen.AbstractSimulationView#stop()
-     */
-    @Override
-    protected void stop()
-    {
-        super.stop();
-
-        if (this.diagrammPanel != null)
-        {
-            this.diagrammPanel.stop();
-        }
     }
 }

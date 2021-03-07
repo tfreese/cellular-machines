@@ -14,7 +14,7 @@ import de.freese.simulationen.model.Cell;
  *
  * @author Thomas Freese
  */
-public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
+public abstract class AbstractWatorCellOld extends AbstractCell<WaTorWorld> implements WatorCell
 {
     /**
      *
@@ -32,12 +32,12 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     private int[][][] nachbarn;
 
     /**
-     * Erstellt ein neues {@link AbstractWatorCell} Object.
+     * Erstellt ein neues {@link AbstractWatorCellOld} Object.
      *
      * @param world {@link WaTorWorld}
      * @param color {@link Color}
      */
-    protected AbstractWatorCell(final WaTorWorld world, final Color color)
+    protected AbstractWatorCellOld(final WaTorWorld world, final Color color)
     {
         super(world, color);
     }
@@ -67,38 +67,38 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
 
         int[][] cells = new int[4][2];
 
-        // Norden
+        // Nord
         cells[0][0] = getX();
         cells[0][1] = yNord;
 
-        // Osten
+        // Ost
         cells[1][0] = xOst;
         cells[1][1] = getY();
 
-        // Süden
+        // Süd
         cells[2][0] = getX();
         cells[2][1] = ySued;
 
-        // Westen
+        // West
         cells[3][0] = xWest;
         cells[3][1] = getY();
 
-        for (int[] cell2 : cells)
+        for (int[] richtung : cells)
         {
-            int x = cell2[0];
-            int y = cell2[1];
+            int x = richtung[0];
+            int y = richtung[1];
 
             Cell cell = getWorld().getCell(x, y);
 
             if (cell == null)
             {
                 freie = Arrays.copyOf(freie, freie.length + 1);
-                freie[freie.length - 1] = cell2;
+                freie[freie.length - 1] = richtung;
             }
             else if (cell instanceof FishCell)
             {
                 fische = Arrays.copyOf(fische, fische.length + 1);
-                fische[fische.length - 1] = cell2;
+                fische[fische.length - 1] = richtung;
 
                 // Workaround: Verhindert falsche Koordinaten bei paralleler Verarbeitung.
                 // Verhindert auch zusätzlich das Auftreten von Wellenfronten.
@@ -119,11 +119,10 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     }
 
     /**
-     * Liefert den Energiewert der Zelle.
-     *
-     * @return int
+     * @see de.freese.simulationen.wator.WatorCell#getEnergy()
      */
-    int getEnergy()
+    @Override
+    public int getEnergy()
     {
         return this.energy;
     }
@@ -157,29 +156,28 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld>
     }
 
     /**
-     * True, wenn diese Zelle in einem Zyklus schon mal verarbeitet wurde.
-     *
-     * @return boolean
+     * @see de.freese.simulationen.wator.WatorCell#isEdited()
      */
-    boolean isEdited()
+    @Override
+    public boolean isEdited()
     {
         return this.edited;
     }
 
     /**
-     * True, wenn diese Zelle in einem Zyklus schon mal verarbeitet wurde.
-     *
-     * @param edited boolean
+     * @see de.freese.simulationen.wator.WatorCell#setEdited(boolean)
      */
-    void setEdited(final boolean edited)
+    @Override
+    public void setEdited(final boolean edited)
     {
         this.edited = edited;
     }
 
     /**
-     * @param energy int
+     * @see de.freese.simulationen.wator.WatorCell#setEnergy(int)
      */
-    void setEnergy(final int energy)
+    @Override
+    public void setEnergy(final int energy)
     {
         this.energy = energy;
     }

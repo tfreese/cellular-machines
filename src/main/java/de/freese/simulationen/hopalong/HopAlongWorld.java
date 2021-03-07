@@ -67,9 +67,7 @@ public class HopAlongWorld extends AbstractWorld
             @Override
             protected EmptyCell<HopAlongWorld> create()
             {
-                EmptyCell<HopAlongWorld> cell = new EmptyCell<>(HopAlongWorld.this, Color.BLACK);
-
-                return cell;
+                return new EmptyCell<>(HopAlongWorld.this, Color.BLACK);
             }
         };
 

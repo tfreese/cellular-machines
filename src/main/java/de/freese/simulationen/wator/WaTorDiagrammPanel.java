@@ -8,9 +8,6 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartPanel;
@@ -25,7 +22,6 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import de.freese.simulationen.SimulationEnvironment;
 import de.freese.simulationen.model.Simulation;
 import de.freese.simulationen.model.SimulationListener;
 
@@ -40,21 +36,6 @@ public class WaTorDiagrammPanel extends JPanel implements SimulationListener
      *
      */
     private static final long serialVersionUID = -7891438395009637657L;
-
-    /**
-     *
-     */
-    private int fishes;
-
-    /**
-     *
-     */
-    private ScheduledFuture<?> scheduledFuture;
-
-    /**
-     *
-     */
-    private int sharks;
 
     /**
      *
@@ -74,8 +55,8 @@ public class WaTorDiagrammPanel extends JPanel implements SimulationListener
         super();
 
         TimeSeriesCollection dataset = new TimeSeriesCollection();
-        dataset.addSeries(getTimeSeriesFische());
-        dataset.addSeries(getTimeSeriesHaie());
+        dataset.addSeries(this.timeSeriesFische);
+        dataset.addSeries(this.timeSeriesHaie);
 
         Font font = new Font("Arial", Font.BOLD, 12);
 
@@ -121,55 +102,25 @@ public class WaTorDiagrammPanel extends JPanel implements SimulationListener
     {
         WaTorWorld waTorWorld = (WaTorWorld) simulation;
 
-        this.fishes = waTorWorld.getFishCounter();
-        this.sharks = waTorWorld.getSharkCounter();
+        update(waTorWorld.getFishCounter(), waTorWorld.getSharkCounter());
     }
 
     /**
-     * @return {@link ScheduledExecutorService}
+     * Aktualisiert das Diagramm.
+     *
+     * @param fishes int
+     * @param sharks int
      */
-    protected ScheduledExecutorService getScheduledExecutorService()
-    {
-        return SimulationEnvironment.getInstance().getScheduledExecutorService();
-    }
-
-    /**
-     * @return {@link TimeSeries}
-     */
-    private TimeSeries getTimeSeriesFische()
-    {
-        return this.timeSeriesFische;
-    }
-
-    /**
-     * @return {@link TimeSeries}
-     */
-    private TimeSeries getTimeSeriesHaie()
-    {
-        return this.timeSeriesHaie;
-    }
-
-    /**
-     * Startet die Simulation.
-     */
-    protected void start()
-    {
-        this.scheduledFuture = getScheduledExecutorService().scheduleWithFixedDelay(this::step, 0, 250, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Aktualisiert die Simulation.
-     */
-    protected void step()
+    protected void update(final int fishes, final int sharks)
     {
         Runnable runnable = () -> {
             RegularTimePeriod timePeriod = new FixedMillisecond();
 
-            getTimeSeriesFische().addOrUpdate(timePeriod, this.fishes);
-            getTimeSeriesHaie().addOrUpdate(timePeriod, this.sharks);
+            this.timeSeriesFische.addOrUpdate(timePeriod, fishes);
+            this.timeSeriesHaie.addOrUpdate(timePeriod, sharks);
 
-            // getTimeSeriesFische().setDescription("" + fishes);
-            // getTimeSeriesHaie().setDescription("" + sharks);
+            // this.timeSeriesFische.setDescription("" + fishes);
+            // this.timeSeriesHaie.setDescription("" + sharks);
         };
 
         if (SwingUtilities.isEventDispatchThread())
@@ -179,18 +130,6 @@ public class WaTorDiagrammPanel extends JPanel implements SimulationListener
         else
         {
             SwingUtilities.invokeLater(runnable);
-        }
-    }
-
-    /**
-     * Stoppt die Simulation.
-     */
-    protected void stop()
-    {
-        if ((this.scheduledFuture != null))
-        {
-            this.scheduledFuture.cancel(true);
-            this.scheduledFuture = null;
         }
     }
 }

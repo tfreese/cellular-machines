@@ -4,7 +4,6 @@
 
 package de.freese.simulationen;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ public abstract class ObjectPool<T>
         // this.queue = new LinkedList<>();
         this.queue = new LinkedBlockingDeque<>(Integer.MAX_VALUE);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "ObjectPool-" + getClass().getSimpleName()));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "ObjectPool"));
     }
 
     /**
@@ -63,11 +62,11 @@ public abstract class ObjectPool<T>
      */
     public T borrowObject()
     {
-        // getLock().lock();
-
+        // this.lock.lock();
+        //
         // try
         // {
-        T object = getQueue().poll();
+        T object = this.queue.poll();
 
         if (object == null)
         {
@@ -80,8 +79,9 @@ public abstract class ObjectPool<T>
         return object;
         // }
         // finally
+        //
         // {
-        // getLock().unlock();
+        // this.lock.unlock();
         // }
     }
 
@@ -89,22 +89,6 @@ public abstract class ObjectPool<T>
      * @return Object
      */
     protected abstract T create();
-
-    // /**
-    // * @return {@link ReentrantLock}
-    // */
-    // protected ReentrantLock getLock()
-    // {
-    // return this.lock;
-    // }
-
-    /**
-     * @return {@link Logger}
-     */
-    protected Logger getLogger()
-    {
-        return LOGGER;
-    }
 
     /**
      * Liefert die Anzahl der aktiven, dem Pool entnommenen, Objekte.
@@ -114,51 +98,6 @@ public abstract class ObjectPool<T>
     public int getNumActive()
     {
         return this.counterActive;
-    }
-
-    /**
-     * Liefert die Anzahl der zur Verfügung stehenden, im Pool vorhandene, Objekte.
-     *
-     * @return int
-     */
-    public int getNumIdle()
-    {
-        return getQueue().size();
-    }
-
-    /**
-     * @return Class<T>
-     */
-    @SuppressWarnings("unchecked")
-    protected Class<T> getObjectClazz()
-    {
-        Class<T> objectClazz = null;
-
-        try
-        {
-            objectClazz = tryDetermineObjectClazz();
-        }
-        catch (ClassCastException ccex)
-        {
-            T object = borrowObject();
-
-            if (object != null)
-            {
-                objectClazz = (Class<T>) object.getClass();
-
-                returnObject(object);
-            }
-        }
-
-        return objectClazz;
-    }
-
-    /**
-     * @return {@link Queue}<T>
-     */
-    protected Queue<T> getQueue()
-    {
-        return this.queue;
     }
 
     /**
@@ -173,16 +112,16 @@ public abstract class ObjectPool<T>
             return;
         }
 
-        // getLock().lock();
+        // this.lock.lock();
         //
         // try
         // {
-        getQueue().offer(object);
+        this.queue.offer(object);
         this.counterActive--;
         // }
         // finally
         // {
-        // getLock().unlock();
+        // this.lock.unlock();
         // }
     }
 
@@ -191,35 +130,20 @@ public abstract class ObjectPool<T>
      */
     protected void shutdown()
     {
-        // getLock().lock();
+        // this.lock.lock();
         //
         // try
         // {
-        String objectClazzName = getObjectClazz().getSimpleName();
+        String objectClazzName = borrowObject().getClass().getSimpleName();
 
-        getLogger().info("Close Pool<{}> with {} idle and {} aktive Objects", objectClazzName, getNumIdle(), getNumActive());
+        LOGGER.info("Close Pool<{}> with {} idle and {} active Objects", objectClazzName, this.queue.size(), getNumActive());
 
-        getQueue().clear();
+        this.queue.clear();
         this.counterActive = 0;
         // }
         // finally
         // {
-        // getLock().unlock();
+        // this.lock.unlock();
         // }
-    }
-
-    /**
-     * Das hier funktioniert nur, wenn die erbende Klasse nicht auch generisch ist !<br>
-     * Z.B.: public class MyObjectPool extends AbstractObjectPool<Integer><br>
-     *
-     * @return Class
-     * @throws ClassCastException Falls was schief geht.
-     */
-    @SuppressWarnings("unchecked")
-    protected Class<T> tryDetermineObjectClazz() throws ClassCastException
-    {
-        ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-
-        return (Class<T>) parameterizedType.getActualTypeArguments()[0];
     }
 }

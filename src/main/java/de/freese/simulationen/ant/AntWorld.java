@@ -90,9 +90,7 @@ public class AntWorld extends AbstractWorld
             @Override
             protected EmptyCell<AntWorld> create()
             {
-                EmptyCell<AntWorld> cell = new EmptyCell<>(AntWorld.this);
-
-                return cell;
+                return new EmptyCell<>(AntWorld.this);
             }
         };
 

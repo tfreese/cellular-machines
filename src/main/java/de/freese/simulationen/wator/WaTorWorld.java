@@ -60,16 +60,6 @@ public class WaTorWorld extends AbstractWorld
      */
     private int sharkStarveEnergy = 0;
 
-    // /**
-    // * Liste mit den X-Koordinaten un zufälliger Reihenfolge.
-    // */
-    // private List<Integer> xKoords = null;
-    //
-    // /**
-    // * Liste mit den Y-Koordinaten un zufälliger Reihenfolge.
-    // */
-    // private List<Integer> yKoords = null;
-
     /**
      * Erstellt ein neues {@link WaTorWorld} Object.
      *
@@ -90,6 +80,7 @@ public class WaTorWorld extends AbstractWorld
             {
                 object.setXY(-1, -1);
                 object.setEnergy(getFishStartEnergy());
+                object.setEdited(false);
             }
 
             /**
@@ -98,9 +89,7 @@ public class WaTorWorld extends AbstractWorld
             @Override
             protected FishCell create()
             {
-                FishCell cell = new FishCell(WaTorWorld.this);
-
-                return cell;
+                return new FishCellOld(WaTorWorld.this);
             }
         };
 
@@ -114,6 +103,7 @@ public class WaTorWorld extends AbstractWorld
             {
                 object.setXY(-1, -1);
                 object.setEnergy(getSharkStartEnergy());
+                object.setEdited(false);
             }
 
             /**
@@ -122,9 +112,7 @@ public class WaTorWorld extends AbstractWorld
             @Override
             protected SharkCell create()
             {
-                SharkCell cell = new SharkCell(WaTorWorld.this);
-
-                return cell;
+                return new SharkCellOld(WaTorWorld.this);
             }
         };
 
@@ -223,24 +211,6 @@ public class WaTorWorld extends AbstractWorld
     }
 
     /**
-     * @see de.freese.simulationen.model.AbstractWorld#initialize()
-     */
-    @Override
-    protected void initialize()
-    {
-        super.initialize();
-
-        // Koordinaten würfeln für Streaming-API.
-        // this.xKoords = Collections.synchronizedList(new ArrayList<>(getWidth()));
-        // IntStream.range(0, getWidth()).parallel().forEach(this.xKoords::add);
-        // Collections.shuffle(this.xKoords);
-        //
-        // this.yKoords = Collections.synchronizedList(new ArrayList<>(getHeight()));
-        // IntStream.range(0, getHeight()).parallel().forEach(this.yKoords::add);
-        // Collections.shuffle(this.yKoords);
-    }
-
-    /**
      * @see de.freese.simulationen.model.AbstractWorld#initialize(int, int)
      */
     @Override
@@ -249,25 +219,13 @@ public class WaTorWorld extends AbstractWorld
         // Zufällige Platzierung.
         int type = getRandom().nextInt(10);
 
-        Cell cell = null;
-
-        switch (type)
+        Cell cell = switch (type)
         {
-            case 1:
-                FishCell fishCell = getObjectPoolFish().borrowObject();
-                cell = fishCell;
+            case 1 -> getObjectPoolFish().borrowObject();
+            case 2 -> getObjectPoolShark().borrowObject();
 
-                break;
-
-            case 2:
-                SharkCell sharkCell = getObjectPoolShark().borrowObject();
-                cell = sharkCell;
-
-                break;
-
-            default:
-                break;
-        }
+            default -> null;
+        };
 
         if (cell != null)
         {
@@ -286,8 +244,16 @@ public class WaTorWorld extends AbstractWorld
             .parallel()
             .flatMap(Stream::of)
             .filter(Objects::nonNull)
-            .map(AbstractWatorCell.class::cast)
-            .forEach(c -> c.setEdited(false));
+            .map(WatorCell.class::cast)
+            .forEach(c -> {
+                c.setEdited(false);
+
+                if(c instanceof AbstractWatorCellNew)
+                {
+                    ((AbstractWatorCellNew) c).ermittleNachbarn();
+                }
+              }
+            );
 
         Stream.of(getCells())
             .parallel()
@@ -295,21 +261,6 @@ public class WaTorWorld extends AbstractWorld
             .filter(Objects::nonNull)
             .forEach(Cell::nextGeneration);
         // @formatter:on
-
-        // this.xKoords.parallelStream().forEach(x ->
-        // {
-        // this.yKoords.stream().map(y -> getCell(x, y)).filter(Objects::nonNull).forEach(ICell::nextGeneration);
-        //
-        // this.yKoords.forEach(y ->
-        // {
-        // ICell cell = getCell(x, y);
-        //
-        // if (cell != null)
-        // {
-        // cell.nextGeneration();
-        // }
-        // });
-        // });
 
         // nextGenerationNestedFor();
         // nextGenerationStreams();

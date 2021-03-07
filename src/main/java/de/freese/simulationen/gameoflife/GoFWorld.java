@@ -52,9 +52,7 @@ public class GoFWorld extends AbstractWorld
             @Override
             protected GoFCell create()
             {
-                GoFCell cell = new GoFCell(GoFWorld.this);
-
-                return cell;
+                return new GoFCell(GoFWorld.this);
             }
         };
 

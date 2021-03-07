@@ -72,11 +72,11 @@ class SimulationSwing extends JFrame
         tabbedPane.addTab("Bälle", ballView.getMainPanel());
 
         // WaTor: Water Torus
-        WaTorDiagrammPanel waTorDiagrammPanel = new WaTorDiagrammPanel();
-        WaTorView waTorView = new WaTorView(waTorDiagrammPanel);
+        WaTorView waTorView = new WaTorView();
         waTorView.initialize(fieldWidth, fieldHeight);
         tabbedPane.addTab("Water Torus", waTorView.getMainPanel());
 
+        WaTorDiagrammPanel waTorDiagrammPanel = new WaTorDiagrammPanel();
         waTorView.getSimulation().addWorldListener(waTorDiagrammPanel);
         tabbedPane.addTab("WaTor-Diagramm", waTorDiagrammPanel);
     }
