@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import de.freese.simulationen.balls.Ball;
 
 /**
  * Simulation sich bewegender Bälle mit physikalisch korrektem Verhalten.
