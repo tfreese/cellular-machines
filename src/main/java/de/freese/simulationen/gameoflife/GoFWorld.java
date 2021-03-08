@@ -115,7 +115,8 @@ public class GoFWorld extends AbstractWorld
             //.parallel()
             .filter(Objects::nonNull)
             .map(GoFCell.class::cast)
-            .forEach(GoFCell::ermittleLebendeBachbarn);
+            .forEach(GoFCell::ermittleLebendeBachbarn)
+            ;
 
         Stream.of(getCells())
             .parallel()
@@ -123,7 +124,8 @@ public class GoFWorld extends AbstractWorld
             //.parallel()
             .filter(Objects::nonNull)
             .map(GoFCell.class::cast)
-            .forEach(GoFCell::nextGeneration);
+            .forEach(GoFCell::nextGeneration)
+            ;
         // @formatter:on
 
         // for (int x = 0; x < getWidth(); x++)

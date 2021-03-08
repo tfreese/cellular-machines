@@ -149,6 +149,7 @@ public class AntCell extends AbstractCell<AntWorld>
         int newY = getWorld().getYTorusKoord(getY(), frontOffsets[1]);
         int oldX = getX();
         int oldY = getY();
+
         Cell frontCell = getWorld().getCell(newX, newY);
 
         if (frontCell instanceof AntCell)

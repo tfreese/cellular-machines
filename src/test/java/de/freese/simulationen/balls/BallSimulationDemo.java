@@ -63,10 +63,10 @@ public class BallSimulationDemo extends JComponent
              * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
              */
             @Override
-            public void windowClosing(final WindowEvent e)
+            public void windowClosing(final WindowEvent event)
             {
-                ((JFrame) e.getSource()).setVisible(false);
-                ((JFrame) e.getSource()).dispose();
+                ((JFrame) event.getSource()).setVisible(false);
+                ((JFrame) event.getSource()).dispose();
                 scheduledExecutorService.shutdownNow();
                 System.exit(0);
             }

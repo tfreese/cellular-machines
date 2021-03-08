@@ -11,14 +11,14 @@ import java.awt.Color;
  *
  * @author Thomas Freese
  */
-public class FishCellOld extends AbstractWatorCellOld implements FishCell
+public class DefaultFishCell extends AbstractWatorCell implements FishCell
 {
     /**
-     * Erstellt ein neues {@link FishCellOld} Object.
+     * Erstellt ein neues {@link DefaultFishCell} Object.
      *
      * @param world {@link WaTorWorld}
      */
-    FishCellOld(final WaTorWorld world)
+    DefaultFishCell(final WaTorWorld world)
     {
         super(world, Color.GREEN);
     }
@@ -43,19 +43,19 @@ public class FishCellOld extends AbstractWatorCellOld implements FishCell
         }
 
         ermittleNachbarn();
-        int[][] freie = getFreieNachbarn();
 
         incrementEnergy();
 
-        if (freie.length > 0)
-        {
-            // Bewegen
-            int oldX = getX();
-            int oldY = getY();
+        // Bewegen
+        int[] frei = getFreierNachbar();
 
-            int[] frei = freie[getWorld().getRandom().nextInt(freie.length)];
-            int freiX = frei[0];
-            int freiY = frei[1];
+        if (frei != null)
+        {
+            final int freiX = frei[0];
+            final int freiY = frei[1];
+
+            final int oldX = getX();
+            final int oldY = getY();
 
             moveTo(freiX, freiY);
 

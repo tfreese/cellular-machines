@@ -130,7 +130,7 @@ public class GoFCell extends AbstractCell<GoFWorld>
             setAlive(false);
         }
 
-        getWorld().cellColorChanged(getX(), getY(), this);
+        getWorld().setCellColor(getX(), getY(), getColor());
     }
 
     /**

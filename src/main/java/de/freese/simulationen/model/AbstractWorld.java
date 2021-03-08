@@ -63,19 +63,6 @@ public abstract class AbstractWorld extends AbstractSimulation
     }
 
     /**
-     * Ändert die Pixel-Farbe an der Position der Zelle.
-     *
-     * @param x int
-     * @param y int
-     * @param cell {@link Cell}
-     */
-    public void cellColorChanged(final int x, final int y, final Cell cell)
-    {
-        Color color = cell != null ? cell.getColor() : getNullCellColor();
-        getPixelsRGB()[x + (y * getWidth())] = color.getRGB();
-    }
-
-    /**
      * Liefert die Zelle der Koordinaten.
      *
      * @param x int
@@ -84,6 +71,11 @@ public abstract class AbstractWorld extends AbstractSimulation
      */
     public Cell getCell(final int x, final int y)
     {
+        // if ((x < 0) || (y < 0))
+        // {
+        // return null;
+        // }
+
         return getCells()[x][y];
     }
 
@@ -135,7 +127,8 @@ public abstract class AbstractWorld extends AbstractSimulation
                 {
                     initialize(x, y);
                 }
-            });
+            })
+            ;
         // @formatter:on
     }
 
@@ -163,7 +156,8 @@ public abstract class AbstractWorld extends AbstractSimulation
                     reset(x, y);
                     setCell(null, x, y);
                 }
-            });
+            })
+            ;
         // @formatter:on
 
         initialize();
@@ -185,9 +179,26 @@ public abstract class AbstractWorld extends AbstractSimulation
      */
     public void setCell(final Cell cell, final int x, final int y)
     {
+        // if ((x < 0) || (y < 0))
+        // {
+        // return;
+        // }
+
         getCells()[x][y] = cell;
 
-        cellColorChanged(x, y, cell);
+        setCellColor(x, y, cell != null ? cell.getColor() : getNullCellColor());
+    }
+
+    /**
+     * Ändert die Pixel-Farbe an den Koordinaten.
+     *
+     * @param x int
+     * @param y int
+     * @param color {@link Color}
+     */
+    public void setCellColor(final int x, final int y, final Color color)
+    {
+        getPixelsRGB()[x + (y * getWidth())] = color.getRGB();
     }
 
     /**

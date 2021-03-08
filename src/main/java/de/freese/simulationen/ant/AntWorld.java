@@ -51,7 +51,7 @@ public class AntWorld extends AbstractWorld
      */
     public AntWorld(final int width, final int height)
     {
-        this(width, height, (int) Math.sqrt(width * height) / 3);
+        this(width, height, (int) Math.sqrt((double) width * height) / 3);
     }
 
     /**

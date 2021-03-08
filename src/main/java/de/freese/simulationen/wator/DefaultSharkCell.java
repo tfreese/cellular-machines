@@ -5,21 +5,20 @@
 package de.freese.simulationen.wator;
 
 import java.awt.Color;
-import de.freese.simulationen.model.Cell;
 
 /**
  * Hai-Zelle der WaTor-Simulation.
  *
  * @author Thomas Freese
  */
-public class SharkCellOld extends AbstractWatorCellOld implements SharkCell
+public class DefaultSharkCell extends AbstractWatorCell implements SharkCell
 {
     /**
-     * Erstellt ein neues {@link SharkCellOld} Object.
+     * Erstellt ein neues {@link DefaultSharkCell} Object.
      *
      * @param world {@link WaTorWorld}
      */
-    SharkCellOld(final WaTorWorld world)
+    DefaultSharkCell(final WaTorWorld world)
     {
         super(world, Color.BLUE);
     }
@@ -45,46 +44,46 @@ public class SharkCellOld extends AbstractWatorCellOld implements SharkCell
         }
 
         ermittleNachbarn();
-        int[][] freie = getFreieNachbarn();
-        int[][] fische = getFischNachbarn();
 
         int oldX = getX();
         int oldY = getY();
 
-        if ((fische.length > 0) || (freie.length > 0))
+        if (hatFischNachbarn() || hatFreieNachbarn())
         {
-            if (fische.length > 0)
+            if (hatFischNachbarn())
             {
                 // Fressen
-                int[] fisch = fische[getWorld().getRandom().nextInt(fische.length)];
-                int fischX = fisch[0];
-                int fischY = fisch[1];
+                FishCell fishCell = getFischNachbar();
 
-                Cell cell = getWorld().getCell(fischX, fischY);
-
-                if (!(cell instanceof FishCell))
+                if (fishCell == null)
                 {
                     decrementEnergy();
-                    setEdited(true);
-                    return;
                 }
+                else
+                {
+                    final int fischX = fishCell.getX();
+                    final int fischY = fishCell.getY();
 
-                FishCell fishCell = (FishCell) cell;
+                    moveTo(fischX, fischY);
 
-                moveTo(fischX, fischY);
+                    setEnergy(fishCell.getEnergy() + getEnergy());
 
-                setEnergy(fishCell.getEnergy() + getEnergy());
-
-                getWorld().getObjectPoolFish().returnObject(fishCell);
+                    getWorld().getObjectPoolFish().returnObject(fishCell);
+                }
             }
             else
             {
                 // Bewegen
-                int[] frei = freie[getWorld().getRandom().nextInt(freie.length)];
-                int freiX = frei[0];
-                int freiY = frei[1];
+                int[] frei = getFreierNachbar();
 
-                moveTo(freiX, freiY);
+                if (frei != null)
+                {
+                    final int freiX = frei[0];
+                    final int freiY = frei[1];
+
+                    moveTo(freiX, freiY);
+                }
+
                 decrementEnergy();
             }
 

@@ -89,7 +89,7 @@ public class WaTorWorld extends AbstractWorld
             @Override
             protected FishCell create()
             {
-                return new FishCellOld(WaTorWorld.this);
+                return new DefaultFishCell(WaTorWorld.this);
             }
         };
 
@@ -112,7 +112,7 @@ public class WaTorWorld extends AbstractWorld
             @Override
             protected SharkCell create()
             {
-                return new SharkCellOld(WaTorWorld.this);
+                return new DefaultSharkCell(WaTorWorld.this);
             }
         };
 
@@ -221,8 +221,8 @@ public class WaTorWorld extends AbstractWorld
 
         Cell cell = switch (type)
         {
-            case 1 -> getObjectPoolFish().borrowObject();
-            case 2 -> getObjectPoolShark().borrowObject();
+            case 3 -> getObjectPoolFish().borrowObject();
+            case 6 -> getObjectPoolShark().borrowObject();
 
             default -> null;
         };
@@ -245,24 +245,20 @@ public class WaTorWorld extends AbstractWorld
             .flatMap(Stream::of)
             .filter(Objects::nonNull)
             .map(WatorCell.class::cast)
-            .forEach(c -> {
-                c.setEdited(false);
-
-                if(c instanceof AbstractWatorCellNew)
-                {
-                    ((AbstractWatorCellNew) c).ermittleNachbarn();
-                }
-              }
-            );
-
-        Stream.of(getCells())
-            .parallel()
-            .flatMap(Stream::of)
-            .filter(Objects::nonNull)
-            .forEach(Cell::nextGeneration);
+            .forEach(c -> c.setEdited(false))
+            ;
         // @formatter:on
 
-        // nextGenerationNestedFor();
+        // @formatter:off
+//        Stream.of(getCells())
+//            .parallel()
+//            .flatMap(Stream::of)
+//            .filter(Objects::nonNull)
+//            .forEach(Cell::nextGeneration)
+//            ;
+        // @formatter:on
+
+        nextGenerationNestedFor();
         // nextGenerationStreams();
 
         fireCompleted();
