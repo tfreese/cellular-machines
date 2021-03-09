@@ -12,25 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
-import de.freese.simulationen.AbstractSimulationView;
-import de.freese.simulationen.SimulationCanvas;
+import de.freese.simulationen.SimulationView;
 
 /**
  * View fuer die WaTor-Simulation.
  *
  * @author Thomas Freese
  */
-public class WaTorView extends AbstractSimulationView<WaTorWorld>
+public class WaTorView extends SimulationView<WaTorWorld>
 {
-    /**
-     * @see de.freese.simulationen.AbstractSimulationView#createSimulation(int, int)
-     */
-    @Override
-    protected WaTorWorld createSimulation(final int fieldWidth, final int fieldHeight)
-    {
-        return new WaTorWorld(fieldWidth, fieldHeight);
-    }
-
     /**
      * @param title String
      * @param value int
@@ -54,15 +44,12 @@ public class WaTorView extends AbstractSimulationView<WaTorWorld>
     }
 
     /**
-     * @see de.freese.simulationen.AbstractSimulationView#initialize(int, int)
+     * @see de.freese.simulationen.SimulationView#initialize(de.freese.simulationen.model.Simulation, int)
      */
     @Override
-    public void initialize(final int fieldWidth, final int fieldHeight)
+    public void initialize(final WaTorWorld simulation, final int delay)
     {
-        super.initialize(fieldWidth, fieldHeight);
-
-        SimulationCanvas canvas = new SimulationCanvas(getSimulation());
-        getMainPanel().add(canvas, BorderLayout.CENTER);
+        super.initialize(simulation, delay);
 
         // Slider für Settings
         JPanel sliderPanel = new JPanel();

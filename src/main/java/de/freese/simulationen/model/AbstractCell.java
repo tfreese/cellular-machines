@@ -5,6 +5,7 @@
 package de.freese.simulationen.model;
 
 import java.awt.Color;
+import java.util.Objects;
 
 /**
  * Basisklasse einer Zelle.
@@ -59,6 +60,28 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+
+        if (!(obj instanceof AbstractCell))
+        {
+            return false;
+        }
+
+        AbstractCell<?> other = (AbstractCell<?>) obj;
+
+        return Objects.equals(this.color, other.color) && (this.x == other.x) && (this.y == other.y)
+                && Objects.equals(getClass().getSimpleName(), obj.getClass().getSimpleName());
+    }
+
+    /**
      * @see de.freese.simulationen.model.Cell#getColor()
      */
     @Override
@@ -94,6 +117,15 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.color, this.x, this.y, getClass().getSimpleName());
+    }
+
+    /**
      * @see de.freese.simulationen.model.Cell#moveTo(int, int)
      */
     @Override
@@ -102,11 +134,11 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
         // Alte Position auf null setzen.
         if ((getX() >= 0) && (getY() >= 0))
         {
-            getWorld().setCell(null, getX(), getY());
+            getWorld().setCell(getX(), getY(), null);
         }
 
         setXY(x, y);
-        getWorld().setCell(this, x, y);
+        getWorld().setCell(x, y, this);
     }
 
     /**

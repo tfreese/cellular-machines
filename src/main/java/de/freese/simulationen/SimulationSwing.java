@@ -9,11 +9,13 @@ import java.awt.HeadlessException;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
-import de.freese.simulationen.ant.AntView;
+import de.freese.simulationen.ant.AntWorld;
+import de.freese.simulationen.balls.BallSimulation;
 import de.freese.simulationen.balls.BallView;
-import de.freese.simulationen.gameoflife.GofView;
+import de.freese.simulationen.gameoflife.GoFWorld;
 import de.freese.simulationen.wator.WaTorDiagrammPanel;
 import de.freese.simulationen.wator.WaTorView;
+import de.freese.simulationen.wator.WaTorWorld;
 
 /**
  * Hauptfenster der Simulation-Demos.
@@ -45,35 +47,36 @@ class SimulationSwing extends JFrame
         setTitle("Simulationen");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        int fieldWidth = SimulationEnvironment.getInstance().getAsInt("simulation.field.width", 100);
-        int fieldHeight = SimulationEnvironment.getInstance().getAsInt("simulation.field.height", 100);
-
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane);
 
-        // Ants
-        AntView antView = new AntView();
-        antView.initialize(fieldWidth, fieldHeight);
+        int delay = SimulationEnvironment.getInstance().getAsInt("simulation.delay", 40);
+        int fieldWidth = SimulationEnvironment.getInstance().getAsInt("simulation.field.width", 100);
+        int fieldHeight = SimulationEnvironment.getInstance().getAsInt("simulation.field.height", 100);
+
+        // Ants: Die Ameisen mögen es etwas schneller.
+        SimulationView<AntWorld> antView = new SimulationView<>();
+        antView.initialize(new AntWorld(fieldWidth, fieldHeight), Math.max(delay / 5, 1));
         tabbedPane.addTab("Langton-Ameise", antView.getMainPanel());
 
         // GoF: Game of Life
-        GofView gofView = new GofView();
-        gofView.initialize(fieldWidth, fieldHeight);
+        SimulationView<GoFWorld> gofView = new SimulationView<>();
+        gofView.initialize(new GoFWorld(fieldWidth, fieldHeight), delay);
         tabbedPane.addTab("Game of Life", gofView.getMainPanel());
 
         // HopAlong
-        // HopAlongView hopAlongView = new HopAlongView();
-        // hopAlongView.initialize(fieldWidth, fieldHeight);
+        // SimulationView<HopAlongWorld> hopAlongView = new SimulationView<>();
+        // hopAlongView.initialize(new HopAlongWorld(fieldWidth, fieldHeight), delay);
         // tabbedPane.addTab("Hop along", hopAlongView.getMainPanel());
 
         // Bälle
         BallView ballView = new BallView();
-        ballView.initialize(fieldWidth, fieldHeight);
+        ballView.initialize(new BallSimulation(fieldWidth, fieldHeight, delay * 4), delay);
         tabbedPane.addTab("Bälle", ballView.getMainPanel());
 
         // WaTor: Water Torus
         WaTorView waTorView = new WaTorView();
-        waTorView.initialize(fieldWidth, fieldHeight);
+        waTorView.initialize(new WaTorWorld(fieldWidth, fieldHeight), delay);
         tabbedPane.addTab("Water Torus", waTorView.getMainPanel());
 
         WaTorDiagrammPanel waTorDiagrammPanel = new WaTorDiagrammPanel();

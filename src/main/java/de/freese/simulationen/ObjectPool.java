@@ -25,7 +25,7 @@ public abstract class ObjectPool<T>
     /**
      *
      */
-    private int counterActive;
+    private volatile int counterActive;
 
     // /**
     // *

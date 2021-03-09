@@ -154,7 +154,7 @@ public abstract class AbstractWorld extends AbstractSimulation
                 for (int x = 0; x < getWidth(); x++)
                 {
                     reset(x, y);
-                    setCell(null, x, y);
+                    setCell(x, y,null);
                 }
             })
             ;
@@ -173,11 +173,11 @@ public abstract class AbstractWorld extends AbstractSimulation
     protected abstract void reset(int x, int y);
 
     /**
-     * @param cell {@link Cell}
      * @param x int
      * @param y int
+     * @param cell {@link Cell}
      */
-    public void setCell(final Cell cell, final int x, final int y)
+    public void setCell(final int x, final int y, final Cell cell)
     {
         // if ((x < 0) || (y < 0))
         // {

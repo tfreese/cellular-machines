@@ -24,7 +24,7 @@ import de.freese.simulationen.model.Simulation;
  * @author Thomas Freese
  * @param <S> Konkreter Typ der Welt
  */
-public abstract class AbstractSimulationView<S extends Simulation>
+public class SimulationView<S extends Simulation>
 {
     /**
      *
@@ -42,9 +42,9 @@ public abstract class AbstractSimulationView<S extends Simulation>
     private JPanel controlPanel;
 
     /**
-     * [ms]
+     * 40 ms = 25 Bilder/Sekunde
      */
-    private final int delay;
+    private int delay = 40;
 
     /**
      *
@@ -67,23 +67,12 @@ public abstract class AbstractSimulationView<S extends Simulation>
     private S simulation;
 
     /**
-     * Erstellt ein neues {@link AbstractSimulationView} Object.
+     * Erstellt ein neues {@link SimulationView} Object.
      */
-    protected AbstractSimulationView()
+    protected SimulationView()
     {
         super();
-
-        this.delay = SimulationEnvironment.getInstance().getAsInt("simulation.delay", 40);
     }
-
-    /**
-     * Erzeugt die Simulation.
-     *
-     * @param fieldWidth int
-     * @param fieldHeight int
-     * @return {@link Simulation}
-     */
-    protected abstract S createSimulation(final int fieldWidth, final int fieldHeight);
 
     /**
      * @return {@link JPanel}
@@ -179,12 +168,13 @@ public abstract class AbstractSimulationView<S extends Simulation>
     /**
      * Aufbau der GUI.
      *
-     * @param fieldWidth int
-     * @param fieldHeight int
+     * @param simulation {@link Simulation}
+     * @param delay int
      */
-    public void initialize(final int fieldWidth, final int fieldHeight)
+    public void initialize(final S simulation, final int delay)
     {
-        this.simulation = createSimulation(fieldWidth, fieldHeight);
+        this.simulation = simulation;
+        this.delay = delay;
 
         getControlPanel().setLayout(new BorderLayout());
         getControlPanel().setPreferredSize(new Dimension(180, 10));
@@ -192,6 +182,9 @@ public abstract class AbstractSimulationView<S extends Simulation>
 
         getMainPanel().setLayout(new BorderLayout());
         getMainPanel().add(getControlPanel(), BorderLayout.EAST);
+
+        SimulationCanvas canvas = new SimulationCanvas(simulation);
+        getMainPanel().add(canvas, BorderLayout.CENTER);
     }
 
     /**

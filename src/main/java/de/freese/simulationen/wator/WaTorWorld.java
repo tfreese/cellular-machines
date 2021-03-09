@@ -201,7 +201,7 @@ public class WaTorWorld extends AbstractWorld
     }
 
     /**
-     * Start-Energie der Haie.
+     * Sterbe-Energie der Haie.
      *
      * @return int
      */
@@ -491,7 +491,7 @@ public class WaTorWorld extends AbstractWorld
     }
 
     /**
-     * Start-Energie der Haie.
+     * Sterbe-Energie der Haie.
      *
      * @param sharkStarveEnergy int
      */

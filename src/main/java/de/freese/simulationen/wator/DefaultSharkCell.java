@@ -108,7 +108,7 @@ public class DefaultSharkCell extends AbstractWatorCell implements SharkCell
         if (getEnergy() <= getWorld().getSharkStarveEnergy())
         {
             // Sterben
-            getWorld().setCell(null, getX(), getY());
+            getWorld().setCell(getX(), getY(), null);
             getWorld().getObjectPoolShark().returnObject(this);
         }
 

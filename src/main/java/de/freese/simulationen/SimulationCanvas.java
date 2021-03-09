@@ -63,7 +63,7 @@ public class SimulationCanvas extends JComponent implements SimulationListener
      */
     public SimulationCanvas(final Simulation simulation)
     {
-        // Die Größe der Simulation auf die Angzeigegröße skalieren.
+        // Die Größe der Simulation auf die Anzeigegröße skalieren.
         this(simulation, (int) (800 * (double) simulation.getWidth()) / simulation.getHeight(), 800);
     }
 
