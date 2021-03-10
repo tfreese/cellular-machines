@@ -7,7 +7,6 @@ package de.freese.simulationen.wator2;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import de.freese.simulationen.model.AbstractSimulation;
 import de.freese.simulationen.wator.AbstractWatorCell;
 import de.freese.simulationen.wator.FishCell;
 
@@ -16,7 +15,7 @@ import de.freese.simulationen.wator.FishCell;
  *
  * @author Thomas Freese
  */
-public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRasterSimulation> implements WatorRasterCell
+public abstract class AbstractWatorRasterCell extends AbstractRasterCell implements WatorRasterCell
 {
     /**
      *
@@ -41,11 +40,12 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
     /**
      * Erstellt ein neues {@link AbstractWatorCell} Object.
      *
+     * @param simulation {@link WaterRasterSimulation}
      * @param color {@link Color}
      */
-    protected AbstractWatorRasterCell(final Color color)
+    protected AbstractWatorRasterCell(final WaterRasterSimulation simulation, final Color color)
     {
-        super(color);
+        super(simulation, color);
     }
 
     /**
@@ -60,15 +60,14 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
      * Ermittelt die Nachbarn dieser Zelle.<br>
      * Es werden nur vertikale und horizontale Nachbarn berücksichtigt.
      *
-     * @param simulation {@link AbstractSimulation}
      * @param raster {@link Raster}
      */
-    void ermittleNachbarn(final AbstractSimulation simulation, final Raster raster)
+    void ermittleNachbarn(final Raster raster)
     {
         this.freieNachbarnList.clear();
         this.fischNachbarnList.clear();
 
-        visitNeighbours(simulation, (x, y) -> {
+        visitNeighbours((x, y) -> {
             RasterCell cell = raster.getCell(x, y);
 
             if (cell == null)
@@ -104,11 +103,10 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
     /**
      * Liefert einen Fisch in der Nachbarschaft oder keinen.
      *
-     * @param simulation {@link AbstractSimulation}
      * @param raster {@link Raster}
      * @return {@link FishRasterCell}
      */
-    protected FishRasterCell getFischNachbar(final AbstractRasterSimulation simulation, final Raster raster)
+    protected FishRasterCell getFischNachbar(final Raster raster)
     {
         if (!hatFischNachbarn())
         {
@@ -138,7 +136,7 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
             // try
             // {
             final int size = this.fischNachbarnList.size();
-            final int[] koords = this.fischNachbarnList.remove(simulation.getRandom().nextInt(size));
+            final int[] koords = this.fischNachbarnList.remove(getSimulation().getRandom().nextInt(size));
 
             final int x = koords[0];
             final int y = koords[1];
@@ -162,11 +160,10 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
     /**
      * Liefert die Kooordinaten einer freien Zelle in der Nachbarschaft oder keine.
      *
-     * @param simulation {@link AbstractRasterSimulation}
      * @param raster {@link Raster}
      * @return int[]
      */
-    protected int[] getFreierNachbar(final AbstractRasterSimulation simulation, final Raster raster)
+    protected int[] getFreierNachbar(final Raster raster)
     {
         if (!hatFreieNachbarn())
         {
@@ -186,7 +183,7 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
             // try
             // {
             final int size = this.freieNachbarnList.size();
-            final int[] xy = this.freieNachbarnList.remove(simulation.getRandom().nextInt(size));
+            final int[] xy = this.freieNachbarnList.remove(getSimulation().getRandom().nextInt(size));
 
             final int x = xy[0];
             final int y = xy[1];
@@ -208,6 +205,15 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
         }
 
         return koords;
+    }
+
+    /**
+     * @see de.freese.simulationen.wator2.AbstractRasterCell#getSimulation()
+     */
+    @Override
+    protected WaterRasterSimulation getSimulation()
+    {
+        return (WaterRasterSimulation) super.getSimulation();
     }
 
     /**
@@ -243,6 +249,21 @@ public abstract class AbstractWatorRasterCell extends AbstractRasterCell<WaterRa
     public boolean isEdited()
     {
         return this.edited;
+    }
+
+    /**
+     * @see de.freese.simulationen.wator2.AbstractRasterCell#moveTo(int, int, de.freese.simulationen.wator2.Raster)
+     */
+    @Override
+    public void moveTo(final int x, final int y, final Raster raster)
+    {
+        // Im alten Raster diese Zelle löschen.
+        if ((getX() >= 0) && (getY() >= 0))
+        {
+            getSimulation().setCell(getX(), getY(), null, getSimulation().getRasterOld());
+        }
+
+        super.moveTo(x, y, raster);
     }
 
     /**

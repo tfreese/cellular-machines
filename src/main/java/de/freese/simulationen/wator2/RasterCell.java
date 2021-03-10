@@ -5,7 +5,6 @@
 package de.freese.simulationen.wator2;
 
 import java.awt.Color;
-import de.freese.simulationen.model.Simulation;
 
 /**
  * Einzelne Zelle einer Welt.
@@ -41,8 +40,6 @@ public interface RasterCell
 
     /**
      * Berechnet die nächste Generation.<br>
-     *
-     * @param simulation {@link Simulation}
      */
-    public void nextGeneration(Simulation simulation);
+    public void nextGeneration();
 }

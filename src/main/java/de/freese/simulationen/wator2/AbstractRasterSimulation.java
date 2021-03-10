@@ -157,6 +157,19 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
     protected abstract void reset(int x, int y);
 
     /**
+     * @param x int
+     * @param y int
+     * @param cell {@link RasterCell}
+     * @param raster Raster
+     */
+    protected void setCell(final int x, final int y, final RasterCell cell, final Raster raster)
+    {
+        raster.setCell(x, y, cell);
+
+        setCellColor(x, y, cell != null ? cell.getColor() : getNullCellColor());
+    }
+
+    /**
      * Ändert die Pixel-Farbe an den Koordinaten.
      *
      * @param x int
@@ -166,18 +179,6 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
     protected void setCellColor(final int x, final int y, final Color color)
     {
         getPixelsRGB()[x + (y * getWidth())] = color.getRGB();
-    }
-
-    /**
-     * Ändert die Pixel-Farbe an den Koordinaten.
-     *
-     * @param x int
-     * @param y int
-     * @param cell {@link RasterCell}
-     */
-    protected void setCellColor(final int x, final int y, final RasterCell cell)
-    {
-        setCellColor(x, y, cell != null ? cell.getColor() : getNullCellColor());
     }
 
     /**

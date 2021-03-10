@@ -6,20 +6,24 @@ package de.freese.simulationen.wator2;
 
 import java.awt.Color;
 import java.util.function.BiConsumer;
-import de.freese.simulationen.model.AbstractSimulation;
+import de.freese.simulationen.model.Simulation;
 
 /**
  * Basisklasse einer Zelle.
  *
  * @author Thomas Freese
- * @param <S> Type
  */
-public abstract class AbstractRasterCell<S extends AbstractRasterSimulation> implements RasterCell
+public abstract class AbstractRasterCell implements RasterCell
 {
     /**
      *
      */
     private Color color;
+
+    /**
+     *
+     */
+    private final AbstractRasterSimulation simulation;
 
     /**
      *
@@ -34,12 +38,14 @@ public abstract class AbstractRasterCell<S extends AbstractRasterSimulation> imp
     /**
      * Erstellt ein neues {@link AbstractRasterCell} Object.
      *
+     * @param simulation {@link Simulation}
      * @param color {@link Color}
      */
-    protected AbstractRasterCell(final Color color)
+    protected AbstractRasterCell(final AbstractRasterSimulation simulation, final Color color)
     {
         super();
 
+        this.simulation = simulation;
         this.color = color;
     }
 
@@ -50,6 +56,14 @@ public abstract class AbstractRasterCell<S extends AbstractRasterSimulation> imp
     public Color getColor()
     {
         return this.color;
+    }
+
+    /**
+     * @return {@link AbstractRasterSimulation}
+     */
+    protected AbstractRasterSimulation getSimulation()
+    {
+        return this.simulation;
     }
 
     /**
@@ -76,11 +90,14 @@ public abstract class AbstractRasterCell<S extends AbstractRasterSimulation> imp
     @Override
     public void moveTo(final int x, final int y, final Raster raster)
     {
-        // Alte Position auf null setzen.
-        raster.setCell(getX(), getY(), null);
+        // // Alte Position auf null setzen.
+        // if ((getX() >= 0) && (getY() >= 0))
+        // {
+        // getSimulation().setCell(getX(), getY(), null, raster);
+        // }
 
         setXY(x, y);
-        raster.setCell(x, y, this);
+        getSimulation().setCell(x, y, this, raster);
     }
 
     /**
@@ -118,15 +135,14 @@ public abstract class AbstractRasterCell<S extends AbstractRasterSimulation> imp
     }
 
     /**
-     * @param simulation {@link AbstractSimulation}
      * @param biConsumer {@link BiConsumer}
      */
-    protected void visitNeighbours(final AbstractSimulation simulation, final BiConsumer<Integer, Integer> biConsumer)
+    protected void visitNeighbours(final BiConsumer<Integer, Integer> biConsumer)
     {
-        int xWest = simulation.getXTorusKoord(getX(), -1);
-        int xOst = simulation.getXTorusKoord(getX(), +1);
-        int ySued = simulation.getYTorusKoord(getY(), -1);
-        int yNord = simulation.getYTorusKoord(getY(), +1);
+        int xWest = getSimulation().getXTorusKoord(getX(), -1);
+        int xOst = getSimulation().getXTorusKoord(getX(), +1);
+        int ySued = getSimulation().getYTorusKoord(getY(), -1);
+        int yNord = getSimulation().getYTorusKoord(getY(), +1);
 
         // Die Diagonalen verursachen stehende Haie und andere Fehler ???
 

@@ -48,12 +48,14 @@ public class DefaultSharkCell extends AbstractWatorCell implements SharkCell
         int oldX = getX();
         int oldY = getY();
 
+        decrementEnergy();
+
         if (hatFischNachbarn() || hatFreieNachbarn())
         {
             if (hatFischNachbarn())
             {
                 // Fressen
-                FishCell fishCell = getFischNachbar();
+                final FishCell fishCell = getFischNachbar();
 
                 if (fishCell == null)
                 {
@@ -74,7 +76,7 @@ public class DefaultSharkCell extends AbstractWatorCell implements SharkCell
             else
             {
                 // Bewegen
-                int[] frei = getFreierNachbar();
+                final int[] frei = getFreierNachbar();
 
                 if (frei != null)
                 {
@@ -83,8 +85,6 @@ public class DefaultSharkCell extends AbstractWatorCell implements SharkCell
 
                     moveTo(freiX, freiY);
                 }
-
-                decrementEnergy();
             }
 
             if (getEnergy() >= getWorld().getSharkBreedEnergy())
@@ -99,10 +99,6 @@ public class DefaultSharkCell extends AbstractWatorCell implements SharkCell
 
                 child.setEdited(true);
             }
-        }
-        else
-        {
-            decrementEnergy();
         }
 
         if (getEnergy() <= getWorld().getSharkStarveEnergy())

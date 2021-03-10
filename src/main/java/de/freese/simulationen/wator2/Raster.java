@@ -62,7 +62,7 @@ public class Raster
      * @param y int
      * @param cell {@link RasterCell}
      */
-    public void setCell(final int x, final int y, final RasterCell cell)
+    void setCell(final int x, final int y, final RasterCell cell)
     {
         // if ((x < 0) || (y < 0))
         // {

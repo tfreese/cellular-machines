@@ -2,6 +2,8 @@
 package de.freese.simulationen.wator2;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashSet;
 import de.freese.simulationen.ObjectPool;
 import de.freese.simulationen.wator.SharkCell;
 
@@ -84,7 +86,7 @@ public class WaterRasterSimulation extends AbstractRasterSimulation
             @Override
             protected FishRasterCell create()
             {
-                return new FishRasterCell();
+                return new FishRasterCell(WaterRasterSimulation.this);
             }
         };
 
@@ -107,7 +109,7 @@ public class WaterRasterSimulation extends AbstractRasterSimulation
             @Override
             protected SharkRasterCell create()
             {
-                return new SharkRasterCell();
+                return new SharkRasterCell(WaterRasterSimulation.this);
             }
         };
 
@@ -226,6 +228,8 @@ public class WaterRasterSimulation extends AbstractRasterSimulation
     @Override
     public void nextGeneration()
     {
+        Arrays.parallelSetAll(getPixelsRGB(), i -> getNullCellColor().getRGB());
+
         // Raster tauschen
         Raster r = this.rasterOld;
         this.rasterOld = getRaster();
@@ -233,19 +237,19 @@ public class WaterRasterSimulation extends AbstractRasterSimulation
 
         // Zuerst nur die Haie verarbeiten
         // @formatter:off
-        this.rasterOld.getCells().stream()
-            .parallel()
-            .filter(SharkRasterCell.class::isInstance)
-            .forEach(c -> c.nextGeneration(this))
-            ;
+//        new HashSet<>(this.rasterOld.getCells()).stream()
+//            .parallel()
+//            .filter(SharkRasterCell.class::isInstance)
+//            .forEach(RasterCell::nextGeneration)
+//            ;
         // @formatter:on
 
         // Dann erst die Fische
         // @formatter:off
-        this.rasterOld.getCells().stream()
+        new HashSet<>(this.rasterOld.getCells()).stream()
             .parallel()
             .filter(FishRasterCell.class::isInstance)
-            .forEach(c -> c.nextGeneration(this))
+            .forEach(RasterCell::nextGeneration)
             ;
         // @formatter:on
 

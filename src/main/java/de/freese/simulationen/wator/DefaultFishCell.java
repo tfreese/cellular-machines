@@ -47,7 +47,7 @@ public class DefaultFishCell extends AbstractWatorCell implements FishCell
         incrementEnergy();
 
         // Bewegen
-        int[] frei = getFreierNachbar();
+        final int[] frei = getFreierNachbar();
 
         if (frei != null)
         {

@@ -2,7 +2,6 @@
 package de.freese.simulationen.wator2;
 
 import java.awt.Color;
-import de.freese.simulationen.model.Simulation;
 
 /**
  * @author Thomas Freese
@@ -11,20 +10,20 @@ public class FishRasterCell extends AbstractWatorRasterCell
 {
     /**
      * Erstellt ein neues {@link FishRasterCell} Object.
+     *
+     * @param simulation {@link WaterRasterSimulation}
      */
-    public FishRasterCell()
+    public FishRasterCell(final WaterRasterSimulation simulation)
     {
-        super(Color.GREEN);
+        super(simulation, Color.GREEN);
     }
 
     /**
-     * @see de.freese.simulationen.wator2.RasterCell#nextGeneration(de.freese.simulationen.model.Simulation)
+     * @see de.freese.simulationen.wator2.RasterCell#nextGeneration()
      */
     @Override
-    public void nextGeneration(final Simulation simulation)
+    public void nextGeneration()
     {
-        WaterRasterSimulation watorSimulation = (WaterRasterSimulation) simulation;
-
         // // Verhindert Wellenfronten.
         // if (isEdited())
         // {
@@ -32,12 +31,12 @@ public class FishRasterCell extends AbstractWatorRasterCell
         // }
 
         // Im alten Raster die Nachbarn suchen.
-        ermittleNachbarn(watorSimulation, watorSimulation.getRasterOld());
+        ermittleNachbarn(getSimulation().getRasterOld());
 
         incrementEnergy();
 
         // Bewegen: Im neuen Raster nach freien Nachbarn suchen.
-        int[] frei = getFreierNachbar(watorSimulation, watorSimulation.getRaster());
+        final int[] frei = getFreierNachbar(getSimulation().getRaster());
 
         if (frei != null)
         {
@@ -47,18 +46,14 @@ public class FishRasterCell extends AbstractWatorRasterCell
             final int oldX = getX();
             final int oldY = getY();
 
-            // Im alten Raster diese Zelle löschen.
-            watorSimulation.getRasterOld().setCell(oldX, oldY, null);
-
-            // Zelle ins neue Raster setzen.
-            moveTo(freiX, freiY, watorSimulation.getRaster());
-            watorSimulation.setCellColor(freiX, freiY, this);
+            // Diesen Fisch ins neue Raster setzen.
+            moveTo(freiX, freiY, getSimulation().getRaster());
 
             // Nachwuchs einfach auf den alten Platz setzen, wenn dieser noch frei ist.
-            if ((getEnergy() >= watorSimulation.getFishBreedEnergy()) && (watorSimulation.getRaster().getCell(oldX, oldY) == null))
+            if ((getEnergy() >= getSimulation().getFishBreedEnergy()) && (getSimulation().getRaster().getCell(oldX, oldY) == null))
             {
-                FishRasterCell child = watorSimulation.getObjectPoolFish().borrowObject();
-                child.moveTo(oldX, oldY, watorSimulation.getRaster());
+                FishRasterCell child = getSimulation().getObjectPoolFish().borrowObject();
+                child.moveTo(oldX, oldY, getSimulation().getRaster());
 
                 // Energie aufteilen.
                 child.setEnergy(getEnergy() / 2);
