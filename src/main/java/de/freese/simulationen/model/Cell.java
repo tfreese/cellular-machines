@@ -29,18 +29,7 @@ public interface Cell
     public int getY();
 
     /**
-     * Setzt die Position und verschiebt die Zelle.<br>
-     * Die alte Position wird auf null gesetzt.
-     * 
-     * @param x int
-     * @param y int
-     */
-    public void moveTo(int x, int y);
-
-    /**
      * Berechnet die nächste Generation.<br>
-     * 
-     * @param params Object[], optionale Parameter
      */
-    public void nextGeneration(Object... params);
+    public void nextGeneration();
 }

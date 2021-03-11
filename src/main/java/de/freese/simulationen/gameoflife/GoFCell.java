@@ -1,37 +1,33 @@
-// Created: 28.09.2009
-/**
- * 28.09.2009
- */
+// Created: 11.03.2021
 package de.freese.simulationen.gameoflife;
 
 import java.awt.Color;
+import java.util.concurrent.atomic.AtomicInteger;
 import de.freese.simulationen.model.AbstractCell;
 
 /**
- * Zelle für die "Spiel des Lebens" Simulation.
- *
  * @author Thomas Freese
  */
-public class GoFCell extends AbstractCell<GoFWorld>
+public class GoFCell extends AbstractCell
 {
     /**
-     *
-     */
+    *
+    */
     private boolean alive = true;
 
     /**
-     *
-     */
-    private int lebendeNachbarn;
+    *
+    */
+    private final AtomicInteger lebendeNachbarn = new AtomicInteger(0);
 
     /**
      * Erstellt ein neues {@link GoFCell} Object.
      *
-     * @param world {@link GoFWorld}
+     * @param simulation {@link GoFRasterSimulation}
      */
-    public GoFCell(final GoFWorld world)
+    public GoFCell(final GoFRasterSimulation simulation)
     {
-        super(world);
+        super(simulation);
     }
 
     /**
@@ -40,39 +36,50 @@ public class GoFCell extends AbstractCell<GoFWorld>
      */
     void ermittleLebendeBachbarn()
     {
-        int anzahlLebendeNachbarn = 0;
+        this.lebendeNachbarn.set(0);
 
-        // Startpunkt unten links.
-        int startX = getWorld().getXTorusKoord(getX(), -1);
-        int startY = getWorld().getYTorusKoord(getY(), -1);
+        visitNeighboursAll((x, y) -> {
+            GoFCell cell = getSimulation().getCell(x, y);
 
-        for (int offsetX = 0; offsetX < 3; offsetX++)
-        {
-            int x = getWorld().getXTorusKoord(startX, offsetX);
-
-            for (int offsetY = 0; offsetY < 3; offsetY++)
+            if ((cell != null) && cell.isAlive())
             {
-                // Diese Zelle (this) ausnehmen.
-                if ((offsetX == 1) && (offsetY == 1))
-                {
-                    continue;
-                }
-
-                int y = getWorld().getYTorusKoord(startY, offsetY);
-                GoFCell cell = getWorld().getCell(x, y);
-
-                if ((cell != null) && cell.isAlive())
-                {
-                    anzahlLebendeNachbarn++;
-                }
+                this.lebendeNachbarn.incrementAndGet();
             }
-        }
+        });
 
-        this.lebendeNachbarn = anzahlLebendeNachbarn;
+        // int anzahlLebendeNachbarn = 0;
+        //
+        // // Startpunkt unten links.
+        // int startX = getSimulation().getXTorusKoord(getX(), -1);
+        // int startY = getSimulation().getYTorusKoord(getY(), -1);
+        //
+        // for (int offsetX = 0; offsetX < 3; offsetX++)
+        // {
+        // int x = getSimulation().getXTorusKoord(startX, offsetX);
+        //
+        // for (int offsetY = 0; offsetY < 3; offsetY++)
+        // {
+        // // Diese Zelle (this) ausnehmen.
+        // if ((offsetX == 1) && (offsetY == 1))
+        // {
+        // continue;
+        // }
+        //
+        // int y = getSimulation().getYTorusKoord(startY, offsetY);
+        // GofRasterCell cell = getSimulation().getCell(x, y);
+        //
+        // if ((cell != null) && cell.isAlive())
+        // {
+        // anzahlLebendeNachbarn++;
+        // }
+        // }
+        // }
+        //
+        // this.lebendeNachbarn = anzahlLebendeNachbarn;
     }
 
     /**
-     * @see de.freese.simulationen.model.Cell#getColor()
+     * @see de.freese.simulationen.model.AbstractCell#getColor()
      */
     @Override
     public Color getColor()
@@ -81,56 +88,57 @@ public class GoFCell extends AbstractCell<GoFWorld>
     }
 
     /**
-     * @return int
+     * @see de.freese.simulationen.model.AbstractCell#getSimulation()
      */
-    protected int getLebendeNachbarn()
+    @Override
+    protected GoFRasterSimulation getSimulation()
     {
-        return this.lebendeNachbarn;
+        return (GoFRasterSimulation) super.getSimulation();
     }
 
     /**
      * @return boolean
      */
-    protected boolean isAlive()
+    boolean isAlive()
     {
         return this.alive;
     }
 
     /**
      * <ol>
-     * <li>Eine tote Zelle mit genau drei lebenden Nachbarn wird in der nächsten Generation neu geboren.
-     * <li>Lebende Zellen mit weniger als zwei lebenden Nachbarn sterben in der nächsten Generation an Einsamkeit.
-     * <li>Eine lebende Zelle mit zwei oder drei lebenden Nachbarn bleibt in der nächsten Generation lebend.
-     * <li>Lebende Zellen mit mehr als drei lebenden Nachbarn sterben in der nächsten Generation an Überbevölkerung.
+     * <li>1. Eine tote Zelle mit genau drei lebenden Nachbarn wird in der nächsten Generation neu geboren.
+     * <li>2. Lebende Zellen mit weniger als zwei lebenden Nachbarn sterben in der nächsten Generation an Einsamkeit.
+     * <li>3. Eine lebende Zelle mit zwei oder drei lebenden Nachbarn bleibt in der nächsten Generation lebend.
+     * <li>4. Lebende Zellen mit mehr als drei lebenden Nachbarn sterben in der nächsten Generation an Überbevölkerung.
      * </ol>
      *
-     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration()
      */
     @Override
-    public void nextGeneration(final Object...params)
+    public void nextGeneration()
     {
-        if (!isAlive() && (getLebendeNachbarn() == 3))
+        final int lebendNachbarn = this.lebendeNachbarn.intValue();
+
+        if (!isAlive() && (lebendNachbarn == 3))
         {
             // 1.
             setAlive(true);
         }
-        else if (isAlive() && (getLebendeNachbarn() < 2))
+        else if (isAlive() && (lebendNachbarn < 2))
         {
             // 2.
             setAlive(false);
         }
-        else if (isAlive() && ((getLebendeNachbarn() == 2) || (getLebendeNachbarn() == 3)))
+        else if (isAlive() && ((lebendNachbarn == 2) || (lebendNachbarn == 3)))
         {
             // 3.
             setAlive(true);
         }
-        else if (isAlive() && (getLebendeNachbarn() > 3))
+        else if (isAlive() && ((lebendNachbarn) > 3))
         {
             // 4.
             setAlive(false);
         }
-
-        getWorld().setCellColor(getX(), getY(), getColor());
     }
 
     /**
@@ -139,5 +147,14 @@ public class GoFCell extends AbstractCell<GoFWorld>
     void setAlive(final boolean alive)
     {
         this.alive = alive;
+
+        if (this.alive)
+        {
+            setColor(Color.BLACK);
+        }
+        else
+        {
+            setColor(Color.WHITE);
+        }
     }
 }

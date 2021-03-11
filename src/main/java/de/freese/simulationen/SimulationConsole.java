@@ -12,12 +12,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.freese.simulationen.ant.AntWorld;
+import de.freese.simulationen.ant.AntRasterSimulation;
 import de.freese.simulationen.balls.BallSimulation;
-import de.freese.simulationen.gameoflife.GoFWorld;
+import de.freese.simulationen.gameoflife.GoFRasterSimulation;
 import de.freese.simulationen.model.Simulation;
 import de.freese.simulationen.model.SimulationType;
-import de.freese.simulationen.wator.WaTorWorld;
+import de.freese.simulationen.wator.WaTorRasterSimulation;
 
 /**
  * Consolenprogramm für Bilderstellung.<br>
@@ -59,9 +59,9 @@ class SimulationConsole
         {
             Simulation simulation = switch (type)
             {
-                case ANTS -> new AntWorld(width, height);
-                case GAME_OF_LIFE -> new GoFWorld(width, height);
-                case WATER_TORUS -> new WaTorWorld(width, height);
+                case ANTS -> new AntRasterSimulation(width, height);
+                case GAME_OF_LIFE -> new GoFRasterSimulation(width, height);
+                case WATER_TORUS -> new WaTorRasterSimulation(width, height);
                 case BOUNCING_BALLS -> new BallSimulation(width, height, SimulationEnvironment.getInstance().getAsInt("simulation.delay", 40));
 
                 default -> throw new IllegalStateException("invalid type: " + type);

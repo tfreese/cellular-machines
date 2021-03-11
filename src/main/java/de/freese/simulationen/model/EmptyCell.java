@@ -10,36 +10,37 @@ import java.awt.Color;
  * Dummy-Zelle für leere Flächen.
  *
  * @author Thomas Freese
- * @param <T> Konkreter Typ der Welt
  */
-public class EmptyCell<T extends AbstractWorld> extends AbstractCell<T>
+public class EmptyCell extends AbstractCell
 {
     /**
      * Erstellt ein neues {@link EmptyCell} Object.
      *
-     * @param world {@link AbstractWorld}
+     * @param simulation {@link AbstractRasterSimulation}
      */
-    public EmptyCell(final T world)
+    public EmptyCell(final AbstractRasterSimulation simulation)
     {
-        super(world);
+        super(simulation);
     }
 
     /**
      * Erstellt ein neues {@link EmptyCell} Object.
      *
-     * @param world {@link AbstractWorld}
+     * @param simulation {@link AbstractRasterSimulation}
      * @param color {@link Color}
      */
-    public EmptyCell(final T world, final Color color)
+    public EmptyCell(final AbstractRasterSimulation simulation, final Color color)
     {
-        super(world, color);
+        super(simulation);
+
+        setColor(color);
     }
 
     /**
-     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration()
      */
     @Override
-    public void nextGeneration(final Object...params)
+    public void nextGeneration()
     {
         // Empty
     }

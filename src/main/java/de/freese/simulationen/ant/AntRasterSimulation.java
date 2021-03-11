@@ -4,9 +4,9 @@ package de.freese.simulationen.ant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import de.freese.simulationen.ant.AntRasterCell.CellType;
-import de.freese.simulationen.wator3.AbstractRasterSimulation;
-import de.freese.simulationen.wator3.RasterCell;
+import de.freese.simulationen.ant.AntCell.CellType;
+import de.freese.simulationen.model.AbstractRasterSimulation;
+import de.freese.simulationen.model.Cell;
 
 /**
  * @author Thomas Freese
@@ -16,12 +16,12 @@ public class AntRasterSimulation extends AbstractRasterSimulation
     /**
      * Performance-Optimierung: Nur die Ameisen verarbeiten lassen.
      */
-    private final Set<AntRasterCell> ants = new HashSet<>();
+    private final Set<AntCell> ants = new HashSet<>();
 
     /**
      * Performance-Optimierung: Nur die Ameisen verarbeiten lassen.
      */
-    private final Set<AntRasterCell> antsNextGeneration = Collections.synchronizedSet(new HashSet<>());
+    private final Set<AntCell> antsNextGeneration = Collections.synchronizedSet(new HashSet<>());
 
     /**
      *
@@ -53,25 +53,25 @@ public class AntRasterSimulation extends AbstractRasterSimulation
 
         this.numberOfAnts = numberOfAnts;
 
-        fillRaster(() -> new AntRasterCell(this));
+        fillRaster(() -> new AntCell(this));
         reset();
     }
 
     /**
-     * @param cell {@link AntRasterCell}
+     * @param cell {@link AntCell}
      */
-    void addAntNextGeneration(final AntRasterCell cell)
+    void addNextGeneration(final AntCell cell)
     {
         this.antsNextGeneration.add(cell);
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#getCell(int, int)
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#getCell(int, int)
      */
     @Override
-    protected AntRasterCell getCell(final int x, final int y)
+    protected AntCell getCell(final int x, final int y)
     {
-        return (AntRasterCell) super.getCell(x, y);
+        return (AntCell) super.getCell(x, y);
     }
 
     /**
@@ -98,18 +98,18 @@ public class AntRasterSimulation extends AbstractRasterSimulation
         this.ants.addAll(this.antsNextGeneration);
         this.antsNextGeneration.clear();
 
-        this.ants.forEach(RasterCell::nextGeneration);
+        this.ants.forEach(Cell::nextGeneration);
 
         fireCompleted();
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#reset()
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#reset()
      */
     @Override
     public void reset()
     {
-        getCellStream().map(AntRasterCell.class::cast).forEach(c -> c.setCellType(CellType.EMPTY));
+        getCellStream().map(AntCell.class::cast).forEach(c -> c.setCellType(CellType.EMPTY));
 
         for (int i = 0; i < this.numberOfAnts; i++)
         {
@@ -118,11 +118,11 @@ public class AntRasterSimulation extends AbstractRasterSimulation
             int x = getRandom().nextInt(getWidth());
             int y = getRandom().nextInt(getHeight());
 
-            AntRasterCell cell = getCell(x, y);
+            AntCell cell = getCell(x, y);
             cell.setCellType(CellType.ANT);
             cell.setDirection(getRandomDirection());
 
-            addAntNextGeneration(cell);
+            addNextGeneration(cell);
         }
 
         fireCompleted();

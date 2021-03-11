@@ -26,7 +26,6 @@ import org.jfree.data.time.TimeSeriesCollection;
 import de.freese.simulationen.SimulationEnvironment;
 import de.freese.simulationen.model.Simulation;
 import de.freese.simulationen.model.SimulationListener;
-import de.freese.simulationen.wator3.WatorRasterSimulation;
 
 /**
  * DiagrammPanel der WaTor-Simulation.
@@ -104,7 +103,7 @@ public class WaTorDiagrammPanel extends JPanel implements SimulationListener
     public void completed(final Simulation simulation)
     {
         Runnable runnable = () -> {
-            WatorRasterSimulation watorRasterSimulation = (WatorRasterSimulation) simulation;
+            WaTorRasterSimulation watorRasterSimulation = (WaTorRasterSimulation) simulation;
 
             int[] fischeUndHaie = watorRasterSimulation.countFishesAndSharks();
 

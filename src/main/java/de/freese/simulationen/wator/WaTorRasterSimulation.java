@@ -1,9 +1,11 @@
 // Created: 09.03.2021
-package de.freese.simulationen.wator3;
+package de.freese.simulationen.wator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
-import de.freese.simulationen.wator3.WatorCell.CellType;
+import de.freese.simulationen.model.AbstractRasterSimulation;
+import de.freese.simulationen.model.Cell;
+import de.freese.simulationen.wator.WaTorCell.CellType;
 
 /**
  * Model der WaTor-Simulation.<br>
@@ -11,7 +13,7 @@ import de.freese.simulationen.wator3.WatorCell.CellType;
  *
  * @author Thomas Freese
  */
-public class WatorRasterSimulation extends AbstractRasterSimulation
+public class WaTorRasterSimulation extends AbstractRasterSimulation
 {
     /**
      * Richtung der Berechnung.
@@ -44,16 +46,16 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
     private int sharkStarveEnergy = 0;
 
     /**
-     * Erstellt ein neues {@link WatorRasterSimulation} Object.
+     * Erstellt ein neues {@link WaTorRasterSimulation} Object.
      *
      * @param width int
      * @param height int
      */
-    public WatorRasterSimulation(final int width, final int height)
+    public WaTorRasterSimulation(final int width, final int height)
     {
         super(width, height);
 
-        fillRaster(() -> new WatorCell(this));
+        fillRaster(() -> new WaTorCell(this));
         reset();
     }
 
@@ -65,7 +67,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
         AtomicInteger fische = new AtomicInteger(0);
         AtomicInteger haie = new AtomicInteger(0);
 
-        getCellStream().map(WatorCell.class::cast).forEach(cell -> {
+        getCellStream().map(WaTorCell.class::cast).forEach(cell -> {
             if (cell.isFish())
             {
                 fische.incrementAndGet();
@@ -83,12 +85,12 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#getCell(int, int)
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#getCell(int, int)
      */
     @Override
-    protected WatorCell getCell(final int x, final int y)
+    protected WaTorCell getCell(final int x, final int y)
     {
-        return (WatorCell) super.getCell(x, y);
+        return (WaTorCell) super.getCell(x, y);
     }
 
     /**
@@ -147,7 +149,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
     @Override
     public void nextGeneration()
     {
-        getCellStream().forEach(RasterCell::nextGeneration);
+        getCellStream().forEach(Cell::nextGeneration);
         // nextGenerationNestedFor();
         // nextGenerationStreams();
 
@@ -166,7 +168,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
             {
                 for (int y = 0; y < getHeight(); y++)
                 {
-                    WatorCell cell = getCell(x, y);
+                    WaTorCell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -181,7 +183,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
             {
                 for (int y = 0; y < getHeight(); y++)
                 {
-                    WatorCell cell = getCell(x, y);
+                    WaTorCell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -196,7 +198,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
             {
                 for (int y = getHeight() - 1; y >= 0; y--)
                 {
-                    WatorCell cell = getCell(x, y);
+                    WaTorCell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -211,7 +213,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
             {
                 for (int y = getHeight() - 1; y >= 0; y--)
                 {
-                    WatorCell cell = getCell(x, y);
+                    WaTorCell cell = getCell(x, y);
 
                     if (cell != null)
                     {
@@ -244,7 +246,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
                 {
                     for (int y = 0; y < getHeight(); y++)
                     {
-                        WatorCell cell = getCell(x, y);
+                        WaTorCell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -263,7 +265,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
                 {
                     for (int y = 0; y < getHeight(); y++)
                     {
-                        WatorCell cell = getCell(x, y);
+                        WaTorCell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -282,7 +284,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
                 {
                     for (int y = getHeight() - 1; y >= 0; y--)
                     {
-                        WatorCell cell = getCell(x, y);
+                        WaTorCell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -301,7 +303,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
                 {
                     for (int y = getHeight() - 1; y >= 0; y--)
                     {
-                        WatorCell cell = getCell(x, y);
+                        WaTorCell cell = getCell(x, y);
 
                         if (cell != null)
                         {
@@ -321,7 +323,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#reset(int, int)
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#reset(int, int)
      */
     @Override
     protected void reset(final int x, final int y)
@@ -329,7 +331,7 @@ public class WatorRasterSimulation extends AbstractRasterSimulation
         // Zufällige Platzierung.
         int rand = getRandom().nextInt(10);
 
-        WatorCell cell = getCell(x, y);
+        WaTorCell cell = getCell(x, y);
 
         switch (rand)
         {

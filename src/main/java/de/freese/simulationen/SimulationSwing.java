@@ -12,11 +12,10 @@ import javax.swing.WindowConstants;
 import de.freese.simulationen.ant.AntRasterSimulation;
 import de.freese.simulationen.balls.BallSimulation;
 import de.freese.simulationen.balls.BallView;
-import de.freese.simulationen.gameoflife.GofRasterSimulation;
-import de.freese.simulationen.hopalong.HopAlongRasterSimulation;
+import de.freese.simulationen.gameoflife.GoFRasterSimulation;
 import de.freese.simulationen.wator.WaTorDiagrammPanel;
+import de.freese.simulationen.wator.WaTorRasterSimulation;
 import de.freese.simulationen.wator.WaTorView;
-import de.freese.simulationen.wator3.WatorRasterSimulation;
 
 /**
  * Hauptfenster der Simulation-Demos.
@@ -61,14 +60,9 @@ class SimulationSwing extends JFrame
         tabbedPane.addTab("Langton-Ameise", ant2.getMainPanel());
 
         // GoF: Game of Life
-        SimulationView<GofRasterSimulation> gofView2 = new SimulationView<>();
-        gofView2.initialize(new GofRasterSimulation(fieldWidth, fieldHeight), delay);
+        SimulationView<GoFRasterSimulation> gofView2 = new SimulationView<>();
+        gofView2.initialize(new GoFRasterSimulation(fieldWidth, fieldHeight), delay);
         tabbedPane.addTab("Game of Life", gofView2.getMainPanel());
-
-        // HopAlong
-        SimulationView<HopAlongRasterSimulation> hopAlongView = new SimulationView<>();
-        hopAlongView.initialize(new HopAlongRasterSimulation(fieldWidth, fieldHeight), delay);
-        tabbedPane.addTab("Hop along", hopAlongView.getMainPanel());
 
         // Bälle
         BallView ballView = new BallView();
@@ -77,16 +71,16 @@ class SimulationSwing extends JFrame
 
         // WaTor: Water Torus
         WaTorView waTorView = new WaTorView();
-        waTorView.initialize(new WatorRasterSimulation(fieldWidth, fieldHeight), delay);
+        waTorView.initialize(new WaTorRasterSimulation(fieldWidth, fieldHeight), delay);
         tabbedPane.addTab("Water Torus", waTorView.getMainPanel());
 
         WaTorDiagrammPanel waTorDiagrammPanel = new WaTorDiagrammPanel();
         waTorView.getSimulation().addWorldListener(waTorDiagrammPanel);
         tabbedPane.addTab("WaTor-Diagramm", waTorDiagrammPanel);
 
-        // SimulationView<de.freese.simulationen.wator2.WaterRasterSimulation> waTorView2 = new SimulationView<>();
-        // waTorView2.initialize(new de.freese.simulationen.wator2.WaterRasterSimulation(fieldWidth, fieldHeight), delay);
-        // tabbedPane.addTab("Water Torus 2", waTorView2.getMainPanel());
-
+        // HopAlong
+        // SimulationView<HopAlongRasterSimulation> hopAlongView = new SimulationView<>();
+        // hopAlongView.initialize(new HopAlongRasterSimulation(fieldWidth, fieldHeight), delay);
+        // tabbedPane.addTab("Hop along", hopAlongView.getMainPanel());
     }
 }

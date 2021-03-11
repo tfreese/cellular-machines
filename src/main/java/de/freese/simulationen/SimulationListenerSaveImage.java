@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -162,7 +163,7 @@ public class SimulationListenerSaveImage implements SimulationListener
         }
         catch (IOException ex)
         {
-            throw new RuntimeException(ex);
+            throw new UncheckedIOException(ex);
         }
     }
 }

@@ -2,15 +2,18 @@
 /**
  * 18.09.2009
  */
-package de.freese.simulationen.wator2;
+package de.freese.simulationen.model;
 
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.MemoryImageSource;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
-import de.freese.simulationen.model.AbstractSimulation;
+import java.util.stream.Stream;
 
 /**
  * BasisModel für Simulationen mit Zellen als Pixeln.
@@ -22,6 +25,11 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
     /**
      *
      */
+    private Set<Cell> cells;
+
+    /**
+     *
+     */
     private final Image image;
 
     /**
@@ -30,14 +38,14 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
     private final MemoryImageSource imageSource;
 
     /**
-     *
+     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
      */
     private final int[] pixelsRGB;
 
     /**
      *
      */
-    private Raster raster;
+    private Cell[][] raster;
 
     /**
      * Erstellt ein neues {@link AbstractRasterSimulation} Object.
@@ -50,10 +58,10 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
         super(width, height);
 
         this.pixelsRGB = new int[width * height];
-        this.raster = new Raster(width, height);
+        this.raster = new Cell[width][height];
 
-        // Arrays.fill(this.pixels, getNullCellColor().getRGB());
-        Arrays.parallelSetAll(this.pixelsRGB, i -> getNullCellColor().getRGB());
+        // Arrays.fill(this.pixelsRGB, getNullCellColor().getRGB());
+        // Arrays.parallelSetAll(this.pixelsRGB, i -> getNullCellColor().getRGB());
 
         this.imageSource = new MemoryImageSource(width, height, this.pixelsRGB, 0, width);
         this.imageSource.setAnimated(true);
@@ -64,44 +72,14 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
     }
 
     /**
-     * @see de.freese.simulationen.model.Simulation#getImage()
-     */
-    @Override
-    public Image getImage()
-    {
-        return this.image;
-    }
-
-    /**
-     * Farbe für nicht vorhandene Zellen.
+     * Einmaliges befüllen des Rasters.
      *
-     * @return {@link Color}
+     * @param cellSupplier {@link Supplier}
      */
-    protected abstract Color getNullCellColor();
-
-    /**
-     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
-     *
-     * @return int[]
-     */
-    public int[] getPixelsRGB()
+    protected final void fillRaster(final Supplier<Cell> cellSupplier)
     {
-        return this.pixelsRGB;
-    }
+        Set<Cell> set = Collections.synchronizedSet(new HashSet<>());
 
-    /**
-     * @return {@link Raster}
-     */
-    protected Raster getRaster()
-    {
-        return this.raster;
-    }
-
-    /**
-     * Initialisierung des Simulationsfeldes.
-     */
-    protected void initialize()
-    {
         // @formatter:off
         IntStream.range(0, getHeight())
             .parallel()
@@ -109,20 +87,55 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
             {
                 for (int x = 0; x < getWidth(); x++)
                 {
-                    initialize(x, y);
+                    Cell cell = cellSupplier.get();
+
+                    if(cell instanceof AbstractCell)
+                    {
+                        ((AbstractCell) cell).setXY(x, y);
+                    }
+
+                    this.raster[x][y] = cell;
+
+                    set.add(cell);
                 }
             })
             ;
         // @formatter:on
+
+        this.cells = Collections.unmodifiableSet(new HashSet<>(set));
     }
 
     /**
-     * Initialisierung einer Zelle des Simulationsfeldes.
-     *
      * @param x int
      * @param y int
+     * @return {@link Cell}
      */
-    protected abstract void initialize(int x, int y);
+    protected Cell getCell(final int x, final int y)
+    {
+        return this.raster[x][y];
+    }
+
+    /**
+     * Liefert einen parallelen {@link Stream} für die Zellen.
+     *
+     * @return {@link Stream}
+     */
+    protected Stream<Cell> getCellStream()
+    {
+        // Der Stream vom Raster bildet Wellenfronten, da immer von oben links angefangen wird zu rechnen.
+        // return Stream.of(this.raster).parallel().flatMap(Stream::of).parallel();
+
+        return this.cells.stream().parallel();
+    }
+
+    /**
+     * @see de.freese.simulationen.model.Simulation#getImage()
+     */
+    @Override
+    public Image getImage()
+    {
+        return this.image;
+    }
 
     /**
      * @see de.freese.simulationen.model.Simulation#reset()
@@ -138,35 +151,23 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
                 for (int x = 0; x < getWidth(); x++)
                 {
                     reset(x, y);
-                    getRaster().setCell(x, y, null);
                 }
             })
             ;
         // @formatter:on
 
-        initialize();
         fireCompleted();
     }
 
     /**
-     * Reset einer Zelle des Simulationsfeldes.
+     * Reset einer Zelle des Rasters.
      *
      * @param x int
      * @param y int
      */
-    protected abstract void reset(int x, int y);
-
-    /**
-     * @param x int
-     * @param y int
-     * @param cell {@link RasterCell}
-     * @param raster Raster
-     */
-    protected void setCell(final int x, final int y, final RasterCell cell, final Raster raster)
+    protected void reset(final int x, final int y)
     {
-        raster.setCell(x, y, cell);
-
-        setCellColor(x, y, cell != null ? cell.getColor() : getNullCellColor());
+        // Empty
     }
 
     /**
@@ -178,15 +179,7 @@ public abstract class AbstractRasterSimulation extends AbstractSimulation
      */
     protected void setCellColor(final int x, final int y, final Color color)
     {
-        getPixelsRGB()[x + (y * getWidth())] = color.getRGB();
-    }
-
-    /**
-     * @param raster {@link Raster}
-     */
-    protected void setRaster(final Raster raster)
-    {
-        this.raster = raster;
+        this.pixelsRGB[x + (y * getWidth())] = color.getRGB();
     }
 
     /**

@@ -5,15 +5,14 @@
 package de.freese.simulationen.model;
 
 import java.awt.Color;
-import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * Basisklasse einer Zelle.
  *
  * @author Thomas Freese
- * @param <T> Konkreter Typ der Welt
  */
-public abstract class AbstractCell<T extends AbstractWorld> implements Cell
+public abstract class AbstractCell implements Cell
 {
     /**
      *
@@ -23,7 +22,7 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
     /**
      *
      */
-    private T world;
+    private final AbstractRasterSimulation simulation;
 
     /**
      *
@@ -38,47 +37,13 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
     /**
      * Erstellt ein neues {@link AbstractCell} Object.
      *
-     * @param world {@link AbstractWorld}
+     * @param simulation {@link Simulation}
      */
-    protected AbstractCell(final T world)
-    {
-        this(world, null);
-    }
-
-    /**
-     * Erstellt ein neues {@link AbstractCell} Object.
-     *
-     * @param world {@link AbstractWorld}
-     * @param color {@link Color}
-     */
-    protected AbstractCell(final T world, final Color color)
+    protected AbstractCell(final AbstractRasterSimulation simulation)
     {
         super();
 
-        this.world = world;
-        this.color = color;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if (this == obj)
-        {
-            return true;
-        }
-
-        if (!(obj instanceof AbstractCell))
-        {
-            return false;
-        }
-
-        AbstractCell<?> other = (AbstractCell<?>) obj;
-
-        return Objects.equals(this.color, other.color) && (this.x == other.x) && (this.y == other.y)
-                && Objects.equals(getClass().getSimpleName(), obj.getClass().getSimpleName());
+        this.simulation = simulation;
     }
 
     /**
@@ -91,11 +56,11 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
     }
 
     /**
-     * @return {@link AbstractWorld}
+     * @return {@link AbstractRasterSimulation}
      */
-    protected T getWorld()
+    protected AbstractRasterSimulation getSimulation()
     {
-        return this.world;
+        return this.simulation;
     }
 
     /**
@@ -117,45 +82,20 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
     }
 
     /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(this.color, this.x, this.y, getClass().getSimpleName());
-    }
-
-    /**
-     * @see de.freese.simulationen.model.Cell#moveTo(int, int)
-     */
-    @Override
-    public void moveTo(final int x, final int y)
-    {
-        // Alte Position auf null setzen.
-        if ((getX() >= 0) && (getY() >= 0))
-        {
-            getWorld().setCell(getX(), getY(), null);
-        }
-
-        setXY(x, y);
-        getWorld().setCell(x, y, this);
-    }
-
-    /**
      * @param color Color
      */
     public void setColor(final Color color)
     {
         this.color = color;
+
+        getSimulation().setCellColor(getX(), getY(), color);
     }
 
     /**
-     * Setzt die Position ohne die Zelle zu verschieben.
-     *
      * @param x int
      * @param y int
      */
-    public void setXY(final int x, final int y)
+    void setXY(final int x, final int y)
     {
         this.x = x;
         this.y = y;
@@ -173,5 +113,68 @@ public abstract class AbstractCell<T extends AbstractWorld> implements Cell
         sb.append("[x=").append(getX()).append(",y=").append(getY()).append("]");
 
         return sb.toString();
+    }
+
+    /**
+     * Liefert nur die Nord, Ost, Süd und West Nachbarn dieser Zelle.
+     *
+     * @param biConsumer {@link BiConsumer}
+     */
+    protected void visitNeighbours(final BiConsumer<Integer, Integer> biConsumer)
+    {
+        int xWest = getSimulation().getXTorusKoord(getX(), -1);
+        int xOst = getSimulation().getXTorusKoord(getX(), +1);
+        int ySued = getSimulation().getYTorusKoord(getY(), -1);
+        int yNord = getSimulation().getYTorusKoord(getY(), +1);
+
+        // Nord
+        biConsumer.accept(getX(), yNord);
+
+        // Ost
+        biConsumer.accept(xOst, getY());
+
+        // Süd
+        biConsumer.accept(getX(), ySued);
+
+        // West
+        biConsumer.accept(xWest, getY());
+
+    }
+
+    /**
+     * Liefert alle Nachbarn dieser Zelle.
+     *
+     * @param biConsumer {@link BiConsumer}
+     */
+    protected void visitNeighboursAll(final BiConsumer<Integer, Integer> biConsumer)
+    {
+        int xWest = getSimulation().getXTorusKoord(getX(), -1);
+        int xOst = getSimulation().getXTorusKoord(getX(), +1);
+        int ySued = getSimulation().getYTorusKoord(getY(), -1);
+        int yNord = getSimulation().getYTorusKoord(getY(), +1);
+
+        // Nord
+        biConsumer.accept(getX(), yNord);
+
+        // Nord-Ost
+        biConsumer.accept(xOst, yNord);
+
+        // Ost
+        biConsumer.accept(xOst, getY());
+
+        // Süd-Ost
+        biConsumer.accept(xOst, ySued);
+
+        // Süd
+        biConsumer.accept(getX(), ySued);
+
+        // Süd-West
+        biConsumer.accept(xWest, ySued);
+
+        // West
+        biConsumer.accept(xWest, getY());
+
+        // Nord-West
+        biConsumer.accept(xWest, yNord);
     }
 }

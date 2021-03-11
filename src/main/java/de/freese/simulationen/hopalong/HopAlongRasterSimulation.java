@@ -6,8 +6,8 @@ package de.freese.simulationen.hopalong;
 
 import java.awt.Color;
 import java.awt.Point;
-import de.freese.simulationen.wator3.AbstractRasterSimulation;
-import de.freese.simulationen.wator3.EmptyRasterCell;
+import de.freese.simulationen.model.AbstractRasterSimulation;
+import de.freese.simulationen.model.EmptyCell;
 
 /**
  * Model fuer die "Hop along"-Simulation.<br>
@@ -44,17 +44,17 @@ public class HopAlongRasterSimulation extends AbstractRasterSimulation
 
         this.center = new Point(width / 2, height / 2);
 
-        fillRaster(() -> new EmptyRasterCell(this));
+        fillRaster(() -> new EmptyCell(this));
         reset();
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#getCell(int, int)
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#getCell(int, int)
      */
     @Override
-    protected EmptyRasterCell getCell(final int x, final int y)
+    protected EmptyCell getCell(final int x, final int y)
     {
-        return (EmptyRasterCell) super.getCell(x, y);
+        return (EmptyCell) super.getCell(x, y);
     }
 
     /**
@@ -143,14 +143,14 @@ public class HopAlongRasterSimulation extends AbstractRasterSimulation
             // return;
         }
 
-        EmptyRasterCell cell = getCell(newX, newY);
+        EmptyCell cell = getCell(newX, newY);
         cell.setColor(Color.BLACK);
 
         fireCompleted();
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#reset()
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#reset()
      */
     @Override
     public void reset()
@@ -166,7 +166,7 @@ public class HopAlongRasterSimulation extends AbstractRasterSimulation
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterSimulation#reset(int, int)
+     * @see de.freese.simulationen.model.AbstractRasterSimulation#reset(int, int)
      */
     @Override
     protected void reset(final int x, final int y)

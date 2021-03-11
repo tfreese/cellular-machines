@@ -1,24 +1,44 @@
-// Created: 28.09.2009
-/**
- * 28.09.2009
- */
+// Created: 11.03.2021
 package de.freese.simulationen.ant;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.SwingConstants;
 import de.freese.simulationen.model.AbstractCell;
-import de.freese.simulationen.model.Cell;
-import de.freese.simulationen.model.EmptyCell;
 
 /**
  * Zelle der Langton-Ameisen Simulation.
  *
  * @author Thomas Freese
  */
-public class AntCell extends AbstractCell<AntWorld>
+public class AntCell extends AbstractCell
 {
+    /**
+     * @author Thomas Freese
+     */
+    public enum CellType
+    {
+        /**
+         *
+         */
+        ANT,
+
+        /**
+         *
+         */
+        BLACK,
+
+        /**
+        *
+        */
+        EMPTY,
+
+        /**
+         *
+         */
+        WHITE,
+    }
+
     /**
      * @author Thomas Freese
      */
@@ -118,18 +138,48 @@ public class AntCell extends AbstractCell<AntWorld>
     }
 
     /**
-     *
-     */
+    *
+    */
+    private CellType cellType;
+
+    /**
+    *
+    */
     private Direction direction = Direction.NORTH;
 
     /**
      * Erstellt ein neues {@link AntCell} Object.
      *
-     * @param world {@link AntWorld}
+     * @param simulation {@link AntRasterSimulation}
      */
-    public AntCell(final AntWorld world)
+    public AntCell(final AntRasterSimulation simulation)
     {
-        super(world, Color.RED);
+        super(simulation);
+    }
+
+    /**
+     * @see de.freese.simulationen.model.AbstractCell#getSimulation()
+     */
+    @Override
+    protected AntRasterSimulation getSimulation()
+    {
+        return (AntRasterSimulation) super.getSimulation();
+    }
+
+    /**
+     * @return boolean
+     */
+    public boolean isAnt()
+    {
+        return CellType.ANT.equals(this.cellType);
+    }
+
+    /**
+     * @return boolean
+     */
+    public boolean isEmpty()
+    {
+        return CellType.EMPTY.equals(this.cellType);
     }
 
     /**
@@ -138,68 +188,97 @@ public class AntCell extends AbstractCell<AntWorld>
      * <li>Ist das Feld vor ihr schwarz, so stellt sie sich drauf, färbt es weiss und dreht sich um 90 Grad nach links.
      * </ol>
      *
-     * @see de.freese.simulationen.model.Cell#nextGeneration(java.lang.Object[])
+     * @see de.freese.simulationen.model.Cell#nextGeneration()
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public void nextGeneration(final Object...params)
+    public void nextGeneration()
     {
-        int[] frontOffsets = this.direction.getFrontOffsets();
-        int newX = getWorld().getXTorusKoord(getX(), frontOffsets[0]);
-        int newY = getWorld().getYTorusKoord(getY(), frontOffsets[1]);
-        int oldX = getX();
-        int oldY = getY();
-
-        Cell frontCell = getWorld().getCell(newX, newY);
-
-        if (frontCell instanceof AntCell)
+        if (!isAnt())
         {
-            // Nicht auf eine andere Ameise treten.
-            setOrientation(getWorld().getRandomOrientation());
             return;
         }
 
-        EmptyCell<AntWorld> emptyCell = getWorld().getObjectPoolEmpty().borrowObject();
+        final int[] frontOffsets = this.direction.getFrontOffsets();
+        final int newX = getSimulation().getXTorusKoord(getX(), frontOffsets[0]);
+        final int newY = getSimulation().getYTorusKoord(getY(), frontOffsets[1]);
 
-        if ((frontCell == null) || frontCell.getColor().equals(Color.WHITE))
+        final AntCell frontCell = getSimulation().getCell(newX, newY);
+
+        if (frontCell.isAnt())
         {
-            emptyCell.setColor(Color.BLACK);
-            this.direction = this.direction.turnRight();
+            // Nicht auf eine andere Ameise treten.
+            setDirection(getSimulation().getRandomDirection());
+
+            // Performance-Optimierung: Nur die Ameisen verarbeiten lassen.
+            getSimulation().addNextGeneration(this);
+
+            return;
+        }
+
+        if (Color.WHITE.equals(frontCell.getColor()) || frontCell.isEmpty())
+        {
+            frontCell.setCellType(CellType.ANT);
+            setCellType(CellType.BLACK);
+            frontCell.direction = this.direction.turnRight();
+
+            // Performance-Optimierung: Nur die Ameisen verarbeiten lassen.
+            getSimulation().addNextGeneration(frontCell);
+        }
+        else if (Color.BLACK.equals(frontCell.getColor()) || frontCell.isEmpty())
+        {
+            frontCell.setCellType(CellType.ANT);
+            setCellType(CellType.WHITE);
+            frontCell.direction = this.direction.turnLeft();
+
+            // Performance-Optimierung: Nur die Ameisen verarbeiten lassen.
+            getSimulation().addNextGeneration(frontCell);
         }
         else
         {
-            emptyCell.setColor(Color.WHITE);
-            this.direction = this.direction.turnLeft();
-        }
+            // Verhindert 'fest steckende' Ameisen.
+            setDirection(getSimulation().getRandomDirection());
 
-        if (frontCell instanceof EmptyCell)
+            // Performance-Optimierung: Nur die Ameisen verarbeiten lassen.
+            getSimulation().addNextGeneration(this);
+        }
+    }
+
+    /**
+     * @param cellType {@link CellType}
+     */
+    public void setCellType(final CellType cellType)
+    {
+        this.cellType = cellType;
+
+        switch (cellType)
         {
-            getWorld().getObjectPoolEmpty().returnObject((EmptyCell<AntWorld>) frontCell);
-        }
+            case ANT -> setColor(Color.RED);
+            case BLACK -> setColor(Color.BLACK);
+            case WHITE -> setColor(Color.WHITE);
 
-        moveTo(newX, newY);
-        emptyCell.moveTo(oldX, oldY);
+            default -> setColor(Color.LIGHT_GRAY);
+        }
     }
 
     /**
      * Setzt die Ausrichtung.
      *
-     * @param orientation SwingConstants.NORTH, EAST, SOUTH, WEST
+     * @param orientation int; 0 - 3
      */
-    public void setOrientation(final int orientation)
+    public void setDirection(final int orientation)
     {
         switch (orientation)
         {
-            case SwingConstants.NORTH:
+            case 0:
                 this.direction = Direction.NORTH;
                 break;
-            case SwingConstants.EAST:
+            case 1:
                 this.direction = Direction.EAST;
                 break;
-            case SwingConstants.SOUTH:
+            case 2:
                 this.direction = Direction.SOUTH;
                 break;
-            case SwingConstants.WEST:
+            case 3:
                 this.direction = Direction.WEST;
                 break;
 

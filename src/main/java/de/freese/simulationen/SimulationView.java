@@ -216,7 +216,9 @@ public class SimulationView<S extends Simulation>
     {
         try
         {
+            // long start = System.currentTimeMillis();
             getSimulation().nextGeneration();
+            // System.out.printf("%d ms%n", System.currentTimeMillis() - start);
         }
         catch (Exception ex)
         {

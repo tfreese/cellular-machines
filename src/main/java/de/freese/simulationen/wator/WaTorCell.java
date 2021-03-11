@@ -1,14 +1,15 @@
 // Created: 11.03.2021
-package de.freese.simulationen.wator3;
+package de.freese.simulationen.wator;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import de.freese.simulationen.model.AbstractCell;
 
 /**
  * @author Thomas Freese
  */
-public class WatorCell extends AbstractRasterCell
+public class WaTorCell extends AbstractCell
 {
     /**
      * @author Thomas Freese
@@ -52,11 +53,11 @@ public class WatorCell extends AbstractRasterCell
     private final List<int[]> freieNachbarnList = new ArrayList<>(8);
 
     /**
-     * Erstellt ein neues {@link WatorCell} Object.
+     * Erstellt ein neues {@link WaTorCell} Object.
      *
-     * @param simulation {@link WatorRasterSimulation}
+     * @param simulation {@link WaTorRasterSimulation}
      */
-    public WatorCell(final WatorRasterSimulation simulation)
+    public WaTorCell(final WaTorRasterSimulation simulation)
     {
         super(simulation);
     }
@@ -88,7 +89,7 @@ public class WatorCell extends AbstractRasterCell
         this.fischNachbarnList.clear();
 
         visitNeighbours((x, y) -> {
-            WatorCell cell = getSimulation().getCell(x, y);
+            WaTorCell cell = getSimulation().getCell(x, y);
 
             if (cell.isEmpty())
             {
@@ -110,9 +111,9 @@ public class WatorCell extends AbstractRasterCell
     /**
      * Liefert einen Fisch in der Nachbarschaft oder keinen.
      *
-     * @return {@link WatorCell}
+     * @return {@link WaTorCell}
      */
-    protected WatorCell getFischNachbar()
+    protected WaTorCell getFischNachbar()
     {
         if (this.fischNachbarnList.isEmpty())
         {
@@ -124,7 +125,7 @@ public class WatorCell extends AbstractRasterCell
             final int size = this.fischNachbarnList.size();
             final int[] koords = this.fischNachbarnList.remove(getSimulation().getRandom().nextInt(size));
 
-            final WatorCell cell = getSimulation().getCell(koords[0], koords[1]);
+            final WaTorCell cell = getSimulation().getCell(koords[0], koords[1]);
 
             // Ist das wirklich noch ein Fisch ?
             if (cell.isFish())
@@ -153,7 +154,7 @@ public class WatorCell extends AbstractRasterCell
             final int size = this.freieNachbarnList.size();
             int[] koords = this.freieNachbarnList.remove(getSimulation().getRandom().nextInt(size));
 
-            final WatorCell cell = getSimulation().getCell(koords[0], koords[1]);
+            final WaTorCell cell = getSimulation().getCell(koords[0], koords[1]);
 
             // Ist die Stelle wirklich noch frei ?
             if (cell.isEmpty())
@@ -166,12 +167,12 @@ public class WatorCell extends AbstractRasterCell
     }
 
     /**
-     * @see de.freese.simulationen.wator3.AbstractRasterCell#getSimulation()
+     * @see de.freese.simulationen.model.AbstractCell#getSimulation()
      */
     @Override
-    protected WatorRasterSimulation getSimulation()
+    protected WaTorRasterSimulation getSimulation()
     {
-        return (WatorRasterSimulation) super.getSimulation();
+        return (WaTorRasterSimulation) super.getSimulation();
     }
 
     /**
@@ -238,7 +239,7 @@ public class WatorCell extends AbstractRasterCell
             final int freiY = frei[1];
 
             // Fisch "bewegen".
-            final WatorCell cell = getSimulation().getCell(freiX, freiY);
+            final WaTorCell cell = getSimulation().getCell(freiX, freiY);
             cell.setCellType(CellType.FISH);
             cell.setEnergy(this.energy);
 
@@ -259,7 +260,7 @@ public class WatorCell extends AbstractRasterCell
     }
 
     /**
-     * @see de.freese.simulationen.wator3.RasterCell#nextGeneration()
+     * @see de.freese.simulationen.model.Cell#nextGeneration()
      */
     @Override
     public void nextGeneration()
@@ -290,8 +291,8 @@ public class WatorCell extends AbstractRasterCell
         decrementEnergy();
 
         // Versuchen zu fressen.
-        WatorCell shark = this;
-        final WatorCell fisch = getFischNachbar();
+        WaTorCell shark = this;
+        final WaTorCell fisch = getFischNachbar();
         final int[] frei = getFreierNachbar();
 
         if ((fisch != null) || (frei != null))
