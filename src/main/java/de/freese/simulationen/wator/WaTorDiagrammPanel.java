@@ -8,6 +8,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartPanel;
@@ -22,8 +23,10 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import de.freese.simulationen.SimulationEnvironment;
 import de.freese.simulationen.model.Simulation;
 import de.freese.simulationen.model.SimulationListener;
+import de.freese.simulationen.wator3.WatorRasterSimulation;
 
 /**
  * DiagrammPanel der WaTor-Simulation.
@@ -100,9 +103,23 @@ public class WaTorDiagrammPanel extends JPanel implements SimulationListener
     @Override
     public void completed(final Simulation simulation)
     {
-        WaTorWorld waTorWorld = (WaTorWorld) simulation;
+        Runnable runnable = () -> {
+            WatorRasterSimulation watorRasterSimulation = (WatorRasterSimulation) simulation;
 
-        update(waTorWorld.getFishCounter(), waTorWorld.getSharkCounter());
+            int[] fischeUndHaie = watorRasterSimulation.countFishesAndSharks();
+
+            update(fischeUndHaie[0], fischeUndHaie[1]);
+        };
+
+        getScheduledExecutorService().execute(runnable);
+    }
+
+    /**
+     * @return {@link ScheduledExecutorService}
+     */
+    private ScheduledExecutorService getScheduledExecutorService()
+    {
+        return SimulationEnvironment.getInstance().getScheduledExecutorService();
     }
 
     /**

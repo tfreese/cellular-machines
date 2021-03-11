@@ -23,7 +23,7 @@ public interface WatorCell extends Cell
     public boolean isEdited();
 
     /**
-     * True, wenn diese Zelle in einem Zyklus schon mal verarbeitet wurde.
+     * True, wenn diese Zelle in diesem Zyklus schon mal verarbeitet wurde.
      *
      * @param edited boolean
      */

@@ -13,13 +13,14 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import de.freese.simulationen.SimulationView;
+import de.freese.simulationen.wator3.WatorRasterSimulation;
 
 /**
  * View fuer die WaTor-Simulation.
  *
  * @author Thomas Freese
  */
-public class WaTorView extends SimulationView<WaTorWorld>
+public class WaTorView extends SimulationView<WatorRasterSimulation>
 {
     /**
      * @param title String
@@ -47,7 +48,7 @@ public class WaTorView extends SimulationView<WaTorWorld>
      * @see de.freese.simulationen.SimulationView#initialize(de.freese.simulationen.model.Simulation, int)
      */
     @Override
-    public void initialize(final WaTorWorld simulation, final int delay)
+    public void initialize(final WatorRasterSimulation simulation, final int delay)
     {
         super.initialize(simulation, delay);
 

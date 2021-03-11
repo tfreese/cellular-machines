@@ -34,7 +34,7 @@ public abstract class AbstractWorld extends AbstractSimulation
     private final MemoryImageSource imageSource;
 
     /**
-     *
+     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
      */
     private final int[] pixelsRGB;
 
@@ -102,16 +102,6 @@ public abstract class AbstractWorld extends AbstractSimulation
      * @return {@link Color}
      */
     protected abstract Color getNullCellColor();
-
-    /**
-     * Pixel-Backend für {@link MemoryImageSource} und {@link Image}.
-     *
-     * @return int[]
-     */
-    public int[] getPixelsRGB()
-    {
-        return this.pixelsRGB;
-    }
 
     /**
      * Initialisierung des Simulationsfeldes.
@@ -198,7 +188,7 @@ public abstract class AbstractWorld extends AbstractSimulation
      */
     public void setCellColor(final int x, final int y, final Color color)
     {
-        getPixelsRGB()[x + (y * getWidth())] = color.getRGB();
+        this.pixelsRGB[x + (y * getWidth())] = color.getRGB();
     }
 
     /**

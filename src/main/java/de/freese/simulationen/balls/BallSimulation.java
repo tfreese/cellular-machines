@@ -153,8 +153,6 @@ public class BallSimulation extends AbstractSimulation
         this.balls.forEach(b -> b.move(this.delay));
 
         fireCompleted();
-
-        // System.out.println("BallSimulation.nextGeneration()");
     }
 
     /**

@@ -222,7 +222,7 @@ public abstract class AbstractWatorCell extends AbstractCell<WaTorWorld> impleme
     }
 
     /**
-     * Liefert die Kooordinaten einer freien Zelle in der Nachbarschaft oder keine.
+     * Liefert die Koordinaten einer freien Zelle in der Nachbarschaft oder keine.
      *
      * @return int[]
      */
