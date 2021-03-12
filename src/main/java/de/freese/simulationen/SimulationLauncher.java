@@ -122,18 +122,16 @@ public class SimulationLauncher
             }
         });
 
-        Thread thread = new Thread(threadGroup, () -> {
-            SwingUtilities.invokeLater(() -> {
-                demo.setSize(width, height);
-                // demo.setPreferredSize(new Dimension(width, height));
-                demo.setResizable(true);
-                // demo.pack();
-                demo.initialize();
-                demo.setLocationRelativeTo(null);
-                // demo.setExtendedState(Frame.MAXIMIZED_BOTH); // Full-Screen
-                demo.setVisible(true);
-            });
-        }, "Simulationen Startup");
+        Thread thread = new Thread(threadGroup, () -> SwingUtilities.invokeLater(() -> {
+            demo.setSize(width, height);
+            // demo.setPreferredSize(new Dimension(width, height));
+            demo.setResizable(true);
+            // demo.pack();
+            demo.initialize();
+            demo.setLocationRelativeTo(null);
+            // demo.setExtendedState(Frame.MAXIMIZED_BOTH); // Full-Screen
+            demo.setVisible(true);
+        }), "Simulationen Startup");
         thread.start();
     }
 

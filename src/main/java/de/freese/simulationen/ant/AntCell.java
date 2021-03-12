@@ -118,7 +118,15 @@ public class AntCell extends AbstractCell
         public Direction turnLeft()
         {
             int index = DIRECTIONS.indexOf(this);
-            index = index == 0 ? DIRECTIONS.size() - 1 : --index;
+
+            if (index == 0)
+            {
+                index = DIRECTIONS.size() - 1;
+            }
+            else
+            {
+                index--;
+            }
 
             return DIRECTIONS.get(index);
         }
@@ -131,7 +139,15 @@ public class AntCell extends AbstractCell
         public Direction turnRight()
         {
             int index = DIRECTIONS.indexOf(this);
-            index = index == (DIRECTIONS.size() - 1) ? 0 : ++index;
+
+            if (index == (DIRECTIONS.size() - 1))
+            {
+                index = 0;
+            }
+            else
+            {
+                index++;
+            }
 
             return DIRECTIONS.get(index);
         }

@@ -29,7 +29,7 @@ public interface Cell
     public int getY();
 
     /**
-     * Berechnet die nächste Generation.<br>
+     * Berechnet die nächste Generation.
      */
     public void nextGeneration();
 }

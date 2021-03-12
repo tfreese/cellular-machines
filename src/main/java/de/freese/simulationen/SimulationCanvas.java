@@ -44,7 +44,7 @@ public class SimulationCanvas extends JComponent implements SimulationListener
     /**
      *
      */
-    private Image image;
+    private transient Image image;
 
     /**
      *

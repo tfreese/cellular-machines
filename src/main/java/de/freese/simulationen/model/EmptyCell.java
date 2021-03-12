@@ -31,9 +31,7 @@ public class EmptyCell extends AbstractCell
      */
     public EmptyCell(final AbstractRasterSimulation simulation, final Color color)
     {
-        super(simulation);
-
-        setColor(color);
+        super(simulation, color);
     }
 
     /**

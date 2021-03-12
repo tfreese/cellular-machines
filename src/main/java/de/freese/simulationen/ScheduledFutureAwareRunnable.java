@@ -39,8 +39,8 @@ public class ScheduledFutureAwareRunnable implements Runnable
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledFutureAwareRunnable.class);
 
     /**
-    *
-    */
+     *
+     */
     private final BooleanSupplier exitCondition;
 
     /**
@@ -49,13 +49,13 @@ public class ScheduledFutureAwareRunnable implements Runnable
     private final String name;
 
     /**
-    *
-    */
+     *
+     */
     private ScheduledFuture<?> scheduledFuture;
 
     /**
-    *
-    */
+     *
+     */
     private final Runnable task;
 
     /**

@@ -47,6 +47,20 @@ public abstract class AbstractCell implements Cell
     }
 
     /**
+     * Erstellt ein neues {@link AbstractCell} Object.
+     *
+     * @param simulation {@link Simulation}
+     * @param color {@link Color}
+     */
+    protected AbstractCell(final AbstractRasterSimulation simulation, final Color color)
+    {
+        super();
+
+        this.simulation = simulation;
+        this.color = color;
+    }
+
+    /**
      * @see de.freese.simulationen.model.Cell#getColor()
      */
     @Override
