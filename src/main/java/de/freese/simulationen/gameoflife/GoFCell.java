@@ -2,7 +2,8 @@
 package de.freese.simulationen.gameoflife;
 
 import java.awt.Color;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
+
 import de.freese.simulationen.model.AbstractCell;
 
 /**
@@ -18,7 +19,7 @@ public class GoFCell extends AbstractCell
     /**
     *
     */
-    private final AtomicInteger lebendeNachbarn = new AtomicInteger(0);
+    private final LongAdder lebendeNachbarn = new LongAdder();
 
     /**
      * Erstellt ein neues {@link GoFCell} Object.
@@ -36,14 +37,15 @@ public class GoFCell extends AbstractCell
      */
     void ermittleLebendeBachbarn()
     {
-        this.lebendeNachbarn.set(0);
+        this.lebendeNachbarn.reset();
+        ;
 
         visitNeighboursAll((x, y) -> {
             GoFCell cell = getSimulation().getCell(x, y);
 
             if ((cell != null) && cell.isAlive())
             {
-                this.lebendeNachbarn.incrementAndGet();
+                this.lebendeNachbarn.increment();
             }
         });
 

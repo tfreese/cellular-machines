@@ -1,8 +1,9 @@
 // Created: 09.03.2021
 package de.freese.simulationen.wator;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.IntStream;
+
 import de.freese.simulationen.model.AbstractRasterSimulation;
 import de.freese.simulationen.model.Cell;
 import de.freese.simulationen.wator.WaTorCell.CellType;
@@ -26,6 +27,11 @@ public class WaTorRasterSimulation extends AbstractRasterSimulation
     private int fishBreedEnergy = 5;
 
     /**
+     *
+     */
+    private final LongAdder fishCounter = new LongAdder();
+
+    /**
      * Start-Energie der Fische.
      */
     private int fishStartEnergy = 1;
@@ -34,6 +40,11 @@ public class WaTorRasterSimulation extends AbstractRasterSimulation
      * Brut-Energie der Haie.
      */
     private int sharkBreedEnergy = 15;
+
+    /**
+     *
+     */
+    private final LongAdder sharkCounter = new LongAdder();
 
     /**
      * Start-Energie der Haie.
@@ -64,23 +75,23 @@ public class WaTorRasterSimulation extends AbstractRasterSimulation
      */
     public int[] countFishesAndSharks()
     {
-        AtomicInteger fische = new AtomicInteger(0);
-        AtomicInteger haie = new AtomicInteger(0);
+        this.fishCounter.reset();
+        this.sharkCounter.reset();
 
         getCellStream().map(WaTorCell.class::cast).forEach(cell -> {
             if (cell.isFish())
             {
-                fische.incrementAndGet();
+                this.fishCounter.increment();
             }
             else if (cell.isShark())
             {
-                haie.incrementAndGet();
+                this.sharkCounter.increment();
             }
         });
 
         return new int[]
         {
-                fische.intValue(), haie.intValue()
+                this.fishCounter.intValue(), this.sharkCounter.intValue()
         };
     }
 
