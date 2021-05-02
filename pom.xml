@@ -104,10 +104,10 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached> <!--Uber-jar als neue Datei, Original nicht ersetzen.-->
+                            <!--shadedArtifactAttached>true</shadedArtifactAttached--> <!--Uber-jar als neue Datei, Original nicht ersetzen.-->
                             <!--shadedClassifierName>shaded</shadedClassifierName-->                            
-                            <finalName>${project.artifactId}-shaded</finalName>
-                            <!--outputFile>shade/${project.artifactId}.jar</outputFile-->
+                            <!--finalName>app/${project.artifactId}-shaded</finalName-->
+                            <outputFile>app/${project.artifactId}-shaded.jar</outputFile>
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <minimizeJar>false</minimizeJar> <!--Alle Klassen entfernen, die nicht verwendet werden.-->
                             <filters>
