@@ -10,8 +10,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import de.freese.simulationen.ant.AntRasterSimulation;
 import de.freese.simulationen.balls.BallSimulation;
 import de.freese.simulationen.gameoflife.GoFRasterSimulation;
@@ -21,7 +23,6 @@ import de.freese.simulationen.wator.WaTorRasterSimulation;
 
 /**
  * Consolenprogramm für Bilderstellung.<br>
- * -type wator -cycles 1500 -dir /mnt/sonstiges/simulationen<br>
  * Umwandlung in Video:<br>
  *
  * <pre>

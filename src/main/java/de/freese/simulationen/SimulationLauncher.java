@@ -10,10 +10,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.SwingUtilities;
+
 import de.freese.simulationen.model.SimulationType;
 
 /**
+ * -swing<br>
+ * -console -type wator -cycles 1500 -size 3840 2160 -dir /tmp/simulationen<br>
+ *
  * @author Thomas Freese
  */
 public class SimulationLauncher

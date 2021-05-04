@@ -31,30 +31,36 @@
 
     <build>
         <plugins>
+            <!-- spring-boot:run, clean package spring-boot:repackage für executable jar -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
-                        <phase>initialize</phase>
+                        <id>repackage</id>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
-                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                            <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
-                            <useRepositoryLayout>false</useRepositoryLayout>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <includeScope>compile</includeScope>
-                            <includeScope>runtime</includeScope>
-                        </configuration>
+                            <skip>false</skip>
+                            <mainClass>de.freese.simulationen.SimulationLauncher</mainClass>
+                            <outputDirectory>app</outputDirectory>
+                            <finalName>${project.artifactId}</finalName>
+                            <classifier>spring</classifier>
+                            <includeSystemScope>runtime</includeSystemScope> 
+                            <layout>ZIP</layout>
+                            <jvmArguments>
+                                -Xms32m
+                                -Xmx512m
+                                -noverify
+                                -XX:TieredStopAtLevel=1                     
+                                -Djava.security.egd=file:/dev/./urandom
+                                -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005                       
+                            </jvmArguments>
+                        </configuration>                        
                     </execution>
-                </executions>
-            </plugin>
+                </executions>                
+            </plugin>        
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -75,7 +81,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>de.freese.simulationen.SimulationGUI</mainClass>
+                            <mainClass>de.freese.simulationen.SimulationLauncher</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
@@ -86,6 +92,77 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy project dependencies</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                            <outputDirectory>${project.build.directory}/app/libs</outputDirectory>
+                            <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
+                            <useRepositoryLayout>false</useRepositoryLayout>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy project jars</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                            <outputDirectory>${basedir}/app</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <!--artifactItem>
+                                    <groupId>de.freese</groupId>
+                                    <artifactId>cellular-machines</artifactId>
+                                    <version>${project.version}</version>
+                                    <overWrite>true</overWrite>
+                                    </artifactItem>
+                                    <artifactItem>
+                                    <groupId>de.freese</groupId>
+                                    <artifactId>cellular-machines</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>sources</classifier>
+                                    <overWrite>true</overWrite>
+                                    </artifactItem>
+                                    <artifactItem>
+                                    <groupId>de.freese</groupId>
+                                    <artifactId>cellular-machines</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>test-sources</classifier>
+                                    <overWrite>true</overWrite>
+                                    </artifactItem>
+                                    <artifactItem>
+                                    <groupId>de.freese</groupId>
+                                    <artifactId>cellular-machines</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>shaded</classifier>
+                                    <overWrite>true</overWrite>
+                                    </artifactItem -->
+                                <artifactItem>
+                                    <groupId>de.freese</groupId>
+                                    <artifactId>cellular-machines</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>jar-with-dependencies</classifier>
+                                    <overWrite>true</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>                    
+                </executions>
+            </plugin>            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -99,7 +176,7 @@
                 <executions>
                     <execution>
                         <id>shade uberjar</id>
-                        <phase>package</phase>
+                        <phase>none</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
@@ -128,7 +205,7 @@
                             </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.freese.simulationen.SimulationGUI</mainClass>
+                                    <mainClass>de.freese.simulationen.SimulationLauncher</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <!--transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
