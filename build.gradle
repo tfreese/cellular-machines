@@ -20,7 +20,11 @@ dependencyManagement {
 
 // Start: gradle bootRun --args='--spring.profiles.active=dev'
 bootJar {
-    mainClass = "de.freese.simulationen.SimulationLauncher"
+	//The archive name. If the name has not been explicitly set, the pattern for the name is:
+	//[archiveBaseName]-[archiveAppendix]-[archiveVersion]-[archiveClassifier].[archiveExtension]
+	//archiveFileName = "simulation-spring.jar"
+	
+	mainClass = "de.freese.simulationen.SimulationLauncher"
 }
 
 // gradle bootRun --args="-console -type wator -cycles 1500 -size 3840 2160 -dir /tmp/simulationen"
