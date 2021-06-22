@@ -38,7 +38,6 @@ public class GoFCell extends AbstractCell
     void ermittleLebendeBachbarn()
     {
         this.lebendeNachbarn.reset();
-        ;
 
         visitNeighboursAll((x, y) -> {
             GoFCell cell = getSimulation().getCell(x, y);
